@@ -1,3 +1,2 @@
-# 16.5-tecSCOPE
-TEC-1 Forth code and planetarium software (Stellarium) controled telescope.
-
+# tec-SCOPE
+TEC-1 controlled telescope using Forth, tecAPUS and Stellarium.
