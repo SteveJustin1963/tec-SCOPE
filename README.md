@@ -1,27 +1,6 @@
 # tec-SCOPE
-TEC-1 controlled telescope using Forth, tecAPUS and Stellarium.
+TEC-1 controlled telescope using Forth, tec-APUS and Stellarium.
 
-## Abstract
-
-## Introduction 
-
-## Observe and Question 
-
-## Theory - testable
-
-## Prediction
-
-## Method 
-
-## Test
-
-## Report, figures, tables
-
-## Results
-
-## Discuss objectively, scientific significance 
-
-## Conclusion 
 
 ## Acknowledgements
 
@@ -30,8 +9,4 @@ SJ HI Peter, thanks for contacting me. I fell in love with Forth 2 months ago, p
 PF; Your work with astronomy and forth is fantastic ! You can play with my little "planetarium" and add features if you wish. I want to make a Celestial Sphere later and project the Stars on it. And probably later steer my Telescope through wifi, with nodemcu esp8266. https://github.com/PeterForth/Planetarium Please, write a bit of your  astronomy interest and Forth interest in the Win32forth group, as a presentation of you ! So the other members will see your activity and interest  and respond and want to be friends too... we have many Astronomers in that group ! they will love to hear from you
 
 
-
-## References
-
-## Iterate, new hypotheses or predictions
-
+ 
