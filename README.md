@@ -10,5 +10,8 @@ SJ; HI Peter, thanks for contacting me. I fell in love with Forth 2 months ago, 
 
 PF; Your work with astronomy and forth is fantastic ! You can play with my little "planetarium" and add features if you wish. I want to make a Celestial Sphere later and project the Stars on it. And probably later steer my Telescope through wifi, with nodemcu esp8266. https://github.com/PeterForth/Planetarium Please, write a bit of your  astronomy interest and Forth interest in the Win32forth group, as a presentation of you ! So the other members will see your activity and interest  and respond and want to be friends too... we have many Astronomers in that group ! they will love to hear from you
 
+https://www.facebook.com/n/?groups%2F2225595150855239%2F2905458052868942%2F&aref=1587938315820231&medium=email&mid=5a43869a759f5G5af49ff0005eG5a438b33d5cc7G2a8&bcode=2.1587938317.AbxpcQkDvqEfDQ-T5G8&n_m=stevejustin1963%40gmail.com&lloc=view_on_facebook_btn
+
+
 ## wiki
 https://github.com/SteveJustin1963/tec-SCOPE/wiki
