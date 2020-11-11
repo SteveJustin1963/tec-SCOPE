@@ -13,7 +13,7 @@ Forth, TEC-1, Z80, Telescope-Control
 
 Az Istenek áldásával
 
-In dedication to my late father, uram, Jusztin Istvan (Stephen Justin) 1932-2000, and his passage into astronomy back in Kiskunfélegyháza Magyarország (Hungary). He made his own telescope by hand, an 8 inch reflector with his friends. He served his country and flew the MIG-15's and also graduated in mechanical engineering and Tool-making. He emigrated to Australia in 1962 and by 1976 when I was 13 years old, after seeing a TV week advertisement "Make your own telescope! ... Astro Optical, Clarke Lane, Crows Nest, Sydney, NSW, Australia", I convinced my father for us to make a telescope. Three years later we proudly finished our 12.5 inch reflector telescope. I also acknowledge "Kiskunfélegyházi Csillagászati Egyesület" with pride. https://www.facebook.com/Kiskunf%C3%A9legyh%C3%A1zi-Csillag%C3%A1szati-Egyes%C3%BClet-124849427661821 
+In dedication to my late father, uram, Jusztin Istvan (Stephen Justin) 1932-2000, and his passage into astronomy back in Kiskunfélegyháza Magyarország (Hungary). He made his own telescope by hand, an 8 inch reflector with his friends. He served his country and flew the MIG-15's and also graduated in mechanical engineering and Tool-making. He emigrated to Australia in 1962 and by 1976 when I was 13 years old, after seeing a TV week advertisement "Make your own telescope! ... Astro Optical, Clarke Lane, Crows Nest, Sydney, NSW, Australia", I convinced my father for us to make a telescope. Three years later we proudly finished our 12.5 inch reflector telescope. I also acknowledge "Kiskunfélegyházi Csillagászati Egyesület" with pride. 
 
 ## Introduction 
 My love of the 1983 TEC-1 and ye old Forth code, its time to make old things work again. Now with planetarium software such as Stellarium, I hope to drive and control my old 1975 telescope, to find and explore stars again in a new way.
@@ -62,7 +62,13 @@ A TEC-1 under Forth control can drive a small telescope and simultaneously inter
 PF; Your work with astronomy and forth is fantastic ! You can play with my little "planetarium" and add features if you wish. I want to make a Celestial Sphere later and project the Stars on it. And probably later steer my Telescope through wifi, with nodemcu esp8266. https://github.com/PeterForth/Planetarium Please, write a bit of your  astronomy interest and Forth interest in the Win32forth group, as a presentation of you ! So the other members will see your activity and interest  and respond and want to be friends too... we have many Astronomers in that group ! they will love to hear from you  https://www.facebook.com/peter.forth.583; I like very much to program in Win32forth. and also other forths too. I also like to help new programmers with questions around win32forth. Any case you need me you can contact me. Please tell me a bit about your interests in Astronomy and Forth !
 
 ## References
+https://www.facebook.com/groups/623556744820045
+
+https://www.facebook.com/groups/2225595150855239
+
 https://www.facebook.com/Kiskunf%C3%A9legyh%C3%A1zi-Csillag%C3%A1szati-Egyes%C3%BClet-124849427661821/
+
+http://stellarium.org/
 
 https://www.hackster.io/neil-pollard/sky-finder-a-lego-alexa-gadget-to-discover-the-night-sky-879e46
 
