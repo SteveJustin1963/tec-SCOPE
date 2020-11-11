@@ -13,7 +13,9 @@ Forth, TEC-1, Z80, Telescope-Control
 
 Az Istenek áldásával
 
-In dedication to my late father, uram, Jusztin Istvan (Stephen Justin) 1932-2000, and his passage into astronomy back in Kiskunfélegyháza Magyarország (Hungary). He made his own telescope by hand, an 8 inch reflector with his friends. He served his country and flew the MIG-15's and also graduated in mechanical engineering and Tool-making. He emigrated to Australia in 1962 and by 1976 when I was 13 years old, after seeing a TV week advertisement "Make your own telescope! ... Astro Optical, Clarke Lane, Crows Nest, Sydney, NSW, Australia", I convinced my father for us to make a telescope. Three years later we proudly finished our 12.5 inch reflector telescope. I also acknowledge "Kiskunfélegyházi Csillagászati Egyesület" with pride. 
+In dedication to my late father, uram, Jusztin Istvan (Stephen Justin) 1932-2000, and his passage into astronomy back in Kiskunfélegyháza Magyarország (Hungary). He made his own telescope by hand, an 8 inch reflector with his friends. He served his country and flew the MIG-15's and also graduated in mechanical engineering and Tool-making. He emigrated to Australia in 1962 and by 1976 when I was 13 years old, after seeing a TV week advertisement "Make your own telescope! ... Astro Optical, Clarke Lane, Crows Nest, Sydney, NSW, Australia", I convinced my father for us to make a telescope. Three years later we proudly finished our 12.5 inch reflector telescope, called the "Fény-Vödör". 
+
+I also proudly acknowledge "Kiskunfélegyházi Csillagászati Egyesület". 
 
 ## Introduction 
 My love of the 1983 TEC-1 and ye old Forth code, its time to make old things work again. Now with planetarium software such as Stellarium, I hope to drive and control my old 1975 telescope, to find and explore stars again in a new way.
