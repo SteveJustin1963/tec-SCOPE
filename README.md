@@ -13,13 +13,7 @@ Forth, TEC-1, Z80, Telescope-Control
 
 Az Istenek áldásával
 
-In dedication to my late father, uram, Jusztin Istvan (Stephen Justin) 1932-2000, and his passage into astronomy back in Kiskunfélegyháza Magyarország (Hungary). He made his own telescope by hand, an 8 inch reflector with his friends. He served his country and flew the MIG-15's and also graduated in mechanical engineering and Tool-making. He emigrated to Australia in 1962 and by 1976 when I was 13 years old, after seeing a TV week advertisement "Make your own telescope! ... Astro Optical, Clarke Lane, Crows Nest, Sydney, NSW, Australia", I convinced my father for us to make a telescope. Three years later we proudly finished our 12.5 inch reflector telescope.
-
-I also acknowledge "Kiskunfélegyházi Csillagászati Egyesület" with pride.
-
- 
-https://www.facebook.com/n/?groups%2F2225595150855239%2F2905458052868942%2F&aref=1587938315820231&medium=email&mid=5a43869a759f5G5af49ff0005eG5a438b33d5cc7G2a8&bcode=2.1587938317.AbxpcQkDvqEfDQ-T5G8&n_m=stevejustin1963%40gmail.com&lloc=view_on_facebook_btn
-
+In dedication to my late father, uram, Jusztin Istvan (Stephen Justin) 1932-2000, and his passage into astronomy back in Kiskunfélegyháza Magyarország (Hungary). He made his own telescope by hand, an 8 inch reflector with his friends. He served his country and flew the MIG-15's and also graduated in mechanical engineering and Tool-making. He emigrated to Australia in 1962 and by 1976 when I was 13 years old, after seeing a TV week advertisement "Make your own telescope! ... Astro Optical, Clarke Lane, Crows Nest, Sydney, NSW, Australia", I convinced my father for us to make a telescope. Three years later we proudly finished our 12.5 inch reflector telescope. I also acknowledge "Kiskunfélegyházi Csillagászati Egyesület" with pride. https://www.facebook.com/Kiskunf%C3%A9legyh%C3%A1zi-Csillag%C3%A1szati-Egyes%C3%BClet-124849427661821 
 
 ## Introduction 
 My love of the 1983 TEC-1 and ye old Forth code, its time to make old things work again. Now with planetarium software such as Stellarium, I hope to drive and control my old 1975 telescope, to find and explore stars again in a new way.
