@@ -1,0 +1,135 @@
+\ steppers.seq           code to directly drive stepper motors
+
+\ This code is released to the public domain      September 1995
+\ Taygeta Scientific Inc.
+
+\ $Author:   skip_carter  $
+\ $Workfile:   steppers.seq  $
+\ $Revision:   1.0  $
+\ $Date:   Oct 19 1995 11:34:12  $
+
+fload fpc2ans.seq       \ load stuff to make it look ANS
+fload fsl-util.seq
+
+fload structs.seq       \ data structures  (V1.9 for FPC)
+fload fcontrol.seq
+
+\ ===================================================================
+
+CR .( STEPPERS.SEQ          V1.0           22 Sept 1995  )
+
+structure sequence
+           integer:  .n
+           integer:  .index
+   8 integer array:  .s{
+endstructure
+
+
+-1 VALUE direction?
+
+12 VALUE wtime         \ inter-step wait time (ms)
+
+
+\ the data structures containing the proper coil sequences
+sequence normal
+sequence wave
+sequence half
+
+
+\ ===================================================================
+
+: init-seqs ( -- )                \ initialize the sequences
+      4 normal .n !
+      0 normal .index !
+      5 normal .s{ 0 } !
+      9 normal .s{ 1 } !
+     10 normal .s{ 2 } !
+      6 normal .s{ 3 } !
+      
+
+      4 wave .n !
+      0 wave .index !
+      1 wave .s{ 0 } !
+      8 wave .s{ 1 } !
+      2 wave .s{ 2 } !
+      4 wave .s{ 3 } !
+      
+      8 half .n !
+      0 half .index !
+      5 half .s{ 0 } !
+      1 half .s{ 1 } !
+      9 half .s{ 2 } !
+      8 half .s{ 3 } !
+     10 half .s{ 4 } !
+      2 half .s{ 5 } !
+      6 half .s{ 6 } !
+      4 half .s{ 7 } !
+
+;
+
+
+
+
+
+
+
+: idx++  ( seq_hdl -- idx )     \ increment the index, return old value
+         2DUP .n @ >R
+              .index DUP @
+         DUP 1+ R> MOD
+         ROT !
+;
+
+: idx-- ( seq_hdl -- idx )      \ decrement the index, return old value
+        2DUP .n @ >R
+             .index DUP @
+        DUP 1- R> OVER
+        0 < IF 1- SWAP THEN DROP
+        ROT !
+;
+
+: fsteps ( seq_hdl n -- )
+
+     0 DO wtime MS
+          2DUP idx++ >R
+          2DUP .s{ R> } @ WRITE
+       LOOP
+
+    2DROP
+;
+
+: rsteps ( seq_hdl n -- )
+
+     0 DO wtime MS
+          2DUP idx-- >R
+          2DUP .s{ R> } @ WRITE
+       LOOP
+
+    2DROP
+;
+
+
+
+\ ===================================================================
+
+
+: reverse  ( -- )                       \ toggles rotation direction
+   direction?  IF 0 ELSE -1 THEN
+   TO direction?
+;
+
+: steps ( n seq_hdl -- )                \ take n steps from given sequence
+    ROT
+    direction? IF fsteps ELSE rsteps THEN
+;
+
+\ ===================================================================
+
+init-seqs
+
+\   To run use a sequence like:    12 NORMAL STEPS
+
+
+
+\ end of steppers.seq
+
