@@ -2,9 +2,8 @@ draft
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png)
 
-Az Istenek áldásával. In dedication to my late father, uram, Jusztin Istvan (Stephen Justin) 1932-2000, and his first passage into astronomy back in the 1940s Kiskunfélegyháza Magyarország (Hungary). He made his own telescope by hand, an 8 inch reflector with his friends. He emigrated to Australia in 1962 and by 1976 when I was 13 years old, after seeing a TV week advertisement "Make your own telescope! ... Astro Optical, Clarke Lane, Crows Nest, Sydney, NSW, Australia", I asked my father for us to make a telescope. Three years later we proudly finished our 12.5 inch reflector telescope, the "Fény-Vödör" (Light-Bucket). I also proudly acknowledge "Kiskunfélegyházi Csillagászati Egyesület", the local astronomy club in Kiskunfélegyháza HU.
 
-Now 42 years later I hope to control my old telescope with the TEC-1 and MINT code and with Stellarium's planetarium maps thru a serial port.    
+Az Istenek áldásával and in dedication to my late father, uram Jusztin Istvan (Stephen Justin) Born 1932- RIP 2000, from Kiskunfélegyháza Magyarország Hungary, who later emigrated to Australia in 1962. His passage into astronomy was in the late 1940s, he hand made a 8 inch reflector telescope by hand with his friends. Much later in 1976 when I was 13 years old, I saw a repeating advert in the TV week "Make your own telescope! by Astro Optical at Clarke Lane, Crows Nest, Sydney, NSW, Australia". My dad took interest and and 3 years later we finished building a 12.5 inch Fény-Vödör reflector telescope. I also acknowledge Kiskunfélegyházi Csillagászati Egyesület; the local astronomy club in Kiskunfélegyháza. Now 42 years later I hope to control the old telescope with a TEC-1 runing MINT and with Stellarium planetarium maps.    
 
 ### the gerneral plan to connet the parts;
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/map.png)
