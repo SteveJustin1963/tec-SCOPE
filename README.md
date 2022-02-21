@@ -26,7 +26,8 @@ Az Istenek áldásával and in dedication to my late father, uram Jusztin Istvan
 - 
 
 ### build
- - Test with small cardboard mock up
-- next with 12.5" Newtonian reflector, 
+- Test with small cardboard mock up
+- test with small scope
+- test with our old 12.5" Newtonian reflector on the original mounts 
 
 
