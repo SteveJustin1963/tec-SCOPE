@@ -5,15 +5,22 @@ draft
 
 
 ### connect the parts;
+
+A very simple version to start with
+![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/22-3.png)
+- move by hand, encoders send io position
+- converted to map data
+- sent to Stellerium as ascii characters
+- Stellerium updates map position
+ 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/plan2.png)
 
-### features
-- position show on map
-- goto map point
-- track a position
-- slew to a position 
-- remote control, modem, radio or tcp/udp socket
-
+- position show on map as above
+- map slew to location
+- track a position in motion
+- joystick slew to a position 
+- remote control over modem
+- 
 ### Parts 
 - IO, https://github.com/SteveJustin1963/tec-IO
 - Serial and APU, https://github.com/SteveJustin1963/tec-APUS
