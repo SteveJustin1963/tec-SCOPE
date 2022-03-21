@@ -6,9 +6,9 @@ draft
 
 ### A simple version
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/22-3.png)
-- move by hand, encoders send io position
-- converted to map data
-- sent to Stellerium as ascii characters
+- move by hand, encoders send io to tec-1 as dc phase pairs
+- MINT code to convert into map data then into ascii codes
+- sent ascii to Stellerium one way serial 
 - Stellerium updates map position
 
 ### More complex
