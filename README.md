@@ -10,7 +10,8 @@ draft
 - converted to map data
 - sent to Stellerium as ascii characters
 - Stellerium updates map position
- 
+
+### More complex
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/plan2.png)
 
 - position show on map as above
@@ -18,7 +19,7 @@ draft
 - track a position in motion
 - joystick slew to a position 
 - remote control over modem
-- 
+ 
 ### Parts 
 - IO, https://github.com/SteveJustin1963/tec-IO
 - Serial and APU, https://github.com/SteveJustin1963/tec-APUS
