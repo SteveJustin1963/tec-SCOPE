@@ -4,9 +4,7 @@ draft
 
 
 
-### connect the parts;
-
-A very simple version to start with
+### A simple version
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/22-3.png)
 - move by hand, encoders send io position
 - converted to map data
