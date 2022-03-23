@@ -56,7 +56,7 @@ draft
 
 
 ## Encoder spec
-
+![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/3-23-2.png)
 - Power source: DC5-24V
 - Shaft: 6*13mm/0.23*0.51"
 - Size: 38*35.5mm/1.49*1.39"
