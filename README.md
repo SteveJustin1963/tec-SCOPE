@@ -13,31 +13,33 @@ draft
 - Stellerium updates map position
 
 ### More complex
-![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/plan2.png)
-
-- position show on map as above
-- map slew to location
-- track a position in motion
-- joystick slew to a position 
-- remote control over modem
- 
+- from a map location slew scpe to that position, issues x.200 commands that tec1 turns into x an y and then into motor control
+- track a position in motion. compensate for earths rotation. satelite tracking different problem
+- joystick slew scope to new positions 
+- remote control over modem, using defined protocols, TCS - Telescope Control System
+- camera mount + camera
+- photo compositing on pc
+- 
 ### Parts 
 - IO, https://github.com/SteveJustin1963/tec-IO
 - Serial and APU, https://github.com/SteveJustin1963/tec-APUS
-- Rotary encoders, addon or inside motor
-- Gears, telescope shafts, and maybe in motors to increase torque
-- Stepper motors, https://github.com/SteveJustin1963/tec-Stepper-Motor-Control
-- camera mount
-- photo compositing on pc
-- 
+- Rotary encoders and gearing
+- DC motors control and gearing, 
+- torque compensation / control
+- Stepper motors and conmtrol
+- anti shaking
 
 ### build
 - Test with small cardboard mock up
 - test with small scope
 - test with our old 12.5" Newtonian reflector on the original mounts 
+- MINT code with and without APU help
+- 
+
 
 
 ## References
+- https://github.com/SteveJustin1963/tec-Stepper-Motor-Control
 - https://www.facebook.com/rDUINOScope/
 - https://github.com/PeterForth/Planetarium 
 - https://joecreager.com/control-an-h-bridge-with-forth/
