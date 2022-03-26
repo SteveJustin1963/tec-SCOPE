@@ -56,26 +56,3 @@ draft
 - https://www.celestron.com/pages/celestron-pwi-telescope-control-software
 
 
-
-## Encoder spec
-![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/3-23-2.png)
-- Power source: DC5-24V
-- Shaft: 6*13mm/0.23*0.51"
-- Size: 38*35.5mm/1.49*1.39"
-- Output :AB 2phase output rectangular orthogonal pulse circuit, the output for the NPN open collector output type
-- Maximum mechanical speed: 5000 R / min
-- Response frequency: 0-20KHz
-- Cable length: 1.5 meter
-- Notice:AB 2phase output must not be directly connected with VCC, otherwise, will burn the output triode, because different batches, and may not have the terminal
-   
-### connection:
-
-- Green = A phase, white = B phase, red = Vcc power +, black = V0
-### Application:
-- Is used to measure the rotational speed, Angle and acceleration of the object and the length measurement
-Suitable for intelligent control of various displacement measurement, 
-- automatic fixed-length leather automatic guillotine machines, steel cut length control, civil measured height human scale, Students racing robots
-
-
-### Package included:
-- 1 x Encoder Incremental Rotary Encoder
