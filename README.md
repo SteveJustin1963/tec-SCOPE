@@ -32,6 +32,16 @@ draft
 
 
 
+
+
+## iterate
+- from a map location slew scpe to that position, issues x.200 commands that tec1 turns into x an y and then into motor control
+- track a position in motion. compensate for earths rotation. satelite tracking different problem
+- joystick slew scope to new positions 
+- remote control over modem, using defined protocols, TCS - Telescope Control System
+- camera mount + camera
+- photo compositing on pc
+
 ## References
 - https://github.com/SteveJustin1963/tec-Stepper-Motor-Control
 - https://www.facebook.com/rDUINOScope/
@@ -49,10 +59,4 @@ draft
 - https://makezine.com/projects/build-a-backyard-dobsonian-telescope/
 - https://www.celestron.com/pages/celestron-pwi-telescope-control-software
 
-## iterate
-- from a map location slew scpe to that position, issues x.200 commands that tec1 turns into x an y and then into motor control
-- track a position in motion. compensate for earths rotation. satelite tracking different problem
-- joystick slew scope to new positions 
-- remote control over modem, using defined protocols, TCS - Telescope Control System
-- camera mount + camera
-- photo compositing on pc
+
