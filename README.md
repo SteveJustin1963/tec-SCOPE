@@ -20,7 +20,7 @@ draft
 - Rotary encoders and gearing
 - DC motors control and gearing, 
 - torque compensation / control
-- Stepper motors and conmtrol
+- Stepper motors and control
 - anti shaking
 
 ### build
@@ -36,7 +36,7 @@ draft
 
 ## iterate
 - from a map location slew scope to that position, issues x.200 commands that tec1 turns into x an y and then into motor control
-- track a position in motion. compensate for earths rotation. satelite tracking different problem
+- track a position in motion. compensate for earths rotation. satellite tracking different problem
 - joystick slew scope to new positions 
 - remote control over modem, using defined protocols, TCS - Telescope Control System
 - camera mount + camera
