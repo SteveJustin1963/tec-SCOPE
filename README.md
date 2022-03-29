@@ -26,9 +26,9 @@
 
 ### build
 - Test with small cardboard mock up
-- test with small scope
-- test with our old 12.5" Newtonian reflector on the original mounts 
-- MINT code with and without APU help
+- test with small scope, cheap reflector eg 4 or 6" mirror, about $100 used
+- test with my 1978 12.5" Newtonian reflector that has equatorial mounts 
+- 
 - 
 
 
@@ -42,6 +42,7 @@
 - remote control over modem, using defined protocols, TCS - Telescope Control System
 - camera mount + camera
 - photo compositing on pc
+- MINT code with and without APU help
 
 poor mans encoder and motor drive in one, 
 - with a two motions mount, altitude (vertical) and azimuth (horizontal)
