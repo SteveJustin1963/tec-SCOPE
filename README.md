@@ -10,6 +10,7 @@ draft
 
 - rotary encoders 600 pulse/cycle geared down off telescope turn points
 - move by hand, encoders send io to tec-1 as dc pulse phase pairs
+- or sent to a counter/latch then read at intervals
 - MINT code to convert into map data then into ascii codes
 - sent ascii to Stellerium one way serial 
 - Stellerium updates map position
@@ -42,6 +43,17 @@ draft
 - camera mount + camera
 - photo compositing on pc
 
+poor mans encoder and motor drive in one, 
+- with a two motions mount, altitude (vertical) and azimuth (horizontal)
+- have a resistor pot on the two shafts
+- as well 2x dc motor drives via a threaded rod thru a nut on a cam arms to the x and y. 
+- a simple slotted wheel on the shaft interrupts a optical swtich to count the rotoations, ie 10 slots. 
+- as its a cam, the relationship between turns and angle is not linear. 
+- so we read the pot via an adc 
+- then do sine function times the rotation counts to derive and accuration postion
+- the cam also inproves torque and back lash control
+- with Equatorial mounts and aproperly aligned can be aimed at a celestial object and guided manualy or one control/motor.
+
 ## References
 - https://github.com/SteveJustin1963/tec-Stepper-Motor-Control
 - https://www.facebook.com/rDUINOScope/
@@ -58,5 +70,6 @@ draft
 - https://github.com/ForthWin/Forth2020UsersGroup/blob/master/ASTROLAB.F?fbclid=IwAR1WDOtVrYgl-IU7aDVg-y2659sf4HU1BfC0qWDlf0LNyo6Y_k4kRzJZ4yA
 - https://makezine.com/projects/build-a-backyard-dobsonian-telescope/
 - https://www.celestron.com/pages/celestron-pwi-telescope-control-software
+- https://www.astronomywa.net.au/different-types-of-telescope-mounts.html
 
 
