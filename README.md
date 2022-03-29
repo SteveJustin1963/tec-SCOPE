@@ -27,12 +27,8 @@
 ### build
 - Test with small cardboard mock up
 - test with small scope, cheap reflector eg 4 or 6" mirror, about $100 used
-- test with my 1978 12.5" Newtonian reflector that has equatorial mounts 
+- test with my old 12.5" Newtonian reflector that has equatorial mounts and geared controls
 - 
-- 
-
-
-
 
 
 ## iterate
