@@ -1,4 +1,4 @@
-draft
+ 
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png)
 
