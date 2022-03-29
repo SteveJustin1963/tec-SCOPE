@@ -35,7 +35,7 @@ draft
 
 
 ## iterate
-- from a map location slew scpe to that position, issues x.200 commands that tec1 turns into x an y and then into motor control
+- from a map location slew scope to that position, issues x.200 commands that tec1 turns into x an y and then into motor control
 - track a position in motion. compensate for earths rotation. satelite tracking different problem
 - joystick slew scope to new positions 
 - remote control over modem, using defined protocols, TCS - Telescope Control System
