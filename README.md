@@ -5,6 +5,7 @@ draft
 
 
 ### A simple version
+
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/3-23.png)
 
 - rotary encoders 600 pulse/cycle geared down off telescope turn points
@@ -13,8 +14,6 @@ draft
 - sent ascii to Stellerium one way serial 
 - Stellerium updates map position
 
-
-- 
 ### Parts 
 - IO, https://github.com/SteveJustin1963/tec-IO
 - Serial and APU, https://github.com/SteveJustin1963/tec-APUS
