@@ -51,6 +51,8 @@ poor mans encoder and motor drive in one,
 - the cam also inproves torque and back lash control
 - with Equatorial mounts and aproperly aligned can be aimed at a celestial object and guided manualy or one control/motor.
 
+![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
+
 ## References
 - https://github.com/SteveJustin1963/tec-Stepper-Motor-Control
 - https://www.facebook.com/rDUINOScope/
