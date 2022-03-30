@@ -1,4 +1,4 @@
- 
+
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png)
 
@@ -44,12 +44,12 @@ poor mans encoder and motor drive in one,
 - with a two motions mount, altitude (vertical) and azimuth (horizontal)
 - have a resistor pot on the two shafts
 - as well 2x dc motor drives via a threaded rod thru a nut on a cam arms to the x and y. 
-- a simple slotted wheel on the shaft interrupts a optical swtich to count the rotoations, ie 10 slots. 
+- a simple slotted wheel on the shaft interrupts a optical switch to count the rotations, ie 10 slots. 
 - as its a cam, the relationship between turns and angle is not linear. 
 - so we read the pot via an adc 
 - then do sine function times the rotation counts to derive an accurate position
-- the cam also inproves torque and back lash control
-- with Equatorial mounts and aproperly aligned can be aimed at a celestial object and guided manualy or one control/motor.
+- the cam also improves torque and back lash control
+- with Equatorial mounts and properly aligned can be aimed at a celestial object and guided manually or one control/motor.
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
 
