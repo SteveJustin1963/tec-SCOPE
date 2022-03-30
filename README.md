@@ -47,7 +47,7 @@ poor mans encoder and motor drive in one,
 - a simple slotted wheel on the shaft interrupts a optical swtich to count the rotoations, ie 10 slots. 
 - as its a cam, the relationship between turns and angle is not linear. 
 - so we read the pot via an adc 
-- then do sine function times the rotation counts to derive and accuration postion
+- then do sine function times the rotation counts to derive an accurate position
 - the cam also inproves torque and back lash control
 - with Equatorial mounts and aproperly aligned can be aimed at a celestial object and guided manualy or one control/motor.
 
