@@ -16,7 +16,7 @@ I'm working on a project that involves using rotary encoders to read and control
 - or sent to a counter/latch then read at intervals
 - MINT code to convert into map data then into ascii codes
 - sent ascii to Stellerium one way serial 
-- Stellerium updates map position
+- Stellarium updates map position
 
 ### Parts 
 - IO, https://github.com/SteveJustin1963/tec-IO
@@ -27,14 +27,14 @@ I'm working on a project that involves using rotary encoders to read and control
 - Stepper motors and control
 - anti shaking
 
-### build
+### Build
 - Test with small cardboard mock up
 - test with small scope, cheap reflector eg 4 or 6" mirror, about $100 used
 - test with my old 12.5" Newtonian reflector that has equatorial mounts and geared controls
 - 
 
 
-## iterate
+### Iterate
 - from a map location slew scope to that position, issues x.200 commands that tec1 turns into x an y and then into motor control
 - track a position in motion. compensate for earths rotation. satellite tracking different problem
 - joystick slew scope to new positions 
@@ -43,7 +43,7 @@ I'm working on a project that involves using rotary encoders to read and control
 - photo compositing on pc
 - MINT code with and without APU help
 
-## poor mans encoder and motor drive in one, 
+### poor mans encoder and motor drive in one, 
 - with a two motions mount, altitude (vertical) and azimuth (horizontal)
 - have a resistor pot on the two shafts
 - as well 2x dc motor drives via a threaded rod thru a nut on a cam arms to the x and y. 
@@ -56,7 +56,7 @@ I'm working on a project that involves using rotary encoders to read and control
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
 
-## References
+### References
 - https://github.com/SteveJustin1963/tec-Stepper-Motor-Control
 - https://www.facebook.com/rDUINOScope/
 - https://github.com/PeterForth/Planetarium 
@@ -73,5 +73,7 @@ I'm working on a project that involves using rotary encoders to read and control
 - https://makezine.com/projects/build-a-backyard-dobsonian-telescope/
 - https://www.celestron.com/pages/celestron-pwi-telescope-control-software
 - https://www.astronomywa.net.au/different-types-of-telescope-mounts.html
+
+
 
 
