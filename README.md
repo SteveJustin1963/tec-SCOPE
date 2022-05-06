@@ -3,6 +3,9 @@
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png)
 
 
+draft 
+
+I'm working on a project that involves using rotary encoders to read and control a telescope. I wrote some code to convert the encoder data into map data, which I then sent to Stellerium.   
 
 ### A simple version
 
@@ -40,7 +43,7 @@
 - photo compositing on pc
 - MINT code with and without APU help
 
-poor mans encoder and motor drive in one, 
+## poor mans encoder and motor drive in one, 
 - with a two motions mount, altitude (vertical) and azimuth (horizontal)
 - have a resistor pot on the two shafts
 - as well 2x dc motor drives via a threaded rod thru a nut on a cam arms to the x and y. 
