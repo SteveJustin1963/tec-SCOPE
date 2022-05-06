@@ -57,6 +57,10 @@ I'm working on a project that involves using rotary encoders to read and control
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
 
 ### References
+- https://www.google.com.au/sky/
+- https://edu.kde.org/kstars/
+- https://www.indilib.org/
+- 
 - https://github.com/SteveJustin1963/tec-Stepper-Motor-Control
 - https://www.facebook.com/rDUINOScope/
 - https://github.com/PeterForth/Planetarium 
