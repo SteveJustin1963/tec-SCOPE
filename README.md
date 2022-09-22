@@ -13,4 +13,4 @@ Az Istenek áldásával and in dedication to my late father, uram Jusztin Istvan
 
 22.9.22
 
-investigate counter with flipflop cct to count rotary encoder movement without resprting to inturrupts to count. inestigate dc vs steppers. checked LX200 asci codes.
+investigate counter with flipflop cct to count rotary encoder movement without resorting to interrupts to count. investigate dc vs steppers. checked LX200 ascii codes.
