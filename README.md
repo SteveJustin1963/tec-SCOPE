@@ -11,3 +11,143 @@ Az Istenek áldásával and in dedication to my late father, uram Jusztin Istvan
 that involves using rotary encoders to read and control a telescope. I wrote some code to convert the encoder data into map data, which I then sent to Stellerium.   
 
 
+
+1.2.2019 chat Peter Forth re planetarium s/w https://github.com/PeterForth/Planetarium and nodemcu esp8266. Win32forth group, members Astronomers; Michel has an astronomy project on ForthWin also. Iruata souza is astrophysicist . Roland Herrera is also hobby astronomer, so we have lots of people interested, in astronomy graphs. 
+Michel Jean the professor from Canada started an own Stellarium on ForthWin. I have Arduino Mega2560, I use them to controll a Mearm Robot and other things, I think it can be easy to control a stepper motor drive for 2axis for the telescope mount.
+
+1.3.2022 chat Craig Jones , OK, so you have serial streams of x and y data coming into the TEC? I wouldn't use another bitbang, I'd use 2 x 6850's with interrupts. I have done the circular buffered serial interrupt code for the 6850, no big deal to have two instances. I guess Stellerium will need a serial port too? Then is it 3 serial ports? sj; the x and are not serial streams sorry, they a two pairs of phase shifted dc pulses. 600 pulse pairs per revolution. this will be geared to a larger disk on the shaft of the telescope. as the telescope is moved the out of phase pulse pair from x is fed to 2 ports and y pulse pair is fed to 
+the next 2 ports. this info is maths converted in mint to astronomy conordiants then into ascii codes that are up loaded via a second com port to a laptop running a serial plug in for free stellerium which then moves the cross hairs on the star map. two 6860 sounds better. i know reading the 4 data ports will be very busy task as slight movement result in huge pluse trains. when its converted the final ascii, the update is tiny. i have a 12 inch reflector telescope at home and access to smaller reflectors, no refactors. the small ones are really cheap to pickup. its easy enough to point and look but one never knows what there looking at.  we'll know with mint we can later add stepper or dc motors, track objects, add a joy stick, more addons lol ques re the mint code ? re this symbol ? reads serial port, so with a second bit bang and say mod the ? into   ?< and ?> commands cj; It was always the idea with MINT (well my idea anyway) to add buffered serial interrupts to it, the first pass was to get it going in 2k for the basic TEC-1. I did the buffered serial interrupt code a while ago but have yet to incorporate it into MINT, now I will have to consider more than one serial port as well! I will leave the implementation in MINT to John. Obviously MINT will need to become bigger if it has to handle APU and serial buffered comms!
+
+23.3.2022 ordered 2 rotary encoders, 600p/r
+
+17.9.22 - recycled broken foot massage machine for 24v dc worm drive. now need another. or go stepper motor way. try both. 
+
+22.9.22 - investigate counter with flipflop cct to count rotary encoder movement without resorting to interrupts to count. investigate dc vs steppers. checked LX200 ascii codes. checked io port options.
+
+
+
+
+### A simple version
+
+![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/3-23.png)
+
+- rotary encoders 600 pulse/cycle geared down off telescope turn points
+- move by hand, encoders send io to tec-1 as dc pulse phase pairs
+- or sent to a counter/latch then read at intervals
+- MINT code to convert into map data then into ascii codes
+- sent ascii to Stellerium one way serial 
+- Stellarium updates map position
+
+### Parts 
+- IO, https://github.com/SteveJustin1963/tec-IO
+- Serial and APU, https://github.com/SteveJustin1963/tec-APUS
+- Rotary encoders and gearing
+- DC motors control and gearing, 
+- torque compensation / control
+- Stepper motors and control
+- anti shaking
+
+### Build
+- Test with small cardboard mock up
+- test with small scope, cheap reflector eg 4 or 6" mirror, about $100 used
+- test with my old 12.5" Newtonian reflector that has equatorial mounts and geared controls
+- 
+
+
+
+### poor mans encoder and motor drive in one, 
+- with a two motions mount, altitude (vertical) and azimuth (horizontal)
+- have a resistor pot on the two shafts
+- as well 2x dc motor drives via a threaded rod thru a nut on a cam arms to the x and y. 
+- a simple slotted wheel on the shaft interrupts a optical switch to count the rotations, ie 10 slots. 
+- as its a cam, the relationship between turns and angle is not linear. 
+- so we read the pot via an adc 
+- then do sine function times the rotation counts to derive an accurate position
+- the cam also improves torque and back lash control
+- with Equatorial mounts and properly aligned can be aimed at a celestial object and guided manually or one control/motor.
+
+![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
+
+
+
+
+### Iterate
+- from a map location slew scope to that position, issues x.200 commands that tec1 turns into x an y and then into motor control
+- track a position in motion. compensate for earths rotation. satellite tracking different problem
+- joystick slew scope to new positions 
+- remote control over modem, using defined protocols, TCS - Telescope Control System
+- camera mount + camera
+- photo compositing on pc
+- MINT code with and without APU help
+- 7 Congruent Circles In A Regular Hexagon, use microwave oven glass.
+![circle-32_42926_lg](https://user-images.githubusercontent.com/58069246/191688868-d8030041-259c-4365-8445-d773df714613.gif)
+
+
+### References
+- https://www.google.com.au/sky/
+- https://edu.kde.org/kstars/
+- https://www.indilib.org/
+- https://www.tiesncuffs.com.au/pages/custom-embroidered-patches?gclid=Cj0KCQjw-daUBhCIARIsALbkjSZYO9V_ij_ypJlVEb1Inib6CAAIR20-39V1JrN4Nm-13fe0FwE5aqgaAheQEALw_wcB
+- https://github.com/SteveJustin1963/tec-Stepper-Motor-Control
+- https://www.facebook.com/rDUINOScope/
+- https://github.com/PeterForth/Planetarium 
+- https://joecreager.com/control-an-h-bridge-with-forth/
+- https://www.facebook.com/groups/623556744820045
+- https://www.facebook.com/groups/2225595150855239
+- https://www.facebook.com/Kiskunf%C3%A9legyh%C3%A1zi-Csillag%C3%A1szati-Egyes%C3%BClet-124849427661821/
+- http://stellarium.org/
+- https://www.hackster.io/neil-pollard/sky-finder-a-lego-alexa-gadget-to-discover-the-night-sky-879e46
+- https://www.instructables.com/Control-Your-Telescope-Using-Stellarium-Arduino/
+- https://www.facebook.com/profile.php?id=150875201997704&ref=br_rs
+- https://create.arduino.cc/projecthub/dEskoG/rduinoscope-4d399c
+- https://github.com/ForthWin/Forth2020UsersGroup/blob/master/ASTROLAB.F?fbclid=IwAR1WDOtVrYgl-IU7aDVg-y2659sf4HU1BfC0qWDlf0LNyo6Y_k4kRzJZ4yA
+- https://makezine.com/projects/build-a-backyard-dobsonian-telescope/
+- https://www.celestron.com/pages/celestron-pwi-telescope-control-software
+- https://www.astronomywa.net.au/different-types-of-telescope-mounts.html
+- https://onstep.groups.io/g/main/wiki/4414
+- https://www.ngc7000.com/telescope-motorization.htm
+- https://www.ngc7000.com/docu-skypikit/EN/EN_200226_DobsonPushtoBoard.pdf
+
+### encoder counter chip
+- https://www.usdigital.com/products/accessories/interfaces/ics/
+
+
+
+
+
+ 
+
+
+
+
+
+## Encoder spec
+
+![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/3-23-2.png)
+```
+- Power source: DC5-24V
+- Shaft: 6*13mm/0.23*0.51"
+- Size: 38*35.5mm/1.49*1.39"
+- Output :AB 2phase output rectangular orthogonal pulse circuit, the output for the NPN open 
+collector output type
+- Maximum mechanical speed: 5000 R / min
+- Response frequency: 0-20KHz
+- Cable length: 1.5 meter
+- Notice:AB 2phase output must not be directly connected with VCC, otherwise, will burn the output triode, 
+because different batches, and may not have the terminal
+   
+### connection:
+
+- Green = A phase, white = B phase, red = Vcc power +, black = V0
+### Application:
+- Is used to measure the rotational speed, Angle and acceleration of the object and the length measurement
+Suitable for intelligent control of various displacement measurement, 
+- automatic fixed-length leather automatic guillotine machines, steel cut length control, civil measured 
+height human scale, Students racing robots
+
+
+### Package included:
+- 1 x Encoder Incremental Rotary Encoder
+```
+
+
