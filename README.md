@@ -13,4 +13,5 @@ Az Istenek áldásával and in dedication to my late father, uram Jusztin Istvan
 
 
 17.9.22 - recycled broken foot massage machine for 24v dc worm drive. now need another. or go stepper motor way. try both. 
+
 22.9.22 - investigate counter with flipflop cct to count rotary encoder movement without resorting to interrupts to count. investigate dc vs steppers. checked LX200 ascii codes. checked io port options.
