@@ -12,4 +12,5 @@ Az Istenek áldásával and in dedication to my late father, uram Jusztin Istvan
  project that involves using rotary encoders to read and control a telescope. I wrote some code to convert the encoder data into map data, which I then sent to Stellerium.   
 
 22.9.22
-investigate counter with ff cct to count rotary encoder movement without resprting to inturrupts to count.
+
+investigate counter with flipflop cct to count rotary encoder movement without resprting to inturrupts to count. inestigate dc vs steppers. checked LX200 asci codes.
