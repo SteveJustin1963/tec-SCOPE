@@ -11,22 +11,14 @@ With the blessings of the God and in dedication to my late father, Istvan Juszti
 https://github.com/SteveJustin1963/tec-SCOPE/wiki
 
 
-## Project
-that involves using rotary encoders to read and control a telescope. I wrote some code to convert the encoder data into map data, which I then sent to Stellerium.   
-
-
-
-
-### A simple version
-
+## Project 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/3-23.png)
 
-- rotary encoders 600 pulse/cycle geared down off telescope turn points
-- move by hand, encoders send io to tec-1 as dc pulse phase pairs
-- or sent to a counter/latch then read at intervals
-- MINT code to convert into map data then into ascii codes
-- sent ascii to Stellerium one way serial 
-- Stellarium updates map position
+The rotary encoders on our telescope provide precise position data that allows us to locate the map position or to control the movement of the telescope. These encoders generate 600 pulses per cycle, which when geared down by some ratio will increase the number of pulses per arc length, corresponding to the movement of the telescope.
+
+In the first stage, we will move the telescope by hand and have the encoders send IO data to the TEC-1 as DC pulse phase pairs. Alternatively, we can send the data to a counter/latch and read it at regular intervals, which is a better option as we don't want to overwhelm the TEC-1 with too much data. The MINT code we will develop converts this data into map data and ASCII codes, which are then sent via a one-way serial connection to Stellarium. This updates the map position in Stellarium in real-time, allowing us to accurately track the movement of the telescope. When we look through the telescope, we should see the same star map on the laptop.
+
+In the second stage, we can incorporate motors to control the movement of the telescope. This will give us more capabilities such as slewing, tracking, and more. We can use the rotary encoders to measure the position of the motors and send the data to the TEC-1, which will use MINT to convert it into ASCII codes and send it to Stellarium. This will allow us to move the telescope to specific locations on the sky map and track celestial objects as they move across the sky.
 
 ### Parts 
 - IO, https://github.com/SteveJustin1963/tec-IO
