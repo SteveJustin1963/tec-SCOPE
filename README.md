@@ -36,6 +36,11 @@ In the second stage, we can incorporate motors to control the movement of the te
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
 
+![image](https://user-images.githubusercontent.com/58069246/210786857-550200dd-181a-4ee2-9b85-bfc6a3c0af87.png)
+
+![image](https://user-images.githubusercontent.com/58069246/210786884-b1515347-926d-4254-800a-a03737b19d94.png)
+
+
 
 
 ##  Rotary Encoder HN3806-AB 
