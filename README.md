@@ -23,7 +23,7 @@ In the second stage, we can incorporate motors to control the movement of the te
 - anti shaking
 
 
-## poor mans encoder and motor drive in one, 
+## Simple 
 - with a two motions mount, altitude (vertical) and azimuth (horizontal)
 - have a resistor pot on the two shafts
 - as well 2x dc motor drives via a threaded rod thru a nut on a cam arms to the x and y. 
@@ -43,7 +43,8 @@ In the second stage, we can incorporate motors to control the movement of the te
 
 
 
-##  Rotary Encoder HN3806-AB 
+## Better  
+- Rotary Encoder HN3806-AB 
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/3-23-2.png)
 
