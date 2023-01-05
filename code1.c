@@ -44,3 +44,47 @@ void setup() {
   counter++;
   }
 }
+
+\\\\\\\\\\\\\\\\\\\\
+Forth version of the Arduino sketch for reading a rotary encoder with AB 2-phase rectangular orthogonal pulse output:
+\\\\\\\\\\\\\\\\\\\\\
+
+
+\ This variable will increase or decrease depending on the rotation of encoder
+variable counter 0
+
+: setup
+\ Set up serial communication at 9600 baud
+9600 9600 baud
+\ Configure pin 2 and 3 as inputs with pull-up resistors
+2 input
+3 input
+\ Set up external interrupts on pin 0 and 1
+0 A
+1 B
+;
+
+: loop
+\ Send the value of counter over serial
+counter . cr
+;
+
+: A
+\ Check the state of pin 3
+3 invert and
+\ If pin 3 is low, increment counter
+if
+1 counter +!
+then
+;
+
+: B
+\ Check the state of pin 2
+2 invert and
+\ If pin 2 is low, decrement counter
+if
+1 counter -!
+then
+;
+
+\\\\\\\\\\\\\\\\\\
