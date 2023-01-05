@@ -88,3 +88,37 @@ then
 ;
 
 \\\\\\\\\\\\\\\\\\
+another
+\\\\\\\\\\\\
+: A
+    3 LOW = IF
+        1 - counter
+    ELSE
+        1 + counter
+    THEN
+;
+
+: B
+    2 LOW = IF
+        1 - counter
+    ELSE
+        1 + counter
+    THEN
+;
+
+: setup
+    9600 BAUD !
+    2 INPUT_PULLUP !
+    3 INPUT_PULLUP !
+    0 A !
+    1 B !
+;
+
+: loop
+    counter x = IF
+        counter .
+        counter x !
+    THEN
+;
+
+\\\\\\\\\\\\\\\\\
