@@ -36,9 +36,9 @@ In the second stage, we can incorporate motors to control the movement of the te
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
 
-![image](https://user-images.githubusercontent.com/58069246/210786857-550200dd-181a-4ee2-9b85-bfc6a3c0af87.png)
+![image](https://user-images.githubusercontent.com/58069246/210787050-8d2eaeb9-b0c7-4354-a721-ea8eefa45b56.png)
 
-![image](https://user-images.githubusercontent.com/58069246/210786884-b1515347-926d-4254-800a-a03737b19d94.png)
+![image](https://user-images.githubusercontent.com/58069246/210787088-6ed89615-bbfc-4401-9106-50af9890bbe9.png)
 
 
 
