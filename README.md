@@ -137,7 +137,7 @@ is a star system located about 4.37 light-years from Earth, so it is not visible
 To calculate this, you would use the formula:
 ```Size in eyepiece (in inches) = (Angular size of object in arcseconds) / (Field of view in arcseconds)```
 Plugging in the values for Alpha Centauri A and the eyepiece field of view, you get:
-```(0.007 arcseconds) / (2.46 arcseconds) = 0.003 inches```
+```(0.007 arcseconds) / (2.46 arcseconds) = 0.003 inches = 0.0762 millimeters```
 Keep in mind that this is just an estimate, and the actual size of Alpha Centauri A in the eyepiece may vary depending on the specifics of the telescope and eyepiece.
 
 ## The magnification 
