@@ -56,6 +56,8 @@ because different batches, and may not have the terminal
 - Is used to measure the rotational speed, Angle and acceleration of the object and the length measurement
 Suitable for intelligent control of various displacement measurement, 
 
+
+https://electropeak.com/learn/how-to-interface-a-rotary-encoder-with-arduino/
 code1.c
 
 ## encoder counter chip
