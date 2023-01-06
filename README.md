@@ -9,7 +9,12 @@ In this technical project, we will be developing a system to control a DIY Dobso
 we will be using a two-motion mount with altitude (vertical) and azimuth (horizontal) axes. We will attach a resistor pot on each axis point to measure the position of the mount and use a simulated ADC circuit with a RC circuit to read the position of the pots. This data will be sent to a TEC-1 controller, which will use MINT code to convert it into ASCII codes and send it to Stellarium, a planetarium software. Stellarium will move the cross hairs on the map to confirm what we are looking at, and we will need to calibrate the system with a reference star.
 
 ## In the second stage, 
+
+![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
+
 we will attach two DC motor drives to the mount using threaded rods and nuts that act as a worm drive. A slotted wheel on the shaft will interrupt an optical switch to count the rotations, and this data will be sent to the TEC-1, which will use MINT to convert it into ASCII codes and send it to Stellarium. The resistor pots on the mount axes will remain in place to compare measurements. The relationship between the number of turns and the angle of the mount is not linear due to the cam, so we will use code and trigonometry functions to calculate an accurate position. The worm drive and cam radius design also improve torque control and reduce backlash. We will add switches to slew the DC motors to aim at celestial objects, and we will use the TEC-1 to control the motors to track or hold onto celestial objects.
+
+
 
 ## In the third stage, 
 we will remove the cams and replace the DC motors with stepper motors, which will be geared at a 6:1 ratio or higher wheel mounted to the side of the axis. This will allow us to achieve more precise positioning. We will also remove the resistor pots and replace them with rotary encoders to measure the position of the motors and send this data to the TEC-1, which will use MINT to convert it into ASCII codes and send it to Stellarium. With the gearing and software enhancements, we will be able to increase position control and implement torque compensation to maintain a constant level of force on the telescope, reducing shaking and improving stability. Slewing will be done by software rather than DC switches, allowing us to move the telescope to specific locations on the sky map and track celestial objects as they move across the sky or follow moving ones like satellites.
@@ -19,7 +24,7 @@ we will remove the cams and replace the DC motors with stepper motors, which wil
 
 
 
-![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
+
 
 ![image](https://user-images.githubusercontent.com/58069246/210787050-8d2eaeb9-b0c7-4354-a721-ea8eefa45b56.png)
 
