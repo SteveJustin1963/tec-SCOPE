@@ -6,7 +6,10 @@
 In this technical project, we will be developing a system to control a DIY Dobson 200mm F5 telescope in three stages.
 
 ## In the first stage, 
-we will be using a two-motion mount with altitude (vertical) and azimuth (horizontal) axes. We will attach a resistor pot on each axis point to measure the position of the mount and use a simulated ADC circuit with a RC circuit to read the position of the pots. This data will be sent to a TEC-1 controller, which will use MINT code to convert it into ASCII codes and send it to Stellarium, a planetarium software. Stellarium will move the cross hairs on the map to confirm what we are looking at, and we will need to calibrate the system with a reference star.
+of this project, we will be using a two-motion mount with altitude (vertical) and azimuth (horizontal) axes. We will attach a resistor pot on each axis point to measure the position of the mount. We will use a 555 IC circuit to convert this value into slow variable frequency pulses, which will be sent to a TEC-1 controller via the IO board addon. Using MINT code, we will count and compare the data to a previous count interval to determine the direction and position of the mount. This data will then be converted into ASCII codes and sent to Stellarium, a planetarium software, via a serial line. Stellarium will move the cross hairs on the map to confirm what we are looking at, and we will need to calibrate the system with a reference star.
+
+![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
+
 
 ## In the second stage, 
 
