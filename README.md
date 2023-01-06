@@ -2,8 +2,7 @@
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png)  
 
-
-In this technical project, we will be developing a system to control a DIY Dobson 200mm F5 telescope in three stages.
+In this technical project, we will be developing a system to control a DIY Dobson 200mm F5 telescope in three stages. Here's my baby $35 off Gumtree. Needs an eyepiece but has a spare 200mm mirror.
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
