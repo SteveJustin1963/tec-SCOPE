@@ -1,9 +1,13 @@
 # A TEC-1 Controlled Telescope
 
-![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png)
+![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png) ![image](https://user-images.githubusercontent.com/58069246/210939837-054bda9c-07d8-46ff-b8dc-c0a1da117597.png)
+
 
 
 In this technical project, we will be developing a system to control a DIY Dobson 200mm F5 telescope in three stages.
+
+![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
+
 
 ## In the first stage, 
 of this project, we will be using the Dobsons two-motion mount on the altitude (vertical) and azimuth (horizontal) axes. The telescope will still need to be moved by hand. We will attach a resistor pot on each axis point to measure the position of the mount. We will use a 555 IC circuit to convert this value into slow variable frequency pulses, which will be sent to a TEC-1 controller via the IO board addon. Using MINT code, we will count and compare the data to a previous count interval to determine the direction and position of the mount. This data will then be converted into ASCII codes and sent to Stellarium, a planetarium software, via a serial line. Stellarium will move the cross hairs on the map to confirm what we are looking at, and we will need to calibrate the system with a reference star.
