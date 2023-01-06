@@ -1,19 +1,8 @@
-
+# Telescope controlled by TEC-1
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png)
 
 
-In this project, we will be developing a system to control a telescope using rotary encoders, DC motors, and stepper motors. The rotary encoders will provide precise position data, which will be used to locate the map position or control the movement of the telescope. We will gear down the encoders to increase the resolution of the position data, and we will send this data to a TEC-1 controller using IO. The TEC-1 will use MINT code to convert the pulse data into map data and ASCII codes, which will be sent via a one-way serial connection to Stellarium, a planetarium software. This will allow us to accurately track the movement of the telescope in real-time.
-
-In the second stage of the project, we will incorporate DC motors to control the movement of the telescope, enabling capabilities such as slewing and tracking. We will use the rotary encoders to measure the position of the motors and send this data to the TEC-1, which will use MINT to convert it into ASCII codes and send it to Stellarium. We will also use gearing to increase the precision of the position control and torque compensation to maintain a constant level of force on the telescope, reducing shaking and improving stability.
-
-Finally, we will incorporate stepper motors to control the movement of the telescope, allowing us to achieve very precise positioning. This will allow us to move the telescope to specific locations on the sky map and track celestial objects as they move across the sky or follow moving ones like satellites.
-
-
-
-
-
- 
 In this technical project, we will be developing a system to control a DIY Dobson 200mm F5 telescope in three stages.
 
 ## In the first stage, 
