@@ -3,36 +3,22 @@
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png)
 
 
+In this project, we will be developing a system to control a telescope using rotary encoders, DC motors, and stepper motors. The rotary encoders will provide precise position data, which will be used to locate the map position or control the movement of the telescope. We will gear down the encoders to increase the resolution of the position data, and we will send this data to a TEC-1 controller using IO. The TEC-1 will use MINT code to convert the pulse data into map data and ASCII codes, which will be sent via a one-way serial connection to Stellarium, a planetarium software. This will allow us to accurately track the movement of the telescope in real-time.
+
+In the second stage of the project, we will incorporate DC motors to control the movement of the telescope, enabling capabilities such as slewing and tracking. We will use the rotary encoders to measure the position of the motors and send this data to the TEC-1, which will use MINT to convert it into ASCII codes and send it to Stellarium. We will also use gearing to increase the precision of the position control and torque compensation to maintain a constant level of force on the telescope, reducing shaking and improving stability.
+
+Finally, we will incorporate stepper motors to control the movement of the telescope, allowing us to achieve very precise positioning. This will allow us to move the telescope to specific locations on the sky map and track celestial objects as they move across the sky or follow moving ones like satellites.
 
 
 
-## Project 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/3-23.png)
 
-The rotary encoders on our telescope provide precise position data that allows us to locate the map position or control the movement of the telescope. These encoders generate 600 pulses per cycle, which can be geared down to increase the number of pulses per arc length, corresponding to the movement of the telescope. In the first stage, we will manually move the telescope and have the encoders send IO data to the TEC-1 as DC pulse phase pairs. Alternatively, we can send the data to a counter/latch and read it at regular intervals, which is a better option as it avoids overwhelming the TEC-1 with too much data. The MINT code we will develop will convert this data into map data and ASCII codes, which will then be sent via a one-way serial connection to Stellarium. This will update the map position in Stellarium in real-time, allowing us to accurately track the movement of the telescope. When we look through the telescope, we should see the same star map on the laptop.
 
-In the second stage, we can incorporate motors to control the movement of the telescope, which will give us more capabilities such as slewing, tracking, and more. We can use the rotary encoders to measure the position of the motors and send the data to the TEC-1, which will use MINT to convert it into ASCII codes and send it to Stellarium. This will allow us to move the telescope to specific locations on the sky map and track celestial objects as they move across the sky or follow moving ones like satellites.
-
-## Parts 
-- IO, https://github.com/SteveJustin1963/tec-IO
-- Serial and APU, https://github.com/SteveJustin1963/tec-APUS
-- Rotary encoders and gearing
-- DC motors control and gearing, 
-- torque compensation / control
-- Stepper motors and control
-- anti shaking
+ 
 
 
-## Simple 
-- with a two motions mount, altitude (vertical) and azimuth (horizontal)
-- have a resistor pot on the two shafts
-- as well 2x dc motor drives via a threaded rod thru a nut on a cam arms to the x and y. 
-- a simple slotted wheel on the shaft interrupts a optical switch to count the rotations, ie 10 slots. 
-- as its a cam, the relationship between turns and angle is not linear. 
-- so we read the pot via an adc 
-- then do sine function times the rotation counts to derive an accurate position
-- the cam also improves torque and back lash control
-- with Equatorial mounts and properly aligned can be aimed at a celestial object and guided manually or one control/motor.
+##  first stage 
+of this project, we will be using a two-motion mount with altitude (vertical) and azimuth (horizontal) axes. We will have a resistor pot on each shaft to measure the position of the mount. We will also be using two DC motor drives, which will be connected to the mount via threaded rods and nuts on cam arms. A slotted wheel on the shaft will interrupt an optical switch to count the rotations, and we will use an ADC to read the position of the pots. The relationship between the number of turns and the angle of the mount is not linear due to the cam, so we will use a sine function to calculate the accurate position of the mount. The cam design also improves torque control and reduces backlash. With an equatorial mount and proper alignment, the mount can be aimed at a celestial object and guided manually or using a single control/motor.
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
 
@@ -43,25 +29,11 @@ In the second stage, we can incorporate motors to control the movement of the te
 
 
 
-## Better  
-- Rotary Encoder HN3806-AB 
+## Rotary Encoder HN3806-AB 
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/3-23-2.png)
 
-- 600 pulses per rev
-- Green = A phase, white = B phase, red = Vcc power +, black = V0
-- Power source: DC5-24V
-- Shaft: 6*13mm/0.23*0.51"
-- Size: 38*35.5mm/1.49*1.39"
-- Output :AB 2phase output rectangular orthogonal pulse circuit, the output for the NPN open 
-collector output type
-- Maximum mechanical speed: 5000 R / min
-- Response frequency: 0-20KHz
-- Cable length: 1.5 meter
-- Notice:AB 2phase output must not be directly connected with VCC, otherwise, will burn the output triode, 
-because different batches, and may not have the terminal
-- Is used to measure the rotational speed, Angle and acceleration of the object and the length measurement
-Suitable for intelligent control of various displacement measurement 
+The Rotary Encoder HN3806-AB is a device that is used to measure the rotational speed, angle, acceleration, and length of an object. It generates 600 pulses per revolution and has a green A phase, white B phase, red Vcc power +, and black V0. It is powered by a DC5-24V power source and has a shaft size of 613mm. The encoder has a size of 3835.5mm and an output of AB 2phase rectangular orthogonal pulses. It has a maximum mechanical speed of 5000 R/min and a response frequency of 0-20KHz. The encoder comes with a 1.5 meter cable and should not have its AB 2phase output directly connected to VCC to avoid damaging the output triode. It is suitable for use in intelligent control and various displacement measurement applications.
 
 ## code examples
 
