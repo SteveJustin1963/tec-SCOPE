@@ -1,4 +1,4 @@
-# Telescope controlled by TEC-1
+# A TEC-1 Controlled Telescope
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png)
 
