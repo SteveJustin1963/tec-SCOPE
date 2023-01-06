@@ -1,7 +1,6 @@
 # A TEC-1 Controlled Telescope
 
-![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png) ![image](https://user-images.githubusercontent.com/58069246/210939837-054bda9c-07d8-46ff-b8dc-c0a1da117597.png)
-
+![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png)  
 
 
 In this technical project, we will be developing a system to control a DIY Dobson 200mm F5 telescope in three stages.
