@@ -8,11 +8,13 @@ In this technical project, we will be developing a system to control a DIY Dobso
 
 
 ## In the first stage, 
-of this project, and all of them, we will keep the Dobsons two-motion mount on the altitude (vertical) and azimuth (horizontal) axes. The telescope will still need to be moved by hand. We will attach a resistor pot on each axis point to measure the position of the mount. We will use a 555 IC circuit to convert this value into slow variable frequency pulses, which will be sent to a TEC-1 controller via the IO board addon. Using MINT code, we will count and compare the data to a previous count interval to determine the direction and position of the mount. This data will then be converted into ASCII codes and sent to Stellarium, a planetarium software, via a serial line. Stellarium will move the cross hairs on the map to confirm what we are looking at, and we will need to calibrate the system with a reference star.
+of this project, and all of them, we will keep the Dobsons two-motion mount on the altitude (vertical) and azimuth (horizontal) axes. The telescope will still need to be moved by hand. We will attach a 2 resistor pots, one to each axis pivot point, to measure the position of the mount. We will use a 555 IC circuit to convert this value into a variable frequency of square pulses, which will be sent to the TEC-1s IO board addon. Using MINT code, we will count the pulses and wrt to the angle we can interpolate the angle of the scope. Also we can compare the counts to previous count intervals to determine the direction of movement of the mount. This data can be converted into ASCII codes and sent to Stellarium, a planetarium software, via a serial line. Stellarium use this and compute the positon of the cross hairs on the map. After calibration with a reference star, this can confirm what we are looking at.
 
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
 
-first we need to calibrate the code
+![image](https://user-images.githubusercontent.com/58069246/211299181-19e803e9-cc92-4894-b500-6ed76fe9ce4f.png)
+
+The code will do a range of things, the first being to calibrate angle vs pulses. it will go like this;
 1. Press "Go" 
 2. The word “CAL A” for  calibrate appears on the 7 segment screen
 3. Push the telescope to altitude 80 degrees 
@@ -25,7 +27,7 @@ first we need to calibrate the code
 10. Use the slope of the line between points A and B to interpolate the angle based on the measured frequency of pulses
 11. Take into account the direction of movement (increasing or decreasing) to get the correct result
 
-code in Forth that counts the number of pulses on an I/O port for 3 seconds and stores the result in a variable A: ```count-555.f```
+```count-555.f```
 This code defines two Forth words: read-io-port and count-pulses. read-io-port is the same as in the previous example and reads the value from an I/O port at a specified address. count-pulses takes a single input, the address of the I/O port, and counts the number of pulses on the port for 3 seconds. It stores the result in a variable called A. It then returns the final value of A. You can use count-pulses as follows: ```port-address count-pulses .```
 This will count the number of pulses on the I/O port at the specified address for 3 seconds and print the result to the screen.
 
