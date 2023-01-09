@@ -25,8 +25,10 @@ first we need to calibrate the code
 10. Use the slope of the line between points A and B to interpolate the angle based on the measured frequency of pulses
 11. Take into account the direction of movement (increasing or decreasing) to get the correct result
 
-code in Forth that counts the number of pulses on an I/O port for 3 seconds and stores the result in a variable A:
-```count-555.f```
+code in Forth that counts the number of pulses on an I/O port for 3 seconds and stores the result in a variable A: ```count-555.f```
+This code defines two Forth words: read-io-port and count-pulses. read-io-port is the same as in the previous example and reads the value from an I/O port at a specified address. count-pulses takes a single input, the address of the I/O port, and counts the number of pulses on the port for 3 seconds. It stores the result in a variable called A. It then returns the final value of A. You can use count-pulses as follows: ```port-address count-pulses .```
+This will count the number of pulses on the I/O port at the specified address for 3 seconds and print the result to the screen.
+
 
 
 
