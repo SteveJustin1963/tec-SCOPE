@@ -12,6 +12,25 @@ of this project, and all of them, we will keep the Dobsons two-motion mount on t
 
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
 
+first we need to calibrate the code
+1. Press "Go" 
+2. The word “CAL A” for  calibrate appears on the 7 segment screen
+3. Push the telescope to altitude 80 degrees 
+4. Press A
+5. IO port 3 counts pulses for 3 seconds from the circuit (around 200 pulses per second) and saves the value
+6. Word “CAL B” for  calibrate appears on the 7 segment screen
+7. Push the telescope right over to far size to position 160 degrees
+8. Press B
+9. IO port 3 counts pulses for 3 seconds from the circuit (around 600 pulses per second) and saves the value
+10. Use the slope of the line between points A and B to interpolate the angle based on the measured frequency of pulses
+11. Take into account the direction of movement (increasing or decreasing) to get the correct result
+
+code in Forth that counts the number of pulses on an I/O port for 3 seconds and stores the result in a variable A:
+```count-555.f```
+
+
+
+
 
 ## In the second stage, 
 we will attach two DC motor drives to the mount using threaded rods and nuts that act as a worm drive. A slotted wheel on the shaft will interrupt an optical switch to count the rotations, and this data will be sent to the TEC-1, which will use MINT to convert it into ASCII codes and send it to Stellarium. The resistor pots on the mount axes will remain in place to compare measurements. The relationship between the number of turns and the angle of the mount is not linear due to the cam, so we will use code and trigonometry functions to calculate an accurate position. The worm drive and cam radius design also improve torque control and reduce backlash. We will add switches to slew the DC motors to aim at celestial objects, and we will use the TEC-1 to control the motors to track or hold onto celestial objects.
