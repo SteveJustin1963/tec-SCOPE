@@ -2,7 +2,7 @@
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png)  
 
-In this technical project, we will be developing a system to control a DIY Dobson 200mm F5 telescope in three stages. Here's my baby $35 off Gumtree. Needs an eyepiece but has a spare 200mm mirror.
+In this project, we will be developing a system to control a DIY Dobson 200mm F5 telescope in three stages. Here's my baby $35 off Gumtree. Needs an eyepiece but has a spare 200mm mirror.
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
@@ -15,6 +15,7 @@ of this project, and all of them, we will keep the Dobsons two-motion mount on t
 ![image](https://user-images.githubusercontent.com/58069246/211299181-19e803e9-cc92-4894-b500-6ed76fe9ce4f.png)
 
 The code will do a range of things, the first being to calibrate angle vs pulses. it will go like this;
+## calibrate
 1. Press "Go" 
 2. The word “CAL A” for  calibrate appears on the 7 segment screen
 3. Push the telescope to altitude 80 degrees 
@@ -28,6 +29,7 @@ The code will do a range of things, the first being to calibrate angle vs pulses
 11. Take into account the direction of movement (increasing or decreasing) to get the correct result
 
 ```count-555.f```
+
 This code defines two Forth words: read-io-port and count-pulses. read-io-port is the same as in the previous example and reads the value from an I/O port at a specified address. count-pulses takes a single input, the address of the I/O port, and counts the number of pulses on the port for 3 seconds. It stores the result in a variable called A. It then returns the final value of A. You can use count-pulses as follows: ```port-address count-pulses .```
 This will count the number of pulses on the I/O port at the specified address for 3 seconds and print the result to the screen.
 
