@@ -2,6 +2,14 @@
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png)  
 
+
+## Dedication 
+
+With the blessings of the God and in dedication to my late father, Istvan Jusztin (Stephen Justin), who was born in 1932 in Kiskunfélegyháza, Hungary and passed away in 2000. He emigrated to Australia in 1962. He developed a passion for astronomy in the late 1940s, when he and his friends built their own 8-inch reflector telescope by hand. In 1976, when I was 13 years old, I saw an advertisement on in the back of TV-Week that caught my father's attention. It was for Astro Optical in Crows Nest, Sydney, Australia, and it promoted the opportunity to "Make your own telescope!" My father and I decided to take on this challenge and spent the next 3 years building a 12.5-inch Fény-Vödör reflector telescope. I would like to acknowledge the Kiskunfélegyházi Csillagászati Egyesület, the local astronomy club in Kiskunfélegyháza, for their support and guidance back then. Now, 42 years later, I hope to control this old telescope with a TEC-1 single board computer and with MINT and ASM code, and with Stellarium star maps and serial code software, to continue my father's legacy in the field of astronomy which I too now share.
+
+
+
+
 In this project, we will be developing a system to control a DIY Dobson 200mm F5 telescope in three stages. Here's my baby $35 off Gumtree. Needs an eyepiece but has a spare 200mm mirror.
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
