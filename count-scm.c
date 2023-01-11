@@ -195,5 +195,57 @@ another forth
   GND_pin 0 digitalWrite
   500 delay
 ;
-\\\\\\\\\\\\\\\\\\\\\\\
 
+
+
+
+\\\\\\\\\\\\\\\\\\\\\\\
+;code converted to use integers only:
+;this code may not run as expected 
+; not defined are the functions; pinMode, digitalWrite and analogRead which come from an arduino library.
+;;;;;;;;;;;;;;
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define OUTPUT_pin 2
+#define INPUT_pin 1
+#define GND_pin 0
+
+int C1 = 9554;                            // pF
+int C2 = 0;                             // unknown capacitance
+int Cstray = 37;                        // open circuit reading during calibration
+int Adc = 0;                                // Analog to digital converter reading
+
+signed long Baud = 115200;
+
+int main(){
+
+    // ----- Serial connection
+    printf("Serial connection started\n");
+
+    // ----- Discharge all capacitors
+    pinMode(OUTPUT_pin, OUTPUT);
+    pinMode(INPUT_pin, OUTPUT);
+    pinMode(GND_pin, OUTPUT);  
+    digitalWrite(OUTPUT_pin, LOW);
+    digitalWrite(INPUT_pin, LOW);
+    digitalWrite(GND_pin, LOW);
+    delay(500);
+
+    // ----- Charge the capacitors
+    pinMode(INPUT_pin, INPUT);
+    digitalWrite(OUTPUT_pin, HIGH);
+    delay(100);
+
+    // ----- Take reading
+    Adc = analogRead(INPUT_pin);
+    C2 = (C1 * (1023 - Adc))/Adc - Cstray;     // pF
+
+    // ----- Display results
+    printf("%d   %d pF   %d nF   %d uF\n", Adc, C2, C2 / 1000, C2 / 1000000);
+
+    return 0;
+}
+\\\\\\\\\\\\\\\\\\\\\\\\\
