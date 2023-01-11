@@ -169,3 +169,31 @@ C2 @ . ." pF" cr
 C2 1000 / @ . ." nF" cr
 C2 1000000 / @ . ." uF" cr
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+another forth
+
+: pinMode ( pin# -- )
+  2dup dup GND_pin = if 0 else
+  dup INPUT_pin = if 1 else
+  dup OUTPUT_pin = if 2 else
+  drop drop
+;
+
+: digitalWrite ( pin# value# -- )
+  ...
+;
+
+: delay ( time-in-ms# -- )
+  ...
+;
+
+: discharge-all-capacitors ( -- )
+  OUTPUT_pin pinMode
+  INPUT_pin pinMode
+  GND_pin pinMode
+  OUTPUT_pin 0 digitalWrite
+  INPUT_pin 0 digitalWrite
+  GND_pin 0 digitalWrite
+  500 delay
+;
+\\\\\\\\\\\\\\\\\\\\\\\
+
