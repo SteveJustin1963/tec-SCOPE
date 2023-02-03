@@ -1,17 +1,17 @@
+\\mint
 
-: read-io-port ( port-address -- value )
-  in port-address
-;
 
-: count-pulses ( port-address -- count )
-  variable A
-  0 A !
+\\ R read-io-port 
+: R 1 \< ;
+
+\\count-pulses, variable a
+  0 a!  \\store 0 in a
   3 0 do
-    read-io-port port-address 0= if
-      A @ 1+ A !
+    R 0= if
+      a @ 1+ a !
     then
     1000 ms
   loop
-  A @
+  a @
 ;
 
