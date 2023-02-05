@@ -20,7 +20,10 @@ of this project, and all of them, we will keep the Dobsons two-motion mount on t
 ![image](https://user-images.githubusercontent.com/58069246/211299181-19e803e9-cc92-4894-b500-6ed76fe9ce4f.png)
 
 
+## use a counter chip
 https://www.google.com/search?q=74HC590&rlz=1C1FKPE_en-GBAU984AU984&sourceid=chrome&ie=UTF-8
+
+
 
 
 The code will do a range of things, the first being to calibrate angle vs pulses. it will go like this;
