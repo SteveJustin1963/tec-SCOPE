@@ -7,7 +7,7 @@
 
 
 
-In this project, we will be developing a system to control a DIY Dobson 200mm F5 telescope in three stages. Here's my $35 baby off Gumtree. 
+In this project, we will be developing a system to control a DIY Dobson 200mm F5 telescope in three stages. Here's my $35 baby off Gumtree to pay with.
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
