@@ -23,6 +23,8 @@ We will maintain the Dobson's two-motion mount with manual movement on the altit
 ## use a counter chip
 https://www.google.com/search?q=74HC590&rlz=1C1FKPE_en-GBAU984AU984&sourceid=chrome&ie=UTF-8
 
+https://tinyurl.com/2o2zdtnl
+
 
 
 
