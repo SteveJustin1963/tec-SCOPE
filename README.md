@@ -13,17 +13,18 @@ In this project, we will be developing a system to control a DIY Dobson 200mm F5
 
 
 ## In the first stage, 
-We will maintain the Dobson's two-motion mount with manual movement on the altitude (vertical) and azimuth (horizontal) axes. Two resistor pots will be attached to each axis pivot point of a small model, to measure the position. Once confirmed to be working, we will transfer these over to the real telescope. A 555 IC circuit will then convert this into a variable frequency of square pulses, which will be sent to a custom counting circuit for reading through port access or an IO board add-on. As long as the pulse frequency is low, under 1000 per second, counting the pulses through port polling is acceptable. The counted pulses correspond to an angle that we can interpolate to determine the scope's angle. Additionally, we can compare the counts to previous intervals to determine the mount's direction of movement. This data can then be converted to ASCII codes and transmitted to Stellarium, a planetarium software, through a serial line. Stellarium will use this information to compute the position of the crosshairs on the map. After calibration with a reference star, we can confirm our observations.
+We will maintain the Dobson's axis two-motion mount with manual movement on the altitude (vertical) and azimuth (horizontal) axes. Two resistor pots will be attached to each axis pivot point to measure. A 555 IC circuit will then convert this into a variable frequency of square pulses, which will be sent to a custom counting circuit for reading through port access or an IO board add-on. As long as the pulse frequency is low, under 1000 per second, counting the pulses through port polling is acceptable. The counted pulses correspond to an angle that we can interpolate to determine the scope's angle. Additionally, we can compare the counts to previous intervals to determine the mount's direction of movement. This data can then be converted to ASCII codes and transmitted to Stellarium, a planetarium software, through a serial line. Stellarium will use this information to compute the position of the crosshairs on the map. After calibration with a reference star, we can confirm our observations.
 
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
 
 ![image](https://user-images.githubusercontent.com/58069246/211299181-19e803e9-cc92-4894-b500-6ed76fe9ce4f.png)
 
+circuit simulator https://tinyurl.com/2o2zdtn
 
 ## use a counter chip
 https://www.google.com/search?q=74HC590&rlz=1C1FKPE_en-GBAU984AU984&sourceid=chrome&ie=UTF-8
 
-https://tinyurl.com/2o2zdtnl
+l
 
 
 
