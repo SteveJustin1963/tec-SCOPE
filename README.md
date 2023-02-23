@@ -19,7 +19,7 @@ We will maintain the Dobson's axis two-motion mount with manual movement on the 
 
 ![image](https://user-images.githubusercontent.com/58069246/211299181-19e803e9-cc92-4894-b500-6ed76fe9ce4f.png)
 
-circuit simulator https://tinyurl.com/2o2zdtn
+circuit simulator https://tinyurl.com/2fnhffev
 
 ## use a counter chip
 https://www.google.com/search?q=74HC590&rlz=1C1FKPE_en-GBAU984AU984&sourceid=chrome&ie=UTF-8
