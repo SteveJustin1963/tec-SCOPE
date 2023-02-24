@@ -21,7 +21,7 @@ Two resistor pots will be attached on each axis pivot point to measure approx po
 
 ![image](https://user-images.githubusercontent.com/58069246/211299181-19e803e9-cc92-4894-b500-6ed76fe9ce4f.png)
 
-circuit simulator https://tinyurl.com/2fnhffevill 
+circuit simulator https://tinyurl.com/2p8fdmws
 
 make the 220 the pot
 
