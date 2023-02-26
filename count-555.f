@@ -10,7 +10,7 @@
     R 0= if
       a @ 1+ a !
     then
-    1000 ms
+    2500()  \\1000 ms
   loop
   a @
 ;
