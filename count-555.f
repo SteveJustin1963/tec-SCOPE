@@ -2,7 +2,7 @@
 
 
 \\ R read-io-port 
-: R 1 \< ;
+:R 1 \<;
 
 \\count-pulses, variable a
   0 a!  \\store 0 in a
