@@ -18,8 +18,8 @@
 ===========
 reduces to
 
-0 a!
-3( 1\< 0>(a@ 1+ a! 2500())
-a@.
+0 a! \\store 0 in a
+3( 1\< 0>(a@ 1+ a! 2500())  \\ do 3 times, read port1 compare if > than o then save in a, add 1 and save in a again, delay
+a@. \\ recall a and print to terminal
 
 
