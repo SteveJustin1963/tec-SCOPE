@@ -1,3 +1,5 @@
+\\ms basic
+
 LET a = 0
 FOR i = 1 TO 3
   pulse = INP(1)  ' read input pin
@@ -10,7 +12,7 @@ PRINT a
 =======
 
 
-\\mint
+\\forth
 
 
 \\ R read-io-port 
@@ -28,7 +30,7 @@ PRINT a
 ;
 
 ===========
-reduces to
+\\mint
 
 0 a! \\store 0 in a
 3( 1\< 0>(a@ 1+ a! 2500())  \\ do 3 times, read port1 compare if > than o then save in a, add 1 and save in a again, delay
