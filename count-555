@@ -1,3 +1,15 @@
+LET a = 0
+FOR i = 1 TO 3
+  pulse = INP(1)  ' read input pin
+  IF pulse = 0 THEN
+    a = a + 1     ' increment pulse count
+  END IF
+  WAIT 1000      ' wait for 1 second
+NEXT i
+PRINT a
+=======
+
+
 \\mint
 
 
