@@ -41,8 +41,10 @@ f. Return the pulse count per second value.
 
 Define the angle conversion function:
 a. Set up a function that takes the pulse count per second value as input.
-b. Calculate the angle degrees per second by multiplying the pulse count per second by a conversion factor (e.g. 360 degrees divided by the number of pulses per revolution).
-c. Convert the angle degrees per second to hours, minutes, and seconds using standard time conversion formulas (e.g. 1 hour = 15 degrees, 1 minute = 0.25 degrees, 1 second = 0.0041667 degrees).
+b. Calculate the angle degrees per second by multiplying the pulse count per second by a conversion factor 
+(e.g. 360 degrees divided by the number of pulses per revolution).
+c. Convert the angle degrees per second to hours, minutes, and seconds using standard time conversion formulas 
+(e.g. 1 hour = 15 degrees, 1 minute = 0.25 degrees, 1 second = 0.0041667 degrees).
 d. Return the angle degrees in hours, minutes, and seconds.
 
 Call the functions:
