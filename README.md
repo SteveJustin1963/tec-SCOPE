@@ -90,7 +90,7 @@ The Rotary Encoder HN3806-AB is a device that is used to measure the rotational 
 
 i need to add a Timing Belt Drive Pulley to its 6mm shaft. will contrstruct a wood wheel and invert a drive pully with the teeth facing out so the drive pully can interface with it
 
-off ebay eg...![image](https://user-images.githubusercontent.com/58069246/223072719-d653cd45-a7f3-47f1-8a58-346ddb1f0b8c.png)
+![image](https://user-images.githubusercontent.com/58069246/223073009-7ab32520-386b-4db5-81f6-1c0dc1765fc9.png)
 
 
 ## code examples
