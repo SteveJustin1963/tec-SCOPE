@@ -30,7 +30,7 @@ make the 220 the pot
 
 ## code
 top-down solution for counting input pulses per second and converting them to angle degrees in hours, minutes, and seconds:
-
+```
 Define the pulse counting function:
 a. Set up the input pin for reading the pulse signal.
 b. Create a loop that reads the input signal and increments a counter variable each time a pulse is detected.
@@ -49,10 +49,8 @@ Call the functions:
 a. Call the pulse counting function to get the pulse count per second value.
 b. Call the angle conversion function with the pulse count per second value as input to get the angle degrees in hours, minutes, and seconds.
 c. Display the angle degrees in hours, minutes, and seconds on a screen or other output device.
-
+```
 This solution breaks down the problem into two smaller sub-problems: counting the input pulses and converting them to angle degrees. By breaking down the problem in this way, we can focus on each sub-problem separately, which makes the solution easier to understand and implement. Note that this solution is just an example, and the implementation details may vary depending on the specific hardware and software being used.
-
-
 
 
 
