@@ -28,6 +28,36 @@ make the 220 the pot
 ![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
 
 
+## code
+top-down solution for counting input pulses per second and converting them to angle degrees in hours, minutes, and seconds:
+
+Define the pulse counting function:
+a. Set up the input pin for reading the pulse signal.
+b. Create a loop that reads the input signal and increments a counter variable each time a pulse is detected.
+c. Start a timer to measure the duration of the counting period.
+d. Wait for the counting period to end.
+e. Stop the timer and calculate the pulse count per second as the ratio of the pulse counter to the timer duration.
+f. Return the pulse count per second value.
+
+Define the angle conversion function:
+a. Set up a function that takes the pulse count per second value as input.
+b. Calculate the angle degrees per second by multiplying the pulse count per second by a conversion factor (e.g. 360 degrees divided by the number of pulses per revolution).
+c. Convert the angle degrees per second to hours, minutes, and seconds using standard time conversion formulas (e.g. 1 hour = 15 degrees, 1 minute = 0.25 degrees, 1 second = 0.0041667 degrees).
+d. Return the angle degrees in hours, minutes, and seconds.
+
+Call the functions:
+a. Call the pulse counting function to get the pulse count per second value.
+b. Call the angle conversion function with the pulse count per second value as input to get the angle degrees in hours, minutes, and seconds.
+c. Display the angle degrees in hours, minutes, and seconds on a screen or other output device.
+
+This solution breaks down the problem into two smaller sub-problems: counting the input pulses and converting them to angle degrees. By breaking down the problem in this way, we can focus on each sub-problem separately, which makes the solution easier to understand and implement. Note that this solution is just an example, and the implementation details may vary depending on the specific hardware and software being used.
+
+
+
+
+
+
+
 
 ## use a counter chip
 https://www.google.com/search?q=74HC590&rlz=1C1FKPE_en-GBAU984AU984&sourceid=chrome&ie=UTF-8
