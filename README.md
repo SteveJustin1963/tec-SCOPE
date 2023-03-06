@@ -51,7 +51,7 @@ The code will do a range of things, the first being to calibrate angle vs pulses
 10. Use the slope of the line between points A and B to interpolate the angle based on the measured frequency of pulses
 11. Take into account the direction of movement (increasing or decreasing) to get the correct result
 
-```count-555.f```
+ 
 
 This code defines two Forth words: read-io-port and count-pulses. read-io-port is the same as in the previous example and reads the value from an I/O port at a specified address. count-pulses takes a single input, the address of the I/O port, and counts the number of pulses on the port for 3 seconds. It stores the result in a variable called A. It then returns the final value of A. You can use count-pulses as follows: ```port-address count-pulses .```
 This will count the number of pulses on the I/O port at the specified address for 3 seconds and print the result to the screen.
@@ -91,8 +91,7 @@ The Rotary Encoder HN3806-AB is a device that is used to measure the rotational 
 ## code examples
 
 https://electropeak.com/learn/how-to-interface-a-rotary-encoder-with-arduino/
-
-```code1.c```
+ 
 
 This is an Arduino sketch for reading a rotary encoder with AB 2-phase rectangular orthogonal pulse output. The rotary encoder has two output channels, A and B, which produce pulses that are 90 degrees out of phase with each other. By reading the relative phase of the A and B pulses, the sketch is able to determine the direction of rotation of the encoder.
 
@@ -106,6 +105,6 @@ The A and B functions are called whenever an interrupt is triggered on pin 0 and
 code uses the @ operator to read the value of pins 2 and 3 before deciding whether to increment or decrement the counter variable. The @ operator retrieves the value of a memory location (in this case, the value of pins 2 and 3) and pushes it onto the data stack. The IF statement then checks the value of the top item on the data stack (either 0 or 1, depending on the value of the pin) and executes the appropriate branch.
 
 The output of this modified code will be a series of numbers, each representing the current value of the counter variable. The value of counter will be incremented or decremented by 1 each time an interrupt is triggered on port 2 or 3, depending on the differential signal read from those pins.
-```count-ab.f```
+ 
 
 
