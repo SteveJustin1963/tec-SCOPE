@@ -60,34 +60,39 @@ This solution breaks down the problem into two smaller sub-problems: counting th
 
 
 
-## use a counter chip
-https://www.google.com/search?q=74HC590&rlz=1C1FKPE_en-GBAU984AU984&sourceid=chrome&ie=UTF-8
 
 
 
+## calibration idea:
+```
+Define a function called calibrate_angle_vs_pulses:
+a. Display "Press Go" on the screen.
+b. Wait for the user to press the "Go" button.
+c. Display "CAL A" on the screen.
+d. Instruct the user to move the telescope to altitude 80 degrees.
+e. Wait for the user to press the "A" button.
+f. Call the count_pulses function with the I/O port address as input and store the result in a variable called pulses_a.
+g. Display "CAL B" on the screen.
+h. Instruct the user to move the telescope to position 160 degrees.
+i. Wait for the user to press the "B" button.
+j. Call the count_pulses function with the I/O port address as input and store the result in a variable called pulses_b.
+k. Calculate the slope of the line between points A and B using the formula: (pulses_b - pulses_a) / 80.
+l. Determine the direction of movement based on whether the pulse count increased or decreased between points A and B.
+m. Return the slope and direction of movement.
 
+Define a function called count_pulses that takes an I/O port address as input:
+a. Set up the I/O port for reading pulses.
+b. Initialize a pulse counter to zero.
+c. Start a timer to measure 3 seconds.
+d. Create a loop that reads the input signal and increments the pulse counter each time a pulse is detected.
+e. Wait for the timer to expire.
+f. Stop the timer and calculate the pulse count per second as the ratio of the pulse counter to the timer duration.
+g. Return the pulse count per second value.
 
+Call the calibrate_angle_vs_pulses function to perform the calibration process.
+```
 
-The code will do a range of things, the first being to calibrate angle vs pulses. it will go like this;
-## calibrate
-1. Press "Go" 
-2. The word “CAL A” for  calibrate appears on the 7 segment screen
-3. Push the telescope to altitude 80 degrees 
-4. Press A
-5. IO port 3 counts pulses for 3 seconds from the circuit (around 200 pulses per second) and saves the value
-6. Word “CAL B” for  calibrate appears on the 7 segment screen
-7. Push the telescope right over to far size to position 160 degrees
-8. Press B
-9. IO port 3 counts pulses for 3 seconds from the circuit (around 600 pulses per second) and saves the value
-10. Use the slope of the line between points A and B to interpolate the angle based on the measured frequency of pulses
-11. Take into account the direction of movement (increasing or decreasing) to get the correct result
-
- 
-
-This code defines two Forth words: read-io-port and count-pulses. read-io-port is the same as in the previous example and reads the value from an I/O port at a specified address. count-pulses takes a single input, the address of the I/O port, and counts the number of pulses on the port for 3 seconds. It stores the result in a variable called A. It then returns the final value of A. You can use count-pulses as follows: ```port-address count-pulses .```
-This will count the number of pulses on the I/O port at the specified address for 3 seconds and print the result to the screen.
-
-
+This solution breaks down the problem into two smaller sub-problems: counting pulses and calculating the angle slope. By breaking down the problem in this way, we can focus on each sub-problem separately, which makes the solution easier to understand and implement. Note that this solution is just an example, and the implementation details may vary depending on the specific hardware and software being used.
 
 
 
