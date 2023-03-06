@@ -88,6 +88,9 @@ we will remove the cams and replace the DC motors with stepper motors, which wil
 
 The Rotary Encoder HN3806-AB is a device that is used to measure the rotational speed, angle, acceleration, and length of an object. It generates 600 pulses per revolution and has a green A phase, white B phase, red Vcc power +, and black V0. It is powered by a DC5-24V power source and has a shaft size of 613mm. The encoder has a size of 3835.5mm and an output of AB 2phase rectangular orthogonal pulses. It has a maximum mechanical speed of 5000 R/min and a response frequency of 0-20KHz. The encoder comes with a 1.5 meter cable and should not have its AB 2phase output directly connected to VCC to avoid damaging the output triode. It is suitable for use in intelligent control and various displacement measurement applications.
 
+i need to add a Timing Belt Drive Pulley to its 6mm shaft. will contrstruct a wood wheel and invert a drive pully with the teeth facing out so the drive pully can interface with it
+
+
 ## code examples
 
 https://electropeak.com/learn/how-to-interface-a-rotary-encoder-with-arduino/
