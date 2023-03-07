@@ -29,6 +29,7 @@ make the 220 the pot
 
 
 ## code
+test in https://www.programiz.com/c-programming/online-compiler/
 ```
 #include <stdio.h>
 
