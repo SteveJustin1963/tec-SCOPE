@@ -23,7 +23,7 @@ Two resistor pots will be attached on each axis pivot point to measure approx po
 
 circuit simulator https://tinyurl.com/2p8fdmws
 
-make the 220 the pot
+make the 220 value the pot
 
 ![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
 
@@ -85,7 +85,7 @@ int main()
 ```
  
 
-## calibration idea:
+ 
  
 
 
