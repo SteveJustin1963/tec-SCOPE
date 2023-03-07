@@ -49,49 +49,49 @@ Display or output the stored degree, minute, and second values.
 Note: The interpolation method used in step 10 will depend on the available data and the desired accuracy. A linear interpolation may be sufficient for this application, but more complex methods (such as polynomial interpolation or spline interpolation) may be required for higher accuracy or more complex data sets.
 
 ## use a delay loop instead. assumes a fixed counting period of 1 second.
-```
-10 REM Set up the input pin
-20 INPUT "Input pin: ", pin
-30 PINDIR pin, 1
-40 REM Set starting angle
-50 INPUT "Starting angle: ", start_angle
-60 REM Initialize current angle
-70 LET current_angle = start_angle
-80 REM Set conversion factor
-90 LET deg_per_pulse = 360 / max_pulse_rate
-100 REM Main loop
-110 DO
-120 REM Reset pulse counter
-130 LET pulse_count = 0
-140 REM Count pulses for 1 second
-150 FOR i = 1 TO max_pulse_rate
-160 LET pulse = PINREAD(pin)
-170 IF pulse = 1 THEN LET pulse_count = pulse_count + 1
-180 PAUSE 1 / max_pulse_rate
-190 NEXT i
-200 REM Calculate pulse rate and change in angle
-210 LET pulse_rate = pulse_count
-220 LET angle_change = pulse_rate * deg_per_pulse
-230 LET current_angle = current_angle + angle_change
-240 REM Interpolate angle if pulse rate is between 200 and 1000
-250 IF pulse_rate >= 200 AND pulse_rate <= 1000 THEN
-260 REM Find nearest data points
-270 LET lower_pulse_rate = INT(pulse_rate / 100) * 100
-280 LET upper_pulse_rate = lower_pulse_rate + 100
-290 LET lower_angle = data(lower_pulse_rate)
-300 LET upper_angle = data(upper_pulse_rate)
-310 REM Calculate slope and interpolate angle
-320 LET slope = (upper_angle - lower_angle) / (upper_pulse_rate - lower_pulse_rate)
-330 LET interpolated_angle = lower_angle + slope * (pulse_rate - lower_pulse_rate)
-340 LET current_angle = interpolated_angle
-350 END IF
-360 REM Convert angle to degrees, minutes, and seconds
-370 LET deg = INT(current_angle)
-380 LET min = INT((current_angle - deg) * 60)
-390 LET sec = ((current_angle - deg) * 60 - min) * 60
-400 REM Display or output angle
-410 PRINT deg; "° "; min; "' "; sec; "''"
-420 LOOP
+- Set up the input pin
+  - INPUT "Input pin: ", pin
+  - PINDIR pin, 1
+- Set starting angle
+  - INPUT "Starting angle: ", start_angle
+- Initialize current angle
+  - LET current_angle = start_angle
+- Set conversion factor
+  - LET deg_per_pulse = 360 / max_pulse_rate
+- Main loop
+  - DO
+    - Reset pulse counter
+      - LET pulse_count = 0
+    - Count pulses for 1 second
+      - FOR i = 1 TO max_pulse_rate
+        - LET pulse = PINREAD(pin)
+        - IF pulse = 1 THEN LET pulse_count = pulse_count + 1
+        - PAUSE 1 / max_pulse_rate
+      - NEXT i
+    - Calculate pulse rate and change in angle
+      - LET pulse_rate = pulse_count
+      - LET angle_change = pulse_rate * deg_per_pulse
+      - LET current_angle = current_angle + angle_change
+    - Interpolate angle if pulse rate is between 200 and 1000
+      - IF pulse_rate >= 200 AND pulse_rate <= 1000 THEN
+        - Find nearest data points
+          - LET lower_pulse_rate = INT(pulse_rate / 100) * 100
+          - LET upper_pulse_rate = lower_pulse_rate + 100
+          - LET lower_angle = data(lower_pulse_rate)
+          - LET upper_angle = data(upper_pulse_rate)
+        - Calculate slope and interpolate angle
+          - LET slope = (upper_angle - lower_angle) / (upper_pulse_rate - lower_pulse_rate)
+          - LET interpolated_angle = lower_angle + slope * (pulse_rate - lower_pulse_rate)
+          - LET current_angle = interpolated_angle
+        - END IF
+    - Convert angle to degrees, minutes, and seconds
+      - LET deg = INT(current_angle)
+      - LET min = INT((current_angle - deg) * 60)
+      - LET sec = ((current_angle - deg) * 60 - min) * 60
+    - Display or output angle
+      - PRINT deg; "° "; min; "' "; sec; "''"
+  - LOOP
+
 ```
 
 
