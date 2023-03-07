@@ -32,39 +32,51 @@ make the 220 the pot
 test in https://www.programiz.com/c-programming/online-compiler/
 ```
 #include <stdio.h>
+#include <unistd.h> // for sleep() function
 
 // Define data points for linear interpolation
-const int pulse_data[] = {200, 250, 500, 750, 1000};
-const int angle_data[] = {80, 95, 110, 120, 130};
+const int pulse_data[] = {200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000};
+const int angle_data[] = {80, 87, 94, 101, 108, 115, 122, 126, 128, 130};
 const int data_size = sizeof(pulse_data) / sizeof(int);
 
 int main()
 {
-    // Read input pulse rate
-    int pulse_rate = 689;
-
-    // Perform linear interpolation
-    int i;
-    for (i = 1; i < data_size; i++)
+    while (1) // loop forever
     {
-        if (pulse_rate <= pulse_data[i])
-        {
-            float slope = (angle_data[i] - angle_data[i-1]) / (float)(pulse_data[i] - pulse_data[i-1]);
-            float interpolated_angle = angle_data[i-1] + slope * (pulse_rate - pulse_data[i-1]);
-
-            // Map interpolated angle to desired range
-            float angle = (interpolated_angle - angle_data[0]) / (float)(angle_data[data_size-1] - angle_data[0]) * (130 - 80) + 80;
-
-            // Convert angle to degrees, minutes, and seconds
-            int degrees = (int) angle;
-            float remaining_angle = (angle - degrees) * 60.0;
-            int minutes = (int) remaining_angle;
-            float seconds = (remaining_angle - minutes) * 60.0;
-
-            // Print result
-            printf("Angle: %d degrees %d minutes %f seconds\n", degrees, minutes, seconds);
-            break;
+        // Read input pulse rate in the range of 200 Hz to 2 kHz
+        int pulse_rate;
+        printf("Enter pulse rate in Hz (between 200 and 2000): ");
+        scanf("%d", &pulse_rate);
+        if (pulse_rate < 200 || pulse_rate > 2000) {
+            printf("Invalid input pulse rate\n");
+            continue; // go back to the start of the loop
         }
+
+        // Perform linear interpolation
+        int i;
+        for (i = 1; i < data_size; i++)
+        {
+            if (pulse_rate <= pulse_data[i])
+            {
+                float slope = (angle_data[i] - angle_data[i-1]) / (float)(pulse_data[i] - pulse_data[i-1]);
+                float interpolated_angle = angle_data[i-1] + slope * (pulse_rate - pulse_data[i-1]);
+
+                // Map interpolated angle to desired range
+                float angle = (interpolated_angle - angle_data[0]) / (float)(angle_data[data_size-1] - angle_data[0]) * (130 - 80) + 80;
+
+                // Convert angle to degrees, minutes, and seconds
+                int degrees = (int) angle;
+                float remaining_angle = (angle - degrees) * 60.0;
+                int minutes = (int) remaining_angle;
+                float seconds = (remaining_angle - minutes) * 60.0;
+
+                // Print result
+                printf("Angle: %d degrees %d minutes %f seconds\n", degrees, minutes, seconds);
+                break;
+            }
+        }
+
+        sleep(3); // wait for 3 seconds before going back to the start of the loop
     }
 
     return 0;
