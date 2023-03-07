@@ -29,33 +29,70 @@ make the 220 the pot
 
 
 ## code
-top-down solution for counting input pulses per second and converting them to angle degrees in hours, minutes, and seconds:
+top-down solution for reading variable frequency pulses and interpolating an angle from them:
 ```
-Define the pulse counting function:
-a. Set up the input pin for reading the pulse signal.
-b. Create a loop that reads the input signal and increments a counter variable each time a pulse is detected.
-c. Start a timer to measure the duration of the counting period.
-d. Wait for the counting period to end.
-e. Stop the timer and calculate the pulse count per second as the ratio of the pulse counter to the timer duration.
-f. Return the pulse count per second value.
-
-Define the angle conversion function:
-a. Set up a function that takes the pulse count per second value as input.
-b. Calculate the angle degrees per second by multiplying the pulse count per second by a conversion factor 
-(e.g. 360 degrees divided by the number of pulses per revolution).
-c. Convert the angle degrees per second to hours, minutes, and seconds using standard time conversion formulas 
-(e.g. 1 hour = 15 degrees, 1 minute = 0.25 degrees, 1 second = 0.0041667 degrees).
-d. Return the angle degrees in hours, minutes, and seconds.
-
-Call the functions:
-a. Call the pulse counting function to get the pulse count per second value.
-b. Call the angle conversion function with the pulse count per second value as input to get the 
-angle degrees in hours, minutes, and seconds.
-c. Display the angle degrees in hours, minutes, and seconds on a screen or other output device.
+Set up the input pin for reading the pulse signal.
+Set a variable to store the starting angle, provided by the user.
+Set a variable to store the current angle, initialized to the starting angle.
+Create a loop that reads the input signal and increments a counter variable each time a pulse is detected.
+Start a timer to measure the duration of the counting period.
+Wait for the counting period to end.
+Stop the timer and calculate the pulse count per second as the ratio of the pulse counter to the timer duration.
+Calculate the change in angle for the counting period by multiplying the pulse count per second by a conversion factor that relates the pulse rate to the change in angle (e.g. 360 degrees divided by the maximum pulse rate).
+Add the change in angle to the current angle.
+Interpolate the angle based on the current pulse rate if the pulse rate is between 200 and 1000. To do this, calculate the slope of the angle vs pulse rate line between the two nearest data points, then use that slope to find the angle for the current pulse rate.
+Convert the current angle to degrees, minutes, and seconds using standard time conversion formulas (e.g. 1 hour = 15 degrees, 1 minute = 0.25 degrees, 1 second = 0.0041667 degrees).
+Store the degree, minute, and second values as integers.
+Repeat steps 4-12 for each counting period.
+Display or output the stored degree, minute, and second values.
 ```
-This solution breaks down the problem into two smaller sub-problems: counting the input pulses and converting them to angle degrees. By breaking down the problem in this way, we can focus on each sub-problem separately, which makes the solution easier to understand and implement. Note that this solution is just an example, and the implementation details may vary depending on the specific hardware and software being used.
+Note: The interpolation method used in step 10 will depend on the available data and the desired accuracy. A linear interpolation may be sufficient for this application, but more complex methods (such as polynomial interpolation or spline interpolation) may be required for higher accuracy or more complex data sets.
 
-
+## use a delay loop instead. assumes a fixed counting period of 1 second.
+```
+10 REM Set up the input pin
+20 INPUT "Input pin: ", pin
+30 PINDIR pin, 1
+40 REM Set starting angle
+50 INPUT "Starting angle: ", start_angle
+60 REM Initialize current angle
+70 LET current_angle = start_angle
+80 REM Set conversion factor
+90 LET deg_per_pulse = 360 / max_pulse_rate
+100 REM Main loop
+110 DO
+120 REM Reset pulse counter
+130 LET pulse_count = 0
+140 REM Count pulses for 1 second
+150 FOR i = 1 TO max_pulse_rate
+160 LET pulse = PINREAD(pin)
+170 IF pulse = 1 THEN LET pulse_count = pulse_count + 1
+180 PAUSE 1 / max_pulse_rate
+190 NEXT i
+200 REM Calculate pulse rate and change in angle
+210 LET pulse_rate = pulse_count
+220 LET angle_change = pulse_rate * deg_per_pulse
+230 LET current_angle = current_angle + angle_change
+240 REM Interpolate angle if pulse rate is between 200 and 1000
+250 IF pulse_rate >= 200 AND pulse_rate <= 1000 THEN
+260 REM Find nearest data points
+270 LET lower_pulse_rate = INT(pulse_rate / 100) * 100
+280 LET upper_pulse_rate = lower_pulse_rate + 100
+290 LET lower_angle = data(lower_pulse_rate)
+300 LET upper_angle = data(upper_pulse_rate)
+310 REM Calculate slope and interpolate angle
+320 LET slope = (upper_angle - lower_angle) / (upper_pulse_rate - lower_pulse_rate)
+330 LET interpolated_angle = lower_angle + slope * (pulse_rate - lower_pulse_rate)
+340 LET current_angle = interpolated_angle
+350 END IF
+360 REM Convert angle to degrees, minutes, and seconds
+370 LET deg = INT(current_angle)
+380 LET min = INT((current_angle - deg) * 60)
+390 LET sec = ((current_angle - deg) * 60 - min) * 60
+400 REM Display or output angle
+410 PRINT deg; "° "; min; "' "; sec; "''"
+420 LOOP
+```
 
 
 
