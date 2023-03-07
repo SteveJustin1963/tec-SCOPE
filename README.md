@@ -49,6 +49,7 @@ Display or output the stored degree, minute, and second values.
 Note: The interpolation method used in step 10 will depend on the available data and the desired accuracy. A linear interpolation may be sufficient for this application, but more complex methods (such as polynomial interpolation or spline interpolation) may be required for higher accuracy or more complex data sets.
 
 ## use a delay loop instead. assumes a fixed counting period of 1 second.
+```
 - Set up the input pin
   - INPUT "Input pin: ", pin
   - PINDIR pin, 1
@@ -93,11 +94,6 @@ Note: The interpolation method used in step 10 will depend on the available data
   - LOOP
 
 ```
-
-
-
-
-
 
 
 ## calibration idea:
