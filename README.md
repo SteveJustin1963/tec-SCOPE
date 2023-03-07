@@ -29,105 +29,44 @@ make the 220 the pot
 
 
 ## code
-top-down solution for reading variable frequency pulses and interpolating an angle from them:
 ```
-Set up the input pin for reading the pulse signal.
-Set a variable to store the starting angle, provided by the user.
-Set a variable to store the current angle, initialized to the starting angle.
-Create a loop that reads the input signal and increments a counter variable each time a pulse is detected.
-Start a timer to measure the duration of the counting period.
-Wait for the counting period to end.
-Stop the timer and calculate the pulse count per second as the ratio of the pulse counter to the timer duration.
-Calculate the change in angle for the counting period by multiplying the pulse count per second by a conversion factor that relates the pulse rate to the change in angle (e.g. 360 degrees divided by the maximum pulse rate).
-Add the change in angle to the current angle.
-Interpolate the angle based on the current pulse rate if the pulse rate is between 200 and 1000. To do this, calculate the slope of the angle vs pulse rate line between the two nearest data points, then use that slope to find the angle for the current pulse rate.
-Convert the current angle to degrees, minutes, and seconds using standard time conversion formulas (e.g. 1 hour = 15 degrees, 1 minute = 0.25 degrees, 1 second = 0.0041667 degrees).
-Store the degree, minute, and second values as integers.
-Repeat steps 4-12 for each counting period.
-Display or output the stored degree, minute, and second values.
-```
-Note: The interpolation method used in step 10 will depend on the available data and the desired accuracy. A linear interpolation may be sufficient for this application, but more complex methods (such as polynomial interpolation or spline interpolation) may be required for higher accuracy or more complex data sets.
+#include <stdio.h>
 
-## use a delay loop instead. assumes a fixed counting period of 1 second.
-```
-- Set up the input pin
-  - INPUT "Input pin: ", pin
-  - PINDIR pin, 1
-- Set starting angle
-  - INPUT "Starting angle: ", start_angle
-- Initialize current angle
-  - LET current_angle = start_angle
-- Set conversion factor
-  - LET deg_per_pulse = 360 / max_pulse_rate
-- Main loop
-  - DO
-    - Reset pulse counter
-      - LET pulse_count = 0
-    - Count pulses for 1 second
-      - FOR i = 1 TO max_pulse_rate
-        - LET pulse = PINREAD(pin)
-        - IF pulse = 1 THEN LET pulse_count = pulse_count + 1
-        - PAUSE 1 / max_pulse_rate
-      - NEXT i
-    - Calculate pulse rate and change in angle
-      - LET pulse_rate = pulse_count
-      - LET angle_change = pulse_rate * deg_per_pulse
-      - LET current_angle = current_angle + angle_change
-    - Interpolate angle if pulse rate is between 200 and 1000
-      - IF pulse_rate >= 200 AND pulse_rate <= 1000 THEN
-        - Find nearest data points
-          - LET lower_pulse_rate = INT(pulse_rate / 100) * 100
-          - LET upper_pulse_rate = lower_pulse_rate + 100
-          - LET lower_angle = data(lower_pulse_rate)
-          - LET upper_angle = data(upper_pulse_rate)
-        - Calculate slope and interpolate angle
-          - LET slope = (upper_angle - lower_angle) / (upper_pulse_rate - lower_pulse_rate)
-          - LET interpolated_angle = lower_angle + slope * (pulse_rate - lower_pulse_rate)
-          - LET current_angle = interpolated_angle
-        - END IF
-    - Convert angle to degrees, minutes, and seconds
-      - LET deg = INT(current_angle)
-      - LET min = INT((current_angle - deg) * 60)
-      - LET sec = ((current_angle - deg) * 60 - min) * 60
-    - Display or output angle
-      - PRINT deg; "° "; min; "' "; sec; "''"
-  - LOOP
+// Define data points for linear interpolation
+const int pulse_data[] = {200, 250, 500, 750, 1000};
+const int angle_data[] = {80, 95, 110, 120, 130};
+const int data_size = sizeof(pulse_data) / sizeof(int);
 
-```
+int main()
+{
+    // Read input pulse rate
+    int pulse_rate = 689;
 
+    // Perform linear interpolation
+    int i;
+    for (i = 1; i < data_size; i++)
+    {
+        if (pulse_rate <= pulse_data[i])
+        {
+            float slope = (angle_data[i] - angle_data[i-1]) / (float)(pulse_data[i] - pulse_data[i-1]);
+            float interpolated_angle = angle_data[i-1] + slope * (pulse_rate - pulse_data[i-1]);
+
+            // Map interpolated angle to desired range
+            float angle = (interpolated_angle - angle_data[0]) / (float)(angle_data[data_size-1] - angle_data[0]) * (130 - 80) + 80;
+
+            // Print result
+            printf("Angle: %f\n", angle);
+            break;
+        }
+    }
+
+    return 0;
+}
+```
+ 
 
 ## calibration idea:
-```
-Define a function called calibrate_angle_vs_pulses:
-a. Display "Press Go" on the screen.
-b. Wait for the user to press the "Go" button.
-c. Display "CAL A" on the screen.
-d. Instruct the user to move the telescope to altitude 80 degrees.
-e. Wait for the user to press the "A" button.
-f. Call the count_pulses function with the I/O port address as input and store the result in a variable called pulses_a.
-g. Display "CAL B" on the screen.
-h. Instruct the user to move the telescope to position 160 degrees.
-i. Wait for the user to press the "B" button.
-j. Call the count_pulses function with the I/O port address as input and store the result in a variable called pulses_b.
-k. Calculate the slope of the line between points A and B using the formula: (pulses_b - pulses_a) / 80.
-l. Determine the direction of movement based on whether the pulse count increased or decreased between points A and B.
-m. Return the slope and direction of movement.
-
-Define a function called count_pulses that takes an I/O port address as input:
-a. Set up the I/O port for reading pulses.
-b. Initialize a pulse counter to zero.
-c. Start a timer to measure 3 seconds.
-d. Create a loop that reads the input signal and increments the pulse counter each time a pulse is detected.
-e. Wait for the timer to expire.
-f. Stop the timer and calculate the pulse count per second as the ratio of the pulse counter to the timer duration.
-g. Return the pulse count per second value.
-
-Call the calibrate_angle_vs_pulses function to perform the calibration process.
-```
-
-This solution breaks down the problem into two smaller sub-problems: counting pulses and calculating the angle slope. By breaking down the problem in this way, we can focus on each sub-problem separately, which makes the solution easier to understand and implement. Note that this solution is just an example, and the implementation details may vary depending on the specific hardware and software being used.
-
-
+ 
 
 
 ## In the second stage, 
