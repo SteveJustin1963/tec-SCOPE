@@ -55,14 +55,21 @@ int main()
             // Map interpolated angle to desired range
             float angle = (interpolated_angle - angle_data[0]) / (float)(angle_data[data_size-1] - angle_data[0]) * (130 - 80) + 80;
 
+            // Convert angle to degrees, minutes, and seconds
+            int degrees = (int) angle;
+            float remaining_angle = (angle - degrees) * 60.0;
+            int minutes = (int) remaining_angle;
+            float seconds = (remaining_angle - minutes) * 60.0;
+
             // Print result
-            printf("Angle: %f\n", angle);
+            printf("Angle: %d degrees %d minutes %f seconds\n", degrees, minutes, seconds);
             break;
         }
     }
 
     return 0;
 }
+
 ```
  
 
