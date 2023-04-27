@@ -83,7 +83,52 @@ int main()
 }
 
 ```
- 
+##  forth73 version of it
+
+```
+: data  { array -- } dup cells + ;
+: pulse_data  200 400 600 800 1000 1200 1400 1600 1800 2000 data ;
+: angle_data  80 87 94 101 108 115 122 126 128 130 data ;
+: data_size  pulse_data cells / ;
+
+: interpolated_angle { i -- f }
+    pulse_data dup i cells + @ swap cells - over cells - @ - f/
+    angle_data dup i cells + @ swap cells - over cells - @ - f/
+    f/ f* f+ ;
+
+: map_angle { f -- deg min sec }
+    angle_data 0 cells + @ f- angle_data data_size cells 1- cells + @ angle_data 0 cells + @ f- f/
+    130 80 f- f* 80 f+ f/
+    fround dup f- fround swap f- 60 f* fround ;
+
+: .angle { deg min sec -- }
+    ." Angle: " dup . ." degrees " dup . ." minutes " f. ." seconds" cr ;
+
+: main
+    begin
+        cr ." Enter pulse rate in Hz (between 200 and 2000): " flush
+        0 0
+        begin
+            dup
+            begin
+                dup cr ." Invalid input pulse rate" until
+                cr ." Enter pulse rate in Hz (between 200 and 2000): " flush
+            200 < -1 > 2000 > or
+            until
+            >r
+            data_size 1- 0 do
+                dup i cells + @ over r@ <= over i 1+ cells + @ over <= and
+                if
+                    interpolated_angle map_angle .angle
+                    drop 2drop r> exit
+                then
+            loop
+            r> drop
+        3 000 ms
+        again
+    drop
+    0 ;
+```
 
  
  
