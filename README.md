@@ -83,7 +83,7 @@ int main()
 }
 
 ```
-##  forth73 version of it
+##  forth73 version with integer logic
 
 ```
 : data  { array -- } dup cells + ;
@@ -92,17 +92,16 @@ int main()
 : data_size  pulse_data cells / ;
 
 : interpolated_angle { i -- f }
-    pulse_data dup i cells + @ swap cells - over cells - @ - f/
-    angle_data dup i cells + @ swap cells - over cells - @ - f/
-    f/ f* f+ ;
+    pulse_data dup i cells + @ swap cells - over cells - @ - swap /mod swap
+    angle_data dup i cells + @ swap cells - over cells - @ - swap /mod swap
+    swap over * swap + ;
 
 : map_angle { f -- deg min sec }
-    angle_data 0 cells + @ f- angle_data data_size cells 1- cells + @ angle_data 0 cells + @ f- f/
-    130 80 f- f* 80 f+ f/
-    fround dup f- fround swap f- 60 f* fround ;
+    angle_data 0 cells + @ f- angle_data data_size cells 1- cells + @ angle_data 0 cells + @ f- swap /
+    130 80 f- swap * 80 f+ swap / 0 swap /mod 0 swap /mod ;
 
 : .angle { deg min sec -- }
-    ." Angle: " dup . ." degrees " dup . ." minutes " f. ." seconds" cr ;
+    ." Angle: " dup . ." degrees " dup . ." minutes " . ." seconds" cr ;
 
 : main
     begin
