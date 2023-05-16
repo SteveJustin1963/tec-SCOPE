@@ -29,7 +29,7 @@ make the 220 value the pot
 
 
 ## code
-test in https://www.programiz.com/c-programming/online-compiler/
+ 
 ```
 #include <stdio.h>
 #include <unistd.h> // for sleep() function
@@ -41,12 +41,17 @@ const int data_size = sizeof(pulse_data) / sizeof(int);
 
 int main()
 {
-    while (1) // loop forever
+    int exit_program = 0;
+    while (!exit_program) // loop until user decides to exit
     {
         // Read input pulse rate in the range of 200 Hz to 2 kHz
         int pulse_rate;
-        printf("Enter pulse rate in Hz (between 200 and 2000): ");
+        printf("Enter pulse rate in Hz (between 200 and 2000) or -1 to exit: ");
         scanf("%d", &pulse_rate);
+        if (pulse_rate == -1) {
+            exit_program = 1;
+            continue;
+        }
         if (pulse_rate < 200 || pulse_rate > 2000) {
             printf("Invalid input pulse rate\n");
             continue; // go back to the start of the loop
@@ -76,6 +81,11 @@ int main()
             }
         }
 
+        // Handle case when pulse_rate is greater than the highest value in pulse_data
+        if (i == data_size) {
+            printf("Pulse rate is too high for the available data\n");
+        }
+
         sleep(3); // wait for 3 seconds before going back to the start of the loop
     }
 
@@ -83,52 +93,9 @@ int main()
 }
 
 ```
-##  forth73 version with integer logic
+ 
 
-```
-: data  { array -- } dup cells + ;
-: pulse_data  200 400 600 800 1000 1200 1400 1600 1800 2000 data ;
-: angle_data  80 87 94 101 108 115 122 126 128 130 data ;
-: data_size  pulse_data cells / ;
-
-: interpolated_angle { i -- f }
-    pulse_data dup i cells + @ swap cells - over cells - @ - swap /mod swap
-    angle_data dup i cells + @ swap cells - over cells - @ - swap /mod swap
-    swap over * swap + ;
-
-: map_angle { f -- deg min sec }
-    angle_data 0 cells + @ f- angle_data data_size cells 1- cells + @ angle_data 0 cells + @ f- swap /
-    130 80 f- swap * 80 f+ swap / 0 swap /mod 0 swap /mod ;
-
-: .angle { deg min sec -- }
-    ." Angle: " dup . ." degrees " dup . ." minutes " . ." seconds" cr ;
-
-: main
-    begin
-        cr ." Enter pulse rate in Hz (between 200 and 2000): " flush
-        0 0
-        begin
-            dup
-            begin
-                dup cr ." Invalid input pulse rate" until
-                cr ." Enter pulse rate in Hz (between 200 and 2000): " flush
-            200 < -1 > 2000 > or
-            until
-            >r
-            data_size 1- 0 do
-                dup i cells + @ over r@ <= over i 1+ cells + @ over <= and
-                if
-                    interpolated_angle map_angle .angle
-                    drop 2drop r> exit
-                then
-            loop
-            r> drop
-        3 000 ms
-        again
-    drop
-    0 ;
-```
-
+ 
  
  
 
