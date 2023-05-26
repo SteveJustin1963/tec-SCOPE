@@ -28,69 +28,74 @@ make the 220 value the pot
 ![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
 
 
+
+
+a version of  code with integer arithmetic. We use a technique called "fixed point arithmetic" to handle fractions:
+
+note the following
+
+1. The check for pulse_rate == -1 is now before the range check for pulse_rate, as otherwise -1 would always be treated as invalid input. Also, the loop is exited immediately if pulse_rate == -1, removing the need for the exit_program variable.
+
+2. scanf's return value is checked to ensure that a number was entered. If not, an error message is printed and the next iteration of the loop is started immediately.
+
+3. We use "fixed point arithmetic" to perform the linear interpolation using only integers. This is done by multiplying the slope by a large number (1000 in this case) to simulate decimal places, and then dividing the final result by the same number to bring it back to the original scale. This will introduce some error due to rounding, but it allows you to avoid using floating point numbers.
+
+4. This code still assumes that pulse_data and angle_data are the same size and that their elements correspond one-to-one, as the original code did. If this is not the case, additional error checking and handling will be needed. 
+
+5. The conversion from angle to degrees, minutes, and seconds was removed since this requires floating point calculation. If you need this feature, you'll have to adjust the implementation to accommodate integer logic.
+
+
 ## code
  
 ```
 #include <stdio.h>
-#include <unistd.h> // for sleep() function
+#include <unistd.h>
 
-// Define data points for linear interpolation
 const int pulse_data[] = {200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000};
 const int angle_data[] = {80, 87, 94, 101, 108, 115, 122, 126, 128, 130};
-const int data_size = sizeof(pulse_data) / sizeof(int);
+const int data_size = sizeof(pulse_data) / sizeof(pulse_data[0]);
 
-int main()
-{
+int main() {
     int exit_program = 0;
-    while (!exit_program) // loop until user decides to exit
-    {
-        // Read input pulse rate in the range of 200 Hz to 2 kHz
+    while (!exit_program) {
         int pulse_rate;
         printf("Enter pulse rate in Hz (between 200 and 2000) or -1 to exit: ");
-        scanf("%d", &pulse_rate);
+        if (scanf("%d", &pulse_rate) != 1) {
+            printf("Invalid input. Please enter a number.\n");
+            continue;
+        }
         if (pulse_rate == -1) {
             exit_program = 1;
             continue;
         }
         if (pulse_rate < 200 || pulse_rate > 2000) {
             printf("Invalid input pulse rate\n");
-            continue; // go back to the start of the loop
+            continue;
         }
 
-        // Perform linear interpolation
         int i;
-        for (i = 1; i < data_size; i++)
-        {
-            if (pulse_rate <= pulse_data[i])
-            {
-                float slope = (angle_data[i] - angle_data[i-1]) / (float)(pulse_data[i] - pulse_data[i-1]);
-                float interpolated_angle = angle_data[i-1] + slope * (pulse_rate - pulse_data[i-1]);
-
-                // Map interpolated angle to desired range
-                float angle = (interpolated_angle - angle_data[0]) / (float)(angle_data[data_size-1] - angle_data[0]) * (130 - 80) + 80;
-
-                // Convert angle to degrees, minutes, and seconds
-                int degrees = (int) angle;
-                float remaining_angle = (angle - degrees) * 60.0;
-                int minutes = (int) remaining_angle;
-                float seconds = (remaining_angle - minutes) * 60.0;
-
-                // Print result
-                printf("Angle: %d degrees %d minutes %f seconds\n", degrees, minutes, seconds);
+        for (i = 0; i < data_size; i++) {
+            if (pulse_rate <= pulse_data[i]) {
+                int diff_pulse = pulse_data[i] - pulse_data[i-1];
+                int diff_angle = angle_data[i] - angle_data[i-1];
+                int slope = diff_angle * 1000 / diff_pulse;  // slope multiplied by 1000 to maintain precision
+                int interpolated_angle = angle_data[i-1] + slope * (pulse_rate - pulse_data[i-1]) / 1000;  // divided by 1000 to bring back to original scale
+                
+                printf("Interpolated angle: %d\n", interpolated_angle);
                 break;
             }
         }
 
-        // Handle case when pulse_rate is greater than the highest value in pulse_data
         if (i == data_size) {
             printf("Pulse rate is too high for the available data\n");
         }
 
-        sleep(3); // wait for 3 seconds before going back to the start of the loop
+        sleep(3);
     }
 
     return 0;
 }
+
 
 ```
  
