@@ -116,7 +116,7 @@ The output of this modified code will be a series of numbers, each representing 
 - photo compositing on pc
 - MINT code with and without APU help
 - 7 Congruent Circles In A Regular Hexagon, use microwave oven glass.
-![circle-32_42926_lg](https://user-images.githubusercontent.com/58069246/191688868-d8030041-259c-4365-8445-d773df714613.gif)
+![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/17a88d9c-9f73-4d14-a2d2-7cddd23e7216)
 
 - 
 
