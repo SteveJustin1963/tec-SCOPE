@@ -107,7 +107,8 @@ The output of this modified code will be a series of numbers, each representing 
 
 
 ## Iterate
-- https://www.nve.com/Downloads/ASR012.pdf  mag angle sensor
+- ASR012 https://www.nve.com/Downloads/ASR012.pdf  mag angle sensor
+- AS5600
 - from a map location slew scope to that position, issues x.200 commands that tec1 turns into x an y and then into motor control
 - track a position in motion. compensate for earths rotation. satellite tracking different problem
 - joystick slew scope to new positions 
