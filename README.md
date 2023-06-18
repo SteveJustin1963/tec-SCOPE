@@ -105,4 +105,6 @@ code uses the @ operator to read the value of pins 2 and 3 before deciding wheth
 The output of this modified code will be a series of numbers, each representing the current value of the counter variable. The value of counter will be incremented or decremented by 1 each time an interrupt is triggered on port 2 or 3, depending on the differential signal read from those pins.
  
 
-
+## iterate
+- https://www.nve.com/Downloads/ASR012.pdf
+- 
