@@ -105,6 +105,44 @@ code uses the @ operator to read the value of pins 2 and 3 before deciding wheth
 The output of this modified code will be a series of numbers, each representing the current value of the counter variable. The value of counter will be incremented or decremented by 1 each time an interrupt is triggered on port 2 or 3, depending on the differential signal read from those pins.
  
 
-## iterate
+
+## Iterate
+- from a map location slew scope to that position, issues x.200 commands that tec1 turns into x an y and then into motor control
+- track a position in motion. compensate for earths rotation. satellite tracking different problem
+- joystick slew scope to new positions 
+- remote control over modem, using defined protocols, TCS - Telescope Control System
+- camera mount + camera
+- photo compositing on pc
+- MINT code with and without APU help
+- 7 Congruent Circles In A Regular Hexagon, use microwave oven glass.
+![circle-32_42926_lg](https://user-images.githubusercontent.com/58069246/191688868-d8030041-259c-4365-8445-d773df714613.gif)
 - https://www.nve.com/Downloads/ASR012.pdf
 - 
+
+##  References
+- https://www.google.com.au/sky/
+- https://edu.kde.org/kstars/
+- https://www.indilib.org/
+- https://www.tiesncuffs.com.au/pages/custom-embroidered-patches?gclid=Cj0KCQjw-daUBhCIARIsALbkjSZYO9V_ij_ypJlVEb1Inib6CAAIR20-39V1JrN4Nm-13fe0FwE5aqgaAheQEALw_wcB
+- https://github.com/SteveJustin1963/tec-Stepper-Motor-Control
+- https://www.facebook.com/rDUINOScope/
+- https://github.com/PeterForth/Planetarium 
+- https://joecreager.com/control-an-h-bridge-with-forth/
+- https://www.facebook.com/groups/623556744820045
+- https://www.facebook.com/groups/2225595150855239
+- https://www.facebook.com/Kiskunf%C3%A9legyh%C3%A1zi-Csillag%C3%A1szati-Egyes%C3%BClet-124849427661821/
+- http://stellarium.org/
+- https://www.hackster.io/neil-pollard/sky-finder-a-lego-alexa-gadget-to-discover-the-night-sky-879e46
+- https://www.instructables.com/Control-Your-Telescope-Using-Stellarium-Arduino/
+- https://www.facebook.com/profile.php?id=150875201997704&ref=br_rs
+- https://create.arduino.cc/projecthub/dEskoG/rduinoscope-4d399c
+- https://github.com/ForthWin/Forth2020UsersGroup/blob/master/ASTROLAB.F?fbclid=IwAR1WDOtVrYgl-IU7aDVg-y2659sf4HU1BfC0qWDlf0LNyo6Y_k4kRzJZ4yA
+- https://makezine.com/projects/build-a-backyard-dobsonian-telescope/
+- https://www.celestron.com/pages/celestron-pwi-telescope-control-software
+- https://www.astronomywa.net.au/different-types-of-telescope-mounts.html
+- https://onstep.groups.io/g/main/wiki/4414
+- https://www.ngc7000.com/telescope-motorization.htm
+- https://www.ngc7000.com/docu-skypikit/EN/EN_200226_DobsonPushtoBoard.pdf
+- https://asa.astronomy.org.au/
+- https://skywatcheraustralia.com.au/product/16-collapsible-dobsonian/
+
