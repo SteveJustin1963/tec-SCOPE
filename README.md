@@ -107,6 +107,7 @@ The output of this modified code will be a series of numbers, each representing 
 
 
 ## Iterate
+- - https://www.nve.com/Downloads/ASR012.pdf  mag angle sensor
 - from a map location slew scope to that position, issues x.200 commands that tec1 turns into x an y and then into motor control
 - track a position in motion. compensate for earths rotation. satellite tracking different problem
 - joystick slew scope to new positions 
@@ -116,7 +117,7 @@ The output of this modified code will be a series of numbers, each representing 
 - MINT code with and without APU help
 - 7 Congruent Circles In A Regular Hexagon, use microwave oven glass.
 ![circle-32_42926_lg](https://user-images.githubusercontent.com/58069246/191688868-d8030041-259c-4365-8445-d773df714613.gif)
-- https://www.nve.com/Downloads/ASR012.pdf
+
 - 
 
 ##  References
