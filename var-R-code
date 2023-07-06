@@ -1,4 +1,4 @@
-Sure, here's how you might modify your steps:
+ 
 
 Variables:
 - pulse-count-x: Cumulative pulse count for X axis
@@ -43,5 +43,4 @@ Main Program:
 - Send the angle values over serial port B for X and Y axes
 - Check for out-of-range conditions for X and Y axes
 - Add exception handling for communication faults or calibration failures
-
-Please note, some of these suggestions may not be suitable for your hardware setup and/or specific application, so it's crucial to verify them before implementing.
+ 
