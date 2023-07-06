@@ -1,0 +1,62 @@
+\ Variables
+variable pulse-count-x     \ Cumulative pulse count for X axis
+variable pulse-count-y     \ Cumulative pulse count for Y axis
+variable sample-count      \ Number of samples taken
+
+\ Counting Pulses
+: count-pulses ( -- )
+  \ Code to start counting pulses for 2 seconds on port 1 for X axis
+  \ Store the cumulative pulse count in pulse-count-x variable
+  \ Code to start counting pulses for 2 seconds on port 2 for Y axis
+  \ Store the cumulative pulse count in pulse-count-y variable
+  \ Increment the sample-count variable for each sample taken ;
+
+\ Calibration
+: calibrate-0 ( -- )
+  0 pulse-count-x !
+  0 pulse-count-y !
+  ." Calibrate at 0 degrees for X and Y axes." cr
+  \ Code to set calibration as 0 degrees on port A for X and Y axes ;
+
+: calibrate-90 ( -- )
+  0 pulse-count-x !
+  0 pulse-count-y !
+  ." Calibrate at 90 degrees for X and Y axes." cr
+  \ Code to set calibration as 90 degrees on port A for X and Y axes ;
+
+\ Calculate Angle
+: calculate-angle ( -- )
+  pulse-count-x @ sample-count @ f/ drop
+  0.0 sample-count !
+  \ Code to calculate average pulse count per second for X axis
+  \ Code to calculate average pulse count per second for Y axis
+  \ Reset sample-count to 0
+  \ Code to scale pulse count to frequency per second for X axis
+  \ Code to scale pulse count to frequency per second for Y axis
+  \ Code to calculate angle based on frequency value for X axis
+  \ Code to calculate angle based on frequency value for Y axis
+  \ Store calculated angle for X axis in the angle-x variable
+  \ Store calculated angle for Y axis in the angle-y variable ;
+
+\ Sending Angle
+: send-angle ( -- )
+  angle-x @ 4800 serial-baud c@  \ Send angle-x value over serial port B at 4800 baud
+  angle-y @ 4800 serial-baud c@  \ Send angle-y value over serial port B at 4800 baud
+
+\ Out of Range
+: out-of-range? ( -- )
+  pulse-count-x @ 0 < if ." Error: Below 0 angle for X axis." cr then
+  pulse-count-x @ 90 > if ." Error: Above 90 angle for X axis." cr then
+  pulse-count-y @ 0 < if ." Error: Below 0 angle for Y axis." cr then
+  pulse-count-y @ 90 > if ." Error: Above 90 angle for Y axis." cr then
+
+\ Main Program
+: main ( -- )
+  calibrate-0
+  calibrate-90
+  count-pulses
+  calculate-angle
+  send-angle
+  out-of-range? ;
+
+main
