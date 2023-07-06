@@ -28,25 +28,13 @@ make the 220 value the pot
 ![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
 
 
+ 
 
 
-a version of  code with integer arithmetic. We use a technique called "fixed point arithmetic" to handle fractions:
-
-note the following
-
-1. The check for pulse_rate == -1 is now before the range check for pulse_rate, as otherwise -1 would always be treated as invalid input. Also, the loop is exited immediately if pulse_rate == -1, removing the need for the exit_program variable.
-
-2. scanf's return value is checked to ensure that a number was entered. If not, an error message is printed and the next iteration of the loop is started immediately.
-
-3. We use "fixed point arithmetic" to perform the linear interpolation using only integers. This is done by multiplying the slope by a large number (1000 in this case) to simulate decimal places, and then dividing the final result by the same number to bring it back to the original scale. This will introduce some error due to rounding, but it allows you to avoid using floating point numbers.
-
-4. This code still assumes that pulse_data and angle_data are the same size and that their elements correspond one-to-one, as the original code did. If this is not the case, additional error checking and handling will be needed. 
-
-5. The conversion from angle to degrees, minutes, and seconds was removed since this requires floating point calculation. If you need this feature, you'll have to adjust the implementation to accommodate integer logic.
 
 
-## code
-`stage1.c`
+## code var-R-code
+ 
  
 
  
