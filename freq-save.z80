@@ -72,7 +72,7 @@ ld (frequency_high), a
     inc hl
     ld (hl), h
 
-    ; Continue with other code or go back to main loop
+ 
 
 ; Divide 16-bit number in HL by 16 (in-place division)
 ; Input: HL - 16-bit number, BC - divisor
@@ -86,7 +86,7 @@ div16_loop:
     djnz div16_loop
     ret
 
-; Other code and data definitions go here
+ 
 
 
  ; Read timer/counter value
@@ -114,7 +114,7 @@ div16_loop:
     inc hl
     ld (hl), h
 
-    ; Continue with other code or go back to main loop
+ 
 
 ; Divide 16-bit number in HL by 16 (in-place division)
 ; Input: HL - 16-bit number, BC - divisor
@@ -128,4 +128,4 @@ div16_loop:
     djnz div16_loop
     ret
 
-; Other code and data definitions go here
+ 
