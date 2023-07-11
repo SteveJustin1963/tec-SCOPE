@@ -33,7 +33,7 @@ make the 220 value the pot
 
 
 
-## code var-R-code
+
  
 ## Timer Frequency Calculation and Storage
 `freq-save.z80`
@@ -98,6 +98,8 @@ make the 220 value the pot
 
 11. Other code and data definitions go here.
 
+## convert freq to angle
+`var-R-code`
 
  
 
