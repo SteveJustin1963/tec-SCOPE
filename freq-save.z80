@@ -44,10 +44,7 @@ clock_frequency  equ 4000000  ; Example: assume 4 MHz clock frequency (4000000 H
 ld a, 0
 ld (frequency_low), a
 ld (frequency_high), a
-
-main_loop:
-    nop      ; No operation
-    jp main_loop  ; Jump back to the main loop
+ 
 
 
  ; Read timer/counter value
