@@ -88,44 +88,4 @@ div16_loop:
 
  
 
-
- ; Read timer/counter value
-    ld bc, timer_value_port   ; Load the 16-bit port address into BC
-    in a, (C)                 ; Input the value from the I/O port specified by BC into A
-    ld (timer_value), a       ; Store the value from A into the timer_value memory location
-
-   ; Calculate frequency
-    ld a, (timer_value)
-    inc a
-    ld l, a
-    ld hl, (timer_value + 1)  ; Load the low byte and the high byte from memory into HL
-    ld de, (timer_value + 3)  ; Load the second high byte and the low byte from memory into DE
-    ex de, hl                 ; Exchange the values between DE and HL
-
-
-
-    ; Divide timer value by frequency divisor (arbitrary calculation)
-    ld bc, clock_frequency / frequency_divisor
-    call div16
-
-  ; Store frequency
-    ld hl, frequency_low
-    ld (hl), l
-    inc hl
-    ld (hl), h
-
- 
-
-; Divide 16-bit number in HL by 16 (in-place division)
-; Input: HL - 16-bit number, BC - divisor
-; Output: HL - quotient
-div16:
-    xor a          ; Clear A register
-    ld b, 4        ; Number of divisions (4-bit shift)
-div16_loop:
-    srl h          ; Shift right HL (divide by 2)
-    rr l
-    djnz div16_loop
-    ret
-
  
