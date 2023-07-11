@@ -34,9 +34,9 @@ main_loop:
     ld a, (timer_value)
     inc a
     ld l, a
-    ld h, (timer_value + 1)  ; Load the value from memory into H register
+    ld h, (timer_value + 1)  ; Load the value from memory into H register............ERROR
     ld e, a
-    ld d, (timer_value + 2)  ; Load the value from memory into D register
+    ld d, (timer_value + 2)  ; Load the value from memory into D register............ERROR
 
     ; Divide timer value by frequency divisor (arbitrary calculation)
     ld bc, clock_frequency / frequency_divisor
