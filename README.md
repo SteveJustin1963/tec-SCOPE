@@ -7,7 +7,7 @@
 
 
 
-In this project, we will be developing a system to control a DIY Dobson 200mm F5 telescope in three stages. Here's my $35 Gumtree find to play with.
+In this project, we will be developing a system to read and control a cheap Dobson 200mm F5 telescope in three stages. This example cost $35 as found on Gumtree, came with a spare mirror but no lenses.
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
