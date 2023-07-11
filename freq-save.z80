@@ -1,6 +1,3 @@
-; NEEDS WORK, 16 BIT INTO 8 BIT REG ERRORS ALL OVER
-
-
 ; Define memory locations
 timer_value    equ 0x8000   ; Memory location to store timer/counter value
 frequency_low  equ 0x8002   ; Memory location to store low byte of frequency
@@ -15,8 +12,10 @@ frequency_divisor equ 16      ; Divisor for frequency calculation
 clock_frequency  equ 4000000  ; Example: assume 4 MHz clock frequency (4000000 Hz)
 
 ; Initialize timer/counter
-ld a, 0x0F      ; Set up the appropriate configuration for the timer/counter
-out (timer_port), a
+    ld bc, timer_port       ; Load the 16-bit port address into BC
+    ld a, 0x0F              ; Set up the appropriate configuration for the timer/counter
+    out (C), a              ; Send the data in A to the I/O port specified by BC
+
 
 ; Initialize frequency storage locations
 ld a, 0
@@ -26,25 +25,30 @@ ld (frequency_high), a
 main_loop:
     halt          ; Wait for interrupt
 
-    ; Read timer/counter value
-    in a, (timer_value_port)
-    ld (timer_value), a
+ ; Read timer/counter value
+    ld bc, timer_value_port   ; Load the 16-bit port address into BC
+    in a, (C)                 ; Input the value from the I/O port specified by BC into A
+    ld (timer_value), a       ; Store the value from A into the timer_value memory location
 
-    ; Calculate frequency
+   ; Calculate frequency
     ld a, (timer_value)
     inc a
     ld l, a
-    ld h, (timer_value + 1)  ; Load the value from memory into H register............ERROR
-    ld e, a
-    ld d, (timer_value + 2)  ; Load the value from memory into D register............ERROR
+    ld hl, (timer_value + 1)  ; Load the low byte and the high byte from memory into HL
+    ld de, (timer_value + 3)  ; Load the second high byte and the low byte from memory into DE
+    ex de, hl                 ; Exchange the values between DE and HL
+
+
 
     ; Divide timer value by frequency divisor (arbitrary calculation)
     ld bc, clock_frequency / frequency_divisor
     call div16
 
-    ; Store frequency
-    ld (frequency_low), l
-    ld (frequency_high), h
+  ; Store frequency
+    ld hl, frequency_low
+    ld (hl), l
+    inc hl
+    ld (hl), h
 
     ; Continue with other code or go back to main loop
 
