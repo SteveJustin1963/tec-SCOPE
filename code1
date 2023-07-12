@@ -1,105 +1,39 @@
+\ Constants
+1 CONSTANT PulseDuration     \ Duration of each pulse in milliseconds
+1000 CONSTANT SamplingPeriod  \ Sampling period in milliseconds (1 second)
+
 \ Variables
-0 VARIABLE pulse-count-x \ Cumulative pulse count for X axis
-0 VARIABLE pulse-count-y \ Cumulative pulse count for Y axis
-0 VARIABLE sample-count \ Number of samples taken
-0 VARIABLE pulse-frequency-x \ Pulse frequency for X axis
-0 VARIABLE pulse-frequency-y \ Pulse frequency for Y axis
-0 VARIABLE prev-pulse-count-x \ Previous pulse count for X axis
-0 VARIABLE prev-pulse-count-y \ Previous pulse count for Y axis
+VARIABLE PulseCount     \ Counter for the number of pulses
+VARIABLE TotalPulses    \ Total number of pulses accumulated
+VARIABLE PC1            \ Storage location for the averaged value
 
-\ Counting Pulses
-: count-pulses ( duration port -- )
-  OVER DUP 0 DO
-    DUP I 2DUP I + COUNT 2DROP
-    ROT +!
-    1+ DUP 2* MS
-  LOOP
-  2DROP ;
+: Initialize ( -- )
+   0 PulseCount !         \ Reset pulse count
+   0 TotalPulses !        \ Reset total pulses
+   0 PC1 !                \ Reset PC1
 
-\ Calibration
-: calibrate-0 ( -- )
-  ." Perform manual calibration at 0 degrees for X axis." CR
-  0 TO pulse-count-x
-  ." Perform manual calibration at 0 degrees for Y axis." CR
-  0 TO pulse-count-y
-  ." Calibration process successful." CR ;
+: CountPulses ( -- )
+   PulseDuration 0 
+   DO
+      port07 @            \ Read from port07
+      IF
+         1 PulseCount +!  \ Increment pulse count
+      THEN
+      1 MS                \ Delay for PulseDuration milliseconds
+   LOOP
 
-: calibrate-90 ( -- )
-  ." Perform manual calibration at 90 degrees for X axis." CR
-  0 TO pulse-count-x
-  ." Perform manual calibration at 90 degrees for Y axis." CR
-  0 TO pulse-count-y
-  ." Calibration process successful." CR ;
+: AveragePulses ( -- )
+   SamplingPeriod 0 
+   DO
+      CountPulses         \ Count pulses for 1 second
+   LOOP
+   PulseCount @ TotalPulses +!  \ Accumulate pulse count
+   TotalPulses @ SamplingPeriod @ / 0 MAX PC1 !  \ Calculate and store average in PC1
 
-\ Calculate Angle
-: calculate-angle ( -- )
-  pulse-count-x @ sample-count @ / \ Average pulse count per second for X axis
-  pulse-count-y @ sample-count @ / \ Average pulse count per second for Y axis
-  0 sample-count ! \ Reset sample count
-  \ Scale pulse count to frequency per second for each axis
-  pulse-frequency-x ! pulse-count-x @ 1000 * sample-count @ / 
-  pulse-frequency-y ! pulse-count-y @ 1000 * sample-count @ / 
-  \ Calculate angle based on the frequency value for each axis
-  \ (code to be added here) ;
-
-\ Determine Direction of Movement
-: determine-direction ( -- )
-  pulse-count-x @ prev-pulse-count-x @ - 0 > IF
-    ." X axis moved in positive direction." CR
-  ELSE
-    ." X axis moved in negative direction." CR
-  THEN
-  pulse-count-y @ prev-pulse-count-y @ - 0 > IF
-    ." Y axis moved in positive direction." CR
-  ELSE
-    ." Y axis moved in negative direction." CR
-  THEN
-  pulse-count-x @ TO prev-pulse-count-x !
-  pulse-count-y @ TO prev-pulse-count-y ! ;
-
-\ Sending Angle
-: send-angle ( -- )
-  \ Convert movement data into serial data ASCII codes for Stellarium
-  \ Send the ASCII codes over serial port B
-  \ (code to be added here) ;
-
-\ Out of Range
-: out-of-range? ( count -- flag )
-  0 < DUP 90 > OR ;
-
-: check-out-of-range ( -- )
-  pulse-count-x @ out-of-range? IF
-    ." X axis pulse count out of range." CR
-  THEN
-  pulse-count-y @ out-of-range? IF
-    ." Y axis pulse count out of range." CR
-  THEN ;
-
-\ Main Program
-: main ( -- )
-  ." Starting calibration at 0 degrees for X axis..." CR
-  calibrate-0
-  ." Counting pulses for 2 seconds on port 1 for X axis..." CR
-  2000 1 count-pulses
-
-  ." Starting calibration at 0 degrees for Y axis..." CR
-  calibrate-0
-  ." Counting pulses for 2 seconds on port 2 for Y axis..." CR
-  2000 2 count-pulses
-
-  ." Starting calibration at 90 degrees for X axis..." CR
-  calibrate-90
-  ." Counting pulses for 2 seconds on port 1 for X axis..." CR
-  2000 1 count-pulses
-
-  ." Starting calibration at 90 degrees for Y axis..." CR
-  calibrate-90
-  ." Counting pulses for 2 seconds on port 2 for Y axis..." CR
-  2000 2 count-pulses
-
-  calculate-angle
-  determine-direction
-  send-angle
-  check-out-of-range
-  \ Add calibration with a reference star for confirmation
+\ Main program
+: Main ( -- )
+   Initialize
+   AveragePulses
 ;
+
+Main  \ Start the program
