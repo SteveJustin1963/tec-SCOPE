@@ -9,39 +9,18 @@
 
 
 ## In the first stage, 
-Certainly! Here are the steps involved in your project using bullet points:
 
-- Retaining Dobson's 2-axis mount:
-  - The original Dobson's 2-axis mount is kept, allowing manual movement along the altitude and azimuth axes.
-  
-- Attaching resistor pots:
-  - Two resistor pots are attached to each axis pivot point to measure the approximate position of the mount.
-  
-- Converting potentiometer readings:
-  - A 555+ circuit is used to convert the potentiometer readings into a variable frequency of square pulses.
-  
-- Sending pulses to I/O port:
-  - The pulses are sent to an I/O port on the TEC1 for pulse counting per second.
-  
-- Counting pulse frequencies:
-  - Pulse frequencies in the low and sub kHz range are suitable for counting through the I/O port.
-  
-- Interpolation and scaling:
-  - Interpolation techniques using a scaling factor are employed to determine the angle based on the pulse frequency.
-  
-- Determining the direction of movement:
-  - By comparing pulse counts to previous intervals, the direction of movement can be determined.
-  
-- Converting movement data to serial data:
-  - The movement data is converted into serial data using ASCII codes.
-  
-- Integration with Stellarium:
-  - Stellarium, an astronomical software, can use the ASCII codes to compute the position of the crosshairs on the star map.
-  
-- Calibration with a reference star:
-  - To confirm the accuracy of the observations, calibration with a reference star is required.
+- Retaining Dobson's 2-axis mount: The original Dobson's 2-axis mount is kept, allowing manual movement along the altitude and azimuth axes.
+- Attaching resistor pots: Two resistor pots are attached to each axis pivot point to measure the approximate position of the mount.
+- Converting potentiometer readings: A 555+ circuit is used to convert the potentiometer readings into a variable frequency of square pulses.
+- Sending pulses to I/O port: The pulses are sent to an I/O port on the TEC1 for pulse counting per second.
+- Counting pulse frequencies: Pulse frequencies in the low and sub kHz range are suitable for counting through the I/O port.
+- Interpolation and scaling: Interpolation techniques using a scaling factor are employed to determine the angle based on the pulse frequency.
+- Determining the direction of movement: By comparing pulse counts to previous intervals, the direction of movement can be determined.
+- Converting movement data to serial data: The movement data is converted into serial data using ASCII codes.
+- Integration with Stellarium: Stellarium, an astronomical software, can use the ASCII codes to compute the position of the crosshairs on the star map.
+- Calibration with a reference star: To confirm the accuracy of the observations, calibration with a reference star is required.
 
-By following these steps, you aim to modify Dobson's mount to enable tracking and positioning information that can be used in conjunction with Stellarium for astronomical observations.
 
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
 
