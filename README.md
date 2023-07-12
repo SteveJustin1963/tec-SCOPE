@@ -9,9 +9,17 @@
 
 
 ## In the first stage, 
-We will keep the Dobson's 2 axis mount with manual movement on the altitude (vertical) and azimuth (horizontal) axes. 
-
-Two resistor pots will be attached on each axis pivot point to measure approx position. A 555 + circuit will convert this into a variable frequency of square pulses, which will be sent to a io port on the tec1 to be counted per second. With the pulse frequency in the low and sub khz counting the pulses through the io should be ok. Using a scaling factor we interpolate to scopes angle from the freq. Additionally, we can compare the counts to previous intervals to determine the direction of movement. We can then converted this to serial data ASCII codes that Stellariumcan use to compute the position of the crosshairs on the map. After calibration with a reference star, we can confirm our observations.
+- Dobson's 2 axis mount will be retained, allowing manual movement on the altitude and azimuth axes.
+- Two resistor pots will be attached to each axis pivot point to measure approximate position.
+- A 555 + circuit will convert the potentiometer readings into a variable frequency of square pulses.
+- The pulses will be sent to an I/O port on the TEC1 for pulse counting per second.
+- Pulse frequencies in the low and sub kHz range are suitable for counting through the I/O port.
+- Interpolation using a scaling factor will determine the angle based on the pulse frequency.
+- By comparing pulse counts to previous intervals, the direction of movement can be determined.
+- The movement data can be converted into serial data ASCII codes for Stellarium.
+- Stellarium can use the ASCII codes to compute the position of the crosshairs on the map.
+- Calibration with a reference star is required to confirm the observations.
+- 
 
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
 
@@ -25,16 +33,19 @@ make the 220 value the pot
 
 
  
-
-
-
-
-
-
  
 
 ## In the second stage, 
-we will attach two DC motor drives to the mount using threaded rods and nuts that act as a worm drive. A slotted wheel on the shaft will interrupt an optical switch to count the rotations, and this data will be sent to the TEC-1, which will use MINT to convert it into ASCII codes and send it to Stellarium. The resistor pots on the mount axes will remain in place to compare measurements. The relationship between the number of turns and the angle of the mount is not linear due to the cam, so we will use code and trigonometry functions to calculate an accurate position. The worm drive and cam radius design also improve torque control and reduce backlash. We will add switches to slew the DC motors to aim at celestial objects, and we will use the TEC-1 to control the motors to track or hold onto celestial objects.
+- Two DC motor drives will be attached to the mount using threaded rods and nuts as worm drives.
+- An optical switch will be used to count the rotations of a slotted wheel attached to the motor shaft.
+- The rotation data will be sent to the TEC-1 for conversion into ASCII codes using MINT.
+- The ASCII codes will be sent to Stellarium for processing.
+- The resistor pots on the mount axes will be retained for comparison purposes.
+- The relationship between the number of turns and the mount angle is non-linear due to the cam.
+- Code and trigonometry functions will be used to accurately calculate the mount's position.
+- The worm drive and cam radius design will enhance torque control and minimize backlash.
+- Switches will be added to enable slewing of the DC motors for aiming at celestial objects.
+- The TEC-1 will control the motors to track or maintain the position of celestial objects.
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
 ![image](https://user-images.githubusercontent.com/58069246/210935138-3a75fd25-d7a7-4a21-80bd-966cc343f6ca.png)
