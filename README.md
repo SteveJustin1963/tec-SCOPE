@@ -1,14 +1,11 @@
 # A TEC-1 Controlled Telescope
-
-![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png)  
-
-
+![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
 - develop a system to read and control a cheap Dobson 200mm F5 telescope 
 - in three stages.
 
 
-![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
+
 
 
 ## In the first stage, 
