@@ -33,7 +33,49 @@ make the 220 value the pot
 ![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
 
 ## code1
- 
+ ```
+Constants:
+    SET PULSE_DURATION to 1  // Duration of each pulse in milliseconds
+    SET SAMPLING_PERIOD to 1000  // Sampling period in milliseconds (1 second)
+    SET MIN_PULSES to 0  // Minimum pulse count
+    SET MAX_PULSES to 1000  // Maximum pulse count
+    SET MIN_ANGLE to 0  // Minimum angle in degrees
+    SET MAX_ANGLE to 90  // Maximum angle in degrees
+
+Variables:
+    DECLARE pulseCount     // Counter for the number of pulses
+    DECLARE totalPulses    // Total number of pulses accumulated
+    DECLARE averagedPulse  // Storage location for the averaged value
+    DECLARE interpolatedAngle  // Interpolated angle based on pulse count
+
+Initialize:
+    SET pulseCount to 0         // Reset pulse count
+    SET totalPulses to 0        // Reset total pulses
+    SET averagedPulse to 0      // Reset averaged pulse
+    SET interpolatedAngle to 0  // Reset interpolated angle
+
+CountPulses:
+    FOR each pulse in PULSE_DURATION:
+        IF pulse is detected:
+            Increment pulseCount  // Increment pulse count
+        Delay for PULSE_DURATION milliseconds
+
+AveragePulses:
+    FOR each sampling period in SAMPLING_PERIOD:
+        CALL CountPulses         // Count pulses for 1 second
+    Accumulate pulseCount to totalPulses  // Accumulate pulse count
+    Calculate and store average (totalPulses / SAMPLING_PERIOD) in averagedPulse
+    CALL InterpolatePulseToAngle  // Convert pulse count to angle
+
+InterpolatePulseToAngle:
+    SET relativePosition to (averagedPulse - MIN_PULSES) / (MAX_PULSES - MIN_PULSES)  // Calculate the relative position of the pulse count within the range
+    SET interpolatedAngle to relativePosition * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE  // Interpolate the angle based on the relative position
+
+Main:
+    CALL Initialize
+    CALL AveragePulses
+```
+
 
 ## In the second stage, 
 - Two DC motor drives will be attached to the mount using threaded rods and nuts as worm drives.
