@@ -31,7 +31,92 @@ make the 220 value the pot
 
 ![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
 
+```
+\ Variables
+0 CONSTANT pulse-count-x \ Cumulative pulse count for X axis
+0 CONSTANT pulse-count-y \ Cumulative pulse count for Y axis
+0 CONSTANT sample-count \ Number of samples taken
 
+\ Counting Pulses
+: count-pulses ( duration port -- )
+  OVER DUP 0 DO
+    DUP I 2DUP I + COUNT 2DROP
+    ROT +!
+    1+ DUP 2* MS
+  LOOP
+  2DROP ;
+
+\ Calibration
+: calibrate-0 ( -- )
+  ." Perform manual calibration at 0 degrees for X axis." CR
+  0 TO pulse-count-x
+  ." Perform manual calibration at 0 degrees for Y axis." CR
+  0 TO pulse-count-y
+  ." Calibration process successful." CR ;
+
+: calibrate-90 ( -- )
+  ." Perform manual calibration at 90 degrees for X axis." CR
+  0 TO pulse-count-x
+  ." Perform manual calibration at 90 degrees for Y axis." CR
+  0 TO pulse-count-y
+  ." Calibration process successful." CR ;
+
+\ Calculate Angle
+: calculate-angle ( -- )
+  pulse-count-x sample-count / \ Average pulse count per second for X axis
+  pulse-count-y sample-count / \ Average pulse count per second for Y axis
+  0 TO sample-count
+  \ Scale pulse count to frequency per second for each axis
+  \ Calculate angle based on the frequency value for each axis
+  \ Store calculated angle in angle-x and angle-y variables
+  \ (code to be added here) ;
+
+\ Sending Angle
+: send-angle ( -- )
+  \ Send angle-x value over serial port B
+  \ Send angle-y value over serial port B
+  \ (code to be added here) ;
+
+\ Out of Range
+: out-of-range? ( count -- flag )
+  0 < DUP 90 > OR ;
+
+: check-out-of-range ( -- )
+  pulse-count-x out-of-range? IF
+    ." X axis pulse count out of range." CR
+  THEN
+  pulse-count-y out-of-range? IF
+    ." Y axis pulse count out of range." CR
+  THEN ;
+
+\ Main Program
+: main ( -- )
+  ." Starting calibration at 0 degrees for X axis..." CR
+  calibrate-0
+  ." Counting pulses for 2 seconds on port 1 for X axis..." CR
+  2000 1 count-pulses
+
+  ." Starting calibration at 0 degrees for Y axis..." CR
+  calibrate-0
+  ." Counting pulses for 2 seconds on port 2 for Y axis..." CR
+  2000 2 count-pulses
+
+  ." Starting calibration at 90 degrees for X axis..." CR
+  calibrate-90
+  ." Counting pulses for 2 seconds on port 1 for X axis..." CR
+  2000 1 count-pulses
+
+  ." Starting calibration at 90 degrees for Y axis..." CR
+  calibrate-90
+  ." Counting pulses for 2 seconds on port 2 for Y axis..." CR
+  2000 2 count-pulses
+
+  calculate-angle
+  send-angle
+  check-out-of-range
+  \ Add exception handling for communication faults or calibration failures
+;
+```
  
  
 
