@@ -9,17 +9,17 @@
 
 
 ## In the first stage, 
+1. Retaining Dobson's 2-axis mount: Keep the original Dobson's 2-axis mount, allowing manual movement along the altitude and azimuth axes.
+2. Attaching resistor pots: Attach two resistor pots to each axis pivot point to measure the approximate position of the mount.
+3. Converting potentiometer readings: Use a 555+ circuit to convert the potentiometer readings into a variable frequency of square pulses.
+4. Sending pulses to I/O port: Send the pulses to an I/O port on the TEC1 for pulse counting per second.
+5. Counting pulse frequencies: Utilize pulse frequencies in the low and sub kHz range suitable for counting through the I/O port.
+6. Interpolation and scaling: Employ interpolation techniques using a scaling factor to determine the angle based on the pulse frequency.
+7. Determining the direction of movement: Compare pulse counts to previous intervals to determine the direction of movement.
+8. Converting movement data to serial data: Convert the movement data into serial data using ASCII codes.
+9. Integration with Stellarium: Use the ASCII codes to compute the position of the crosshairs on the star map using Stellarium, an astronomical software.
+10. Calibration with a reference star: Perform calibration with a reference star to confirm the accuracy of the observations.
 
-- Retaining Dobson's 2-axis mount: The original Dobson's 2-axis mount is kept, allowing manual movement along the altitude and azimuth axes.
-- Attaching resistor pots: Two resistor pots are attached to each axis pivot point to measure the approximate position of the mount.
-- Converting potentiometer readings: A 555+ circuit is used to convert the potentiometer readings into a variable frequency of square pulses.
-- Sending pulses to I/O port: The pulses are sent to an I/O port on the TEC1 for pulse counting per second.
-- Counting pulse frequencies: Pulse frequencies in the low and sub kHz range are suitable for counting through the I/O port.
-- Interpolation and scaling: Interpolation techniques using a scaling factor are employed to determine the angle based on the pulse frequency.
-- Determining the direction of movement: By comparing pulse counts to previous intervals, the direction of movement can be determined.
-- Converting movement data to serial data: The movement data is converted into serial data using ASCII codes.
-- Integration with Stellarium: Stellarium, an astronomical software, can use the ASCII codes to compute the position of the crosshairs on the star map.
-- Calibration with a reference star: To confirm the accuracy of the observations, calibration with a reference star is required.
 
 
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
