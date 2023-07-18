@@ -32,6 +32,14 @@ make the 220 value the pot
 
 ![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
 
+## another
+https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency-converter/
+
+![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/5af4808d-1427-46c5-b78d-ee9c48157a15)
+
+
+
+
 
 ## In the second stage, 
 - Two DC motor drives will be attached to the mount using threaded rods and nuts as worm drives.
