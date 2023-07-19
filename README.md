@@ -8,7 +8,7 @@
 
 
 
-## In the first stage, 
+##  stage1 , 
 1. Retaining Dobson's 2-axis mount: Keep the original Dobson's 2-axis mount, allowing manual movement along the altitude and azimuth axes.
 2. Attaching resistor pots: Attach two resistor pots to each axis pivot point to measure the approximate position of the mount.
 3. Converting potentiometer readings: Use a 555+ circuit to convert the potentiometer readings into a variable frequency of square pulses.
@@ -41,7 +41,7 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 
 
 
-## In the second stage, 
+##  stage 2, 
 - Two DC motor drives will be attached to the mount using threaded rods and nuts as worm drives.
 - An optical switch will be used to count the rotations of a slotted wheel attached to the motor shaft.
 - The rotation data will be sent to the TEC-1 for conversion into ASCII codes using MINT.
@@ -62,7 +62,7 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 
 
 
-## In the third stage, 
+##  stage 3, 
 we will remove the cams and replace the DC motors with stepper motors, which will be geared at a 6:1 ratio or higher, with a wheel mounted to the side of the axis. This will allow us to achieve more precise positioning. We will also remove the resistor pots and replace them with rotary encoders to measure the position of the motors and send this data to the TEC-1, which will use MINT to convert it into ASCII codes and send it to Stellarium. With the gearing and software enhancements, we will be able to increase position control and implement torque compensation to maintain a constant level of force on the telescope, reducing shaking and improving stability. Slewing will be done by software rather than DC switches, allowing us to move the telescope to specific locations on the sky map and track celestial objects as they move across the sky or follow moving ones like satellites.
 
 
