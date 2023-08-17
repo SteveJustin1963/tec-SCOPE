@@ -148,6 +148,14 @@ The output of this modified code will be a series of numbers, each representing 
 
 # Activity log
 
+## 17.8-2023
+considering Stainless Steel Worm Tin Bronze Worm Gear Wear 1:90 Reduction Ratio Large Reduf
+
+ 
+
+
+
+
 ## 3.07.2023
 Looking full moon, fantastic detail, brightness hurts the eye, put camera body try photograph, focal plane lower than camera
 
