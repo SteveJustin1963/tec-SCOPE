@@ -30,6 +30,44 @@ make the 220 value the pot
 
 ![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
 
+
+## 8254 interval timer
+using the 8254 Programmable Interval Timer (PIT) to generate a square wave and measure its frequency. 
+
+in the code:
+
+1. **Memory Locations and Constants:**
+   - `timer_value`, `frequency_low`, and `frequency_high`: These memory locations are used to store the timer/counter value, low byte of frequency, and high byte of frequency, respectively.
+   - `pit_control_port` and `pit_data_port`: These constants represent the I/O port addresses for the PIT control and data ports.
+   - `frequency_divisor`: This constant is used as the divisor for frequency calculation.
+   - `clock_frequency`: This constant represents the clock frequency (assumed to be 4 MHz in this example).
+
+2. **Program Start (`org 0x0000`):**
+   - The program starts executing at the address `0x0000`.
+
+3. **Main Program (`main`):**
+   - The program initializes the PIT counter 0 in square wave mode by sending appropriate control values to the PIT control port.
+   - The initial count value for counter 0 is set to 0xFFFF (maximum 16-bit value), effectively setting the timer to count down from its maximum value.
+   - The program then reads the timer/counter value from the PIT and stores it in the memory locations `timer_value` and `timer_value + 1`.
+   - It calculates the frequency by dividing the clock frequency by the `frequency_divisor` using a subroutine called `div16`.
+   - The calculated frequency's low and high bytes are stored in `frequency_low` and `frequency_high` memory locations.
+   - The program then halts, waiting for further instructions.
+
+4. **Subroutine `div16`:**
+   - This subroutine divides the 16-bit number in HL by 16 (equivalent to a right shift by 4 bits, which is a division by 2^4 = 16).
+   - It performs 4 shifts (one shift per bit in the low byte) using the `srl` instruction and the `djnz` loop to repeat the shift 4 times.
+
+5. **Additional Subroutines and Code:**
+   - There's a comment suggesting that additional subroutines and code can be added at this point in the program.
+
+6. **End of Program (`end main`):**
+   - This marks the end of the program.
+
+code assumes a certain clock frequency and configuration for the PIT.  with a different clock frequency or configuration, need to adjust the constants and calculations accordingly. Additionally, the code doesn't include the handling of the square wave signal itself; it focuses on initializing the PIT and calculating the frequency based on the timer/counter values. If you want to perform additional tasks with the generated square wave, you'll need to extend the code accordingly.
+
+
+
+
 ## another
 https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency-converter/
 
