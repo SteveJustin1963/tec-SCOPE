@@ -1,0 +1,63 @@
+; Define memory locations
+timer_value    equ 0x8000   ; Memory location to store timer/counter value
+frequency_low  equ 0x8002   ; Memory location to store low byte of frequency
+frequency_high equ 0x8003   ; Memory location to store high byte of frequency
+
+; Define I/O port addresses for 8254
+pit_control_port  equ 0x10    ; Port address for PIT control (8-bit)
+pit_data_port     equ 0x11    ; Port address for PIT data (8-bit)
+
+; Define constants
+frequency_divisor equ 16        ; Divisor for frequency calculation
+clock_frequency  equ 4000000    ; Example: assume 4 MHz clock frequency (4000000 Hz)
+
+org 0x0000    ; Program start address
+
+main:
+    ; Initialize the C register with the control port value
+    ld bc, pit_control_port
+    ; Initialize PIT counter 0 in square wave mode
+    ld a, 00110100b
+    out (c), a
+
+    ; Initialize the C register with the data port value
+    ld bc, pit_data_port
+    ; Set initial count value for counter 0 (16-bit value)
+    ld hl, 0xFFFF
+    ld a, l
+    out (c), a    ; Send low byte of counter value
+    ld a, h
+    out (c), a    ; Send high byte of counter value
+
+    ; Read timer/counter value from PIT
+    in a, (c)
+    ld (timer_value), a    ; Store low byte
+    in a, (c)
+    ld (timer_value + 1), a; Store high byte
+
+    ; Calculate frequency
+    ld bc, clock_frequency / frequency_divisor
+    call div16
+    ld a, l
+    ld (frequency_low), a   ; Store low byte of frequency
+    ld a, h
+    ld (frequency_high), a  ; Store high byte of frequency
+
+    ; Halt or loop here as needed
+    halt
+
+; Divide 16-bit number in HL by 16 (in-place division)
+; Input: HL - 16-bit number, BC - divisor
+; Output: HL - quotient
+div16:
+    xor a         ; Clear A register
+    ld b, 4       ; Number of divisions (4-bit shift)
+div16_loop:
+    srl h         ; Shift right HL (divide by 2)
+    rr l
+    djnz div16_loop
+    ret
+
+; Additional subroutines and code can be added here
+
+end main    ; End of program
