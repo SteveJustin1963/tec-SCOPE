@@ -30,7 +30,8 @@ make the 220 value the pot
 
 
 ## 8254 interval timer
-using the 8254 Programmable Interval Timer (PIT) to generate a square wave and use this to measure the input frequency. 
+if we can guess a duration from the code internaly while we read the freq pulses we maybe able to gauge the angle. but if not then use an 
+8254 Programmable Interval Timer (PIT) to generate a regular square wave and use this to calculate the input frequency then turn that into the angle. 
 
 in the code:
 
