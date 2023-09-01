@@ -8,7 +8,7 @@
 
 
 
-##  stage1 
+##  stage-1 
 - 555 circuit to convert the potentiometer position into variable freq square pulses. 
 - send to I/O port, 
 - take average convert to freq number
@@ -19,10 +19,8 @@
 - config Stellarium to read and update star map
 
 
-
+## generate a variable freq from a pot
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
-
- 
 
 circuit simulator https://tinyurl.com/2p8fdmws
 
@@ -32,7 +30,7 @@ make the 220 value the pot
 
 
 ## 8254 interval timer
-using the 8254 Programmable Interval Timer (PIT) to generate a square wave and measure its frequency. 
+using the 8254 Programmable Interval Timer (PIT) to generate a square wave and use this to measure the input frequency. 
 
 in the code:
 
@@ -77,8 +75,10 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 
 
 
-##  stage 2, 
+##  stage 2 
 - Two DC motor drives will be attached to the mount using threaded rods and nuts as worm drives.
+the underide of mount shud have a Flexible Gear Racks attatched
+- 
 - An optical switch will be used to count the rotations of a slotted wheel attached to the motor shaft.
 - The rotation data will be sent to the TEC-1 for conversion into ASCII codes using MINT.
 - The ASCII codes will be sent to Stellarium for processing.
