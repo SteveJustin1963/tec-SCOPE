@@ -147,7 +147,7 @@ The output of this modified code will be a series of numbers, each representing 
 - joystick slew scope to new positions 
 - remote control over modem, using defined protocols, TCS - Telescope Control System
 - camera mount + camera
-- photo compositing on pc
+- photo compositing on pc, Lucky Imaging technique - 
 - MINT code with and without APU help
 - 7 Congruent Circles In A Regular Hexagon, use microwave oven glass.
 
@@ -181,9 +181,13 @@ The output of this modified code will be a series of numbers, each representing 
 - https://www.ngc7000.com/docu-skypikit/EN/EN_200226_DobsonPushtoBoard.pdf
 - https://asa.astronomy.org.au/
 - https://skywatcheraustralia.com.au/product/16-collapsible-dobsonian/
+- https://en.wikipedia.org/wiki/Lucky_imaging
 
 
 # Activity log
+
+## 9-9-23
+motor worm drive and shaft, done
 
 ## 17.8-2023
 considering Stainless Steel Worm Tin Bronze Worm Gear Wear 1:90 Reduction Ratio Large Reduf
