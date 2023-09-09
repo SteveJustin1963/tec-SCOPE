@@ -10,15 +10,11 @@
 
 ##  stage-1 - only read pot values to get angle
 - 555 circuit to convert the potentiometer value = position into variable freq square pulses. 
-- intput to I/O port 
-- take average and convert to freq number
-- calibate at 0 and 90 degrees to coreelate with freq at these positons
-- Interpolate the in between angles 
-- send angle to 7 seg display
-- converted angle into to star position data and send to serial Stellarium over serial port
-- Stellarium finds location on star map
-- compare to visual data and confirm is correct
-
+- send to I/O port and calculate average = freq number
+- calibrate; correlate at 0 and 90 degrees to freq at these positons- save
+- Interpolate the in between angles from in between freq and send to 7seg display
+- converted angle to star position, send to Stellarium over serial port
+- Stellarium finds location on star map, compare to visual data 
 
 ## generate a variable freq from a pot
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
@@ -31,7 +27,7 @@ make the 220 value the pot
 
 
 ## 8254 interval timer
-if we can guess a duration from the code internaly while we read the freq pulses we maybe able to gauge the angle. but if not then use an 
+if we can guess a duration from the code internally while we read the freq pulses we maybe able to gauge the angle. but if not then use an 
 8254 Programmable Interval Timer (PIT) to generate a regular square wave and use this to calculate the input frequency then turn that into the angle. 
 
 in the code:
@@ -78,14 +74,14 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 
 
 ##  stage 2 - pots with cam angle motors
-- Two DC motor drives attached to the telescope mount using threaded rods+ nuts= worm drives acting as a swinging cam
+- Two DC motor drives attached to the telescope mount using threaded rod+ nuts= worm drives acting as a swinging cam
 - The worm drive and cam radius design will enhance torque control and minimize backlash.
 - add 2 switch joy stick to enable manual slewing 
 - tec1 also outputs 2 motor on off controls
-- optical gate counts rotations from slotted wheel on shaft to wrkout movement
+- optical gate counts rotations from slotted wheel on shaft to workout movement
 - calibrate at 0 and 90 degrees, also resistor pots are left on for comparison/ extra calibration 
 - motor turns vs angle is non-linear due to the cam action. non-linear interpolation and trigonometry used to calculate angles
-- Stellarium gets postion data via serial and also can issue movement commands back to motors
+- Stellarium gets position data via serial and also can issue movement commands back to motors
 
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
@@ -112,7 +108,7 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/3-23-2.png)
 
-The Rotary Encoder HN3806-AB is a device that is used to measure the rotational speed, angle, acceleration, and length of an object. It generates 600 pulses per revolution and has a green A phase, white B phase, red Vcc power +, and black V0. It is powered by a DC5-24V power source and has a shaft size of 613mm. The encoder has a size of 3835.5mm and an output of AB 2phase rectangular orthogonal pulses. It has a maximum mechanical speed of 5000 R/min and a response frequency of 0-20KHz. The encoder comes with a 1.5 meter cable and should not have its AB 2phase output directly connected to VCC to avoid damaging the output triode. It is suitable for use in intelligent control and various displacement measurement applications.
+The Rotary Encoder HN3806-AB is a device that is used to measure the rotational speed, angle, acceleration, and length of an object. It generates 600 pulses per revolution and has a green A phase, white B phase, red Vcc power +, and black V0. It is powered by a DC5-24V power source and has a shaft size of 613mm. The encoder has a size of 3835.5mm and an output of AB 2 phase rectangular orthogonal pulses. It has a maximum mechanical speed of 5000 R/min and a response frequency of 0-20KHz. The encoder comes with a 1.5 meter cable and should not have its AB 2 phase output directly connected to VCC to avoid damaging the output triode. It is suitable for use in intelligent control and various displacement measurement applications.
 
 I need to add a Timing Belt Drive Pulley to its 6mm shaft. will construct a wood wheel and invert a drive pulley with the teeth facing out so the drive pulley can interface with it
 
@@ -239,6 +235,7 @@ I always intended to add buffered serial interrupts to the MINT code, and the fi
 chat with Peter Forth: I am interested in using the Planetarium software and the NodeMCU ESP8266 for an astronomy project. I am a member of the Win32forth group, which includes astronomers such as Michel, Iruata Souza, and Roland Herrera. Michel Jean, a professor from Canada, has started his own version of Stellarium on ForthWin. I own an Arduino Mega2560, which I have used to control a Mearm robot and other projects. I believe it would be easy to use this device to control a stepper motor drive for a 2-axis telescope mount.
 
 There are many people in the group who are interested in astronomy and creating graphs related to celestial objects. I am excited to work on this project and learn more about astronomy and the use of technology in this field.
+
 
 
 
