@@ -5,6 +5,8 @@
 - in three stages.
 
 
+## stage -0.9 plumb bob + protractor and compass
+- attached plumb bob and protractor to side and compass to base to get manual readings 
 
 
 
