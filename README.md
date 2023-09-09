@@ -8,7 +8,7 @@
 
 
 
-##  stage-1 
+##  stage-1 - only read pot values to get angle
 - 555 circuit to convert the potentiometer position into variable freq square pulses. 
 - send to I/O port, 
 - take average convert to freq number
@@ -76,7 +76,7 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 
 
 
-##  stage 2 
+##  stage 2 - pots with cam angle motors
 - Two DC motor drives will be attached to the mount using threaded rods and nuts as worm drives.
 the underide of mount shud have a Flexible Gear Racks attatched
 - 
@@ -99,7 +99,7 @@ the underide of mount shud have a Flexible Gear Racks attatched
 
 
 
-##  stage 3, 
+##  stage 3 - remove pots and cam motos, replace with geared motor drive and rotary encoders
 we will remove the cams and replace the DC motors with stepper motors, which will be geared at a 6:1 ratio or higher, with a wheel mounted to the side of the axis. This will allow us to achieve more precise positioning. We will also remove the resistor pots and replace them with rotary encoders to measure the position of the motors and send this data to the TEC-1, which will use MINT to convert it into ASCII codes and send it to Stellarium. With the gearing and software enhancements, we will be able to increase position control and implement torque compensation to maintain a constant level of force on the telescope, reducing shaking and improving stability. Slewing will be done by software rather than DC switches, allowing us to move the telescope to specific locations on the sky map and track celestial objects as they move across the sky or follow moving ones like satellites.
 
 
