@@ -78,18 +78,15 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 
 
 ##  stage 2 - pots with cam angle motors
-- Two DC motor drives will be attached to the mount using threaded rods and nuts as worm drives.
-the underide of mount shud have a Flexible Gear Racks attatched
-- 
-- An optical switch will be used to count the rotations of a slotted wheel attached to the motor shaft.
-- The rotation data will be sent to the TEC-1 for conversion into ASCII codes using MINT.
-- The ASCII codes will be sent to Stellarium for processing.
-- The resistor pots on the mount axes will be retained for comparison purposes.
-- The relationship between the number of turns and the mount angle is non-linear due to the cam.
-- Code and trigonometry functions will be used to accurately calculate the mount's position.
+- Two DC motor drives attached to the telescope mount using threaded rods+ nuts= worm drives acting as a swinging cam
 - The worm drive and cam radius design will enhance torque control and minimize backlash.
-- Switches will be added to enable slewing of the DC motors for aiming at celestial objects.
-- The TEC-1 will control the motors to track or maintain the position of celestial objects.
+- add 2 switch joy stick to enable manual slewing 
+- tec1 also outputs 2 motor on off controls
+- optical gate counts rotations from slotted wheel on shaft to wrkout movement
+- calibrate at 0 and 90 degrees, also resistor pots are left on for comparison/ extra calibration 
+- motor turns vs angle is non-linear due to the cam action. non-linear interpolation and trigonometry used to calculate angles
+- Stellarium gets postion data via serial and also can issue movement commands back to motors
+
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
 ![image](https://user-images.githubusercontent.com/58069246/210935138-3a75fd25-d7a7-4a21-80bd-966cc343f6ca.png)
@@ -101,7 +98,9 @@ the underide of mount shud have a Flexible Gear Racks attatched
 
 
 ##  stage 3 - remove pots and cam motos, replace with geared motor drive and rotary encoders
-we will remove the cams and replace the DC motors with stepper motors, which will be geared at a 6:1 ratio or higher, with a wheel mounted to the side of the axis. This will allow us to achieve more precise positioning. We will also remove the resistor pots and replace them with rotary encoders to measure the position of the motors and send this data to the TEC-1, which will use MINT to convert it into ASCII codes and send it to Stellarium. With the gearing and software enhancements, we will be able to increase position control and implement torque compensation to maintain a constant level of force on the telescope, reducing shaking and improving stability. Slewing will be done by software rather than DC switches, allowing us to move the telescope to specific locations on the sky map and track celestial objects as they move across the sky or follow moving ones like satellites.
+- remove cams, motors and resistor pots 
+- replace with reduction geared DC or stepper motors and with rotary encoder
+- keep manual slewing and software motor control 
 
 
 ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/3-23.png)
