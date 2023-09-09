@@ -9,14 +9,15 @@
 
 
 ##  stage-1 - only read pot values to get angle
-- 555 circuit to convert the potentiometer position into variable freq square pulses. 
-- send to I/O port, 
-- take average convert to freq number
-- take a two reference angles wrt to freq
-- Interpolate other angles in math
-- convert to star position data
-- send to serial port to Stellarium
-- config Stellarium to read and update star map
+- 555 circuit to convert the potentiometer value = position into variable freq square pulses. 
+- intput to I/O port 
+- take average and convert to freq number
+- calibate at 0 and 90 degrees to coreelate with freq at these positons
+- Interpolate the in between angles 
+- send angle to 7 seg display
+- converted angle into to star position data and send to serial Stellarium over serial port
+- Stellarium finds location on star map
+- compare to visual data and confirm is correct
 
 
 ## generate a variable freq from a pot
