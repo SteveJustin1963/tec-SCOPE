@@ -1,5 +1,8 @@
 
 # A TEC-1 Controlled Telescope
+
+https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
+
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
 - develop a system to read and control a cheap Dobson 200mm F5 telescope 
