@@ -27,6 +27,10 @@ make the 220 value the pot
 
 ![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
 
+## iterate 555 freq method
+- 8254
+- [adc](https://github.com/SteveJustin1963/tec-ADC-DAC)
+
 
 ## 8254 interval timer
 if we can guess a duration from the code internally while we read the freq pulses we maybe able to gauge the angle. but if not then use an 
@@ -180,6 +184,7 @@ The output of this modified code will be a series of numbers, each representing 
 - https://asa.astronomy.org.au/
 - https://skywatcheraustralia.com.au/product/16-collapsible-dobsonian/
 - https://en.wikipedia.org/wiki/Lucky_imaging
+- https://docs.arduino.cc/built-in-examples/basics/AnalogReadSerial
 
 
 # Activity log
