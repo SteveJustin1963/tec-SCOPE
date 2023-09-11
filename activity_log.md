@@ -9,10 +9,9 @@ this is for step 3. thinking ahead. altitude (vertical) and azimuth (horizontal)
 sit in 4 point cog roller bed. the motor work drive i salvaged needs to be mod so worm is on end of shaft, not is in middle. this will 
 conflict with mirror box. so need to go on outside
 
-https://www.temu.com/au/powge-gt2-2mgt-2m-2gt-rf-open-ended-synchronous-timing-belt-width-6-9-10-15mm-rubber-low-dust-low-vibration-2gt-6-2gt-9-2gt-10-2gt-15-3d-printer-g-601099519708613.html?
-
-
-https://www.temu.com/au/1-2pcs-set-gt2-timing-pulley-20-teeth-and-60-teeth-aperture-5mm-aluminum-timing-pulley-with-2-pieces-of-200mm-wide-6mm-timing-belt-and-1-piece-of-hexagon-wrench-g-601099512632540.html?
+### belt and cog options
+- https://www.temu.com/au/powge-gt2-2mgt-2m-2gt-rf-open-ended-synchronous-timing-belt-width-6-9-10-15mm-rubber-low-dust-low-vibration-2gt-6-2gt-9-2gt-10-2gt-15-3d-printer-g-601099519708613.html?
+- https://www.temu.com/au/1-2pcs-set-gt2-timing-pulley-20-teeth-and-60-teeth-aperture-5mm-aluminum-timing-pulley-with-2-pieces-of-200mm-wide-6mm-timing-belt-and-1-piece-of-hexagon-wrench-g-601099512632540.html?
 
 
 
