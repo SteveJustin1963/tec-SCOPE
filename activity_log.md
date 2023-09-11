@@ -18,7 +18,7 @@ Considering Stainless Steel Worm Tin Bronze Worm Gear Wear 1:90 Reduction Ratio 
 
 
 ## 3.07.2023
-Looking full moon, fantastic detail, brightness hurts the eye, put camera body try photograph, focal plane lower than camera
+Looking full moon, fantastic detail, brightness hurts the eye, put camera body try photograph, focal plane lower than camera, another project
 
 ## 1.06.2023
 Got another two massage machines and hacked out the 24v motors and proper worm drives. Test runs down to 3v and still strong draw 1 amp
