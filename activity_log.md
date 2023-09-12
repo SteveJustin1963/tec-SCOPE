@@ -1,6 +1,8 @@
 
 # Activity log
 
+## 12-9-23
+![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/7a677f95-0dfd-49b4-a4b5-bffa2d479829)
 
 
 
