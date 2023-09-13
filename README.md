@@ -10,7 +10,7 @@ https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
 
 
 ## stage -0.9 plumb bob + protractor and compass
-- attached plumb bob and protractor to side and compass to base to get manual readings 
+- attached plumb bob and protractor to side and compass to base to get manual readings, compare to sw answer 
 
 
 
