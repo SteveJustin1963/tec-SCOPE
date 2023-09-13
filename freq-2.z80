@@ -1,3 +1,63 @@
+- reads values from a specific port,
+- averages them, 
+- calculates an angle based on the average value, 
+- and then performs some calibration and conversion routines. 
+- uses lookup tables for division and multiplication to optimize the calculations. 
+
+code steps
+
+1. **Initialization**:
+   - `ORG 0000h` specifies the origin of the program, indicating that it starts at address 0000h.
+   - `LD DE, 0` initializes DE as the accumulator for averaging.
+   - `LD BC, 0064h` initializes BC as the loop counter for 100 loops.
+
+2. **Averaging Loop**:
+   - `AVG_LOOP` is a label for the loop.
+   - `IN A, (07h)` reads a value from port 0x07 and stores it in register A.
+   - `ADD A, E` adds the port value to the accumulator E.
+   - `LD E, A` stores the result back in E.
+   - `ADC A, D` adds any carry from the previous addition to D.
+   - `LD D, A` stores the result back in D.
+   - `DEC BC` decrements the loop counter.
+   - `JR NZ, AVG_LOOP` jumps back to `AVG_LOOP` if BC is not zero, continuing the loop.
+
+3. **Average Value Calculation**:
+   - The average value is now in DE.
+
+4. **Angle Calculation**:
+   - `LD A, E` copies the average value to A.
+   - The code then performs some operations to calculate an angle based on the average value. It seems to scale the value between 0 and 90 degrees.
+
+5. **Division Using a Lookup Table**:
+   - `LD C, A` loads the value to be divided into C.
+   - `LD HL, DIV_LOOKUP_TABLE` loads the address of a division lookup table.
+   - `ADD HL, BC` adjusts HL to point to the desired lookup table entry.
+   - `LD A, (HL)` retrieves the quotient from the lookup table.
+   - `INC HL` increments HL to point to the remainder.
+   - `LD B, (HL)` retrieves the remainder from the lookup table.
+
+6. **Scaling Factor and Multiplication**:
+   - `LD HL, 1000` loads a scaling factor (e.g., 1000 pulses per unit).
+   - `LD DE, 1000` loads a value to be added for multiplication.
+   - The code then performs a multiplication using a loop and adds the scaling factor.
+
+7. **Conversion and Calibration**:
+   - `LD A, H` copies the value from H register to A.
+   - `CP 90` compares it with 90 for calibration.
+   - `JR NC, CONVERT` jumps to the `CONVERT` routine if the value is not below 90.
+   - `CALIBRATE_0` and `CALIBRATE_90` routines handle calibration at 0 and 90 degrees, respectively. They read and store calibration values based on user prompts.
+   - `CONVERT` doubles the value in A for conversion.
+
+8. **Halt and Lookup Table**:
+   - `HALT` halts the processor.
+   - `DIV_LOOKUP_TABLE` defines a lookup table for division.
+
+9. **Memory Locations for Calibration Values**:
+   - `CALIB_0` and `CALIB_90` are memory locations where calibration values at 0 and 90 degrees are stored.
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ORG 0000h  ; Start of program
 
 ; Read and average the values from port 0x07 for calibration
