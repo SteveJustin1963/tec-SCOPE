@@ -14,15 +14,22 @@ https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
 
 
 
-##  stage-1 - only read pot values to get angle
-- 555 circuit to convert the potentiometer value = position into variable freq square pulses. 
+##  stage-1 
+
+## R to angle 
+- 555 osc circuit,  potentiometer value = freq square pulses= angle 
 - send to I/O port and calculate average = freq number
 - calibrate; correlate at 0 and 90 degrees to freq at these positons- save
 - Interpolate the in between angles from in between freq and send to 7seg display
 - converted angle to star position, send to Stellarium over serial port
 - Stellarium finds location on star map, compare to visual data 
 
-## generate a variable freq from a pot
+
+## volt-freq
+https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency-converter/
+
+![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/5af4808d-1427-46c5-b78d-ee9c48157a15)
+ 
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
 
 - circuit simulator https://tinyurl.com/2p8fdmws
@@ -43,6 +50,8 @@ reads values from a specific port, averages them, calculates an angle based on t
  measure the frequency of a signal on bit 1 of Port 06 within the range of 200 to 1000 Hz ,  code assumes that the incrementing of the HL register represents a known time interval, which can be used to calculate the frequency. For more accurate and efficient frequency measurement, it is recommended to use dedicated timer hardware
 
 ### freq-8254-1.z80
+
+
 - [adc](https://github.com/SteveJustin1963/tec-ADC-DAC)
 
 rather than use  duration from code execution time to guage an interval, try 8254 Programmable Interval Timer (PIT) to generate a regular square wave and use this to calculate the input frequency then turn that into the angle. 
@@ -52,10 +61,6 @@ code assumes a certain clock frequency and configuration for the PIT.  with a di
 
 
 
-## another
-https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency-converter/
-
-![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/5af4808d-1427-46c5-b78d-ee9c48157a15)
 
 
 
