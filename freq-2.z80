@@ -1,0 +1,56 @@
+; Z80 SBC Code to Measure Frequency on Port 06 (Bit 1)
+; Frequency Range: 200 to 1000 Hz
+
+; Define equates for I/O ports
+PORT06  EQU 6    ; Port 06 address
+
+; Define memory locations for variables
+FreqCount EQU 0x8000 ; Memory location to store frequency count
+
+; Start of program
+START:
+    LD  A, 0       ; Clear accumulator
+    OUT (PORT06), A ; Reset port 06
+    CALL DELAY_MS  ; Delay to ensure a stable starting point
+LOOP:
+    CALL READ_BIT  ; Read bit 1 from Port 06
+    JR  Z, WAIT_LOW ; Wait for a low-to-high transition
+WAIT_HIGH:
+    CALL READ_BIT  ; Read bit 1 from Port 06
+    JR  NZ, WAIT_HIGH ; Wait for a high-to-low transition
+    CALL MEASURE   ; Measure the frequency
+    JP  LOOP       ; Repeat the loop
+
+; Subroutine to read bit 1 from Port 06
+READ_BIT:
+    IN  A, (PORT06)
+    BIT 1, A       ; Isolate bit 1
+    RET
+
+; Subroutine to measure frequency
+MEASURE:
+    LD  HL, 0      ; Clear HL to store time count
+START_TIMER:
+    ; Note: Assuming HL increments represent a known time interval
+WAIT_LOW:
+    CALL READ_BIT  ; Read bit 1 from Port 06
+    JR  Z, WAIT_LOW ; Wait until it goes low
+WAIT_HIGH:
+    INC HL         ; Increment timer count (HL)
+    CALL READ_BIT  ; Read bit 1 from Port 06
+    JR  NZ, WAIT_HIGH ; Wait until it goes high
+STOP_TIMER:
+    LD  (FreqCount), HL ; Store the HL value to memory location FreqCount
+    ; Compute frequency based on the count in HL and your timer resolution
+    ; Conversion logic would go here
+    RET
+
+; Subroutine to create a 1ms delay
+DELAY_MS:
+    LD  DE, 0x1000 ; Load DE with a delay value (adjust as needed)
+DELAY_LOOP:
+    DEC DE         ; Decrement DE
+    LD  A, D
+    OR  E          ; Check if DE is zero
+    JR  NZ, DELAY_LOOP ; If not zero, continue looping
+    RET
