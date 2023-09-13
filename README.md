@@ -51,7 +51,7 @@ reads values from a specific port, averages them, calculates an angle based on t
  measure the frequency of a signal on bit 1 of Port 06 within the range of 200 to 1000 Hz ,  code assumes that the incrementing of the HL register represents a known time interval, which can be used to calculate the frequency. For more accurate and efficient frequency measurement, it is recommended to use dedicated timer hardware
 
 
-### freq-8254-1.z80
+## freq-8254-1.z80
 
 rather than use  duration from code execution time to guage an interval, try 8254 Programmable Interval Timer (PIT) to generate a regular square wave and use this to calculate the input frequency then turn that into the angle. 
 
