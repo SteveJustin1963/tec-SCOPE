@@ -14,7 +14,7 @@ https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
 
 
 
-##  stage-1 
+# Stage-1 
 
 ## 1.1 R to angle 
 
@@ -66,13 +66,7 @@ code assumes a certain clock frequency and configuration for the PIT.  with a di
 
 
 
-
-
-
-
-
-
-##  stage 2 - pots with cam angle motors
+# Stage 2 - pots with cam angle motors
 - Two DC motor drives attached to the telescope mount using threaded rod+ nuts= worm drives acting as a swinging cam
 - The worm drive and cam radius design will enhance torque control and minimize backlash.
 - add 2 switch joy stick to enable manual slewing 
@@ -92,7 +86,7 @@ code assumes a certain clock frequency and configuration for the PIT.  with a di
 
 
 
-##  stage 3 - remove pots and cam motos, replace with geared motor drive and rotary encoders
+# Stage 3 - remove pots and cam motos, replace with geared motor drive and rotary encoders
 - remove cams, motors and resistor pots 
 - replace with reduction geared DC or stepper motors and with rotary encoder
 - keep manual slewing and software motor control 
