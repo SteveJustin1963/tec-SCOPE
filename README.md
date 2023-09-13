@@ -9,9 +9,9 @@ https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
 - in three stages.
 
 
-## stage -0.9 plumb bob + protractor and compass
-- attached plumb bob and protractor to side and compass to base to get manual readings, compare to sw answer 
-
+## Stage-0 
+- Electronic Level and Angle Gauge, online shops sell $16.
+- https://www.temu.com/au/moon_subject/dn9.html?subj=downloadable-ads-shopping&_bg_fs=1&_p_jmp_id=656&_x_vst_scene=adg&goods_id=601099513870922&adg_ctx=f-27b90a1b
 
 
 # Stage-1 
