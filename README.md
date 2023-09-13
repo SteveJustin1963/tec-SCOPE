@@ -16,7 +16,7 @@ https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
 
 ##  stage-1 
 
-## R to angle 
+## 1.1 R to angle 
 
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
 
@@ -36,12 +36,10 @@ https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
 - Stellarium finds location on star map, compare to visual data 
 
 
-## volt-freq
+## 1.2 volt-freq
 https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency-converter/
 
 ![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/5af4808d-1427-46c5-b78d-ee9c48157a15)
- 
-
 
 ## freq-1.z80
 configure a timer/counter, read its value, calculate the frequency, and store the result in memory. The div16 subroutine is used to perform a 16-bit division operation by shifting bits, 
@@ -52,14 +50,19 @@ reads values from a specific port, averages them, calculates an angle based on t
 ## freq-3.z80
  measure the frequency of a signal on bit 1 of Port 06 within the range of 200 to 1000 Hz ,  code assumes that the incrementing of the HL register represents a known time interval, which can be used to calculate the frequency. For more accurate and efficient frequency measurement, it is recommended to use dedicated timer hardware
 
+
 ### freq-8254-1.z80
-
-
-- [adc](https://github.com/SteveJustin1963/tec-ADC-DAC)
 
 rather than use  duration from code execution time to guage an interval, try 8254 Programmable Interval Timer (PIT) to generate a regular square wave and use this to calculate the input frequency then turn that into the angle. 
 
 code assumes a certain clock frequency and configuration for the PIT.  with a different clock frequency or configuration, need to adjust the constants and calculations accordingly. Additionally, the code doesn't include the handling of the square wave signal itself; it focuses on initializing the PIT and calculating the frequency based on the timer/counter values. If you want to perform additional tasks with the generated square wave, you'll need to extend the code accordingly.
+
+
+ 
+## 1.3 ADC
+- https://github.com/SteveJustin1963/tec-ADC-DAC
+
+
 
 
 
