@@ -17,6 +17,17 @@ https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
 ##  stage-1 
 
 ## R to angle 
+
+![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
+
+- circuit simulator https://tinyurl.com/2p8fdmws
+- make the 220 value the pot
+- am aiming for freq between 100 and 1000
+
+![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
+
+
+
 - 555 osc circuit,  potentiometer value = freq square pulses= angle 
 - send to I/O port and calculate average = freq number
 - calibrate; correlate at 0 and 90 degrees to freq at these positons- save
@@ -30,14 +41,6 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 
 ![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/5af4808d-1427-46c5-b78d-ee9c48157a15)
  
-![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
-
-- circuit simulator https://tinyurl.com/2p8fdmws
-- make the 220 value the pot
-- am aiming for freq between 100 and 1000
-
-![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
-
 
 
 ## freq-1.z80
