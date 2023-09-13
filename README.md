@@ -25,49 +25,27 @@ https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
 ## generate a variable freq from a pot
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
 
-circuit simulator https://tinyurl.com/2p8fdmws
-
-make the 220 value the pot
+- circuit simulator https://tinyurl.com/2p8fdmws
+- make the 220 value the pot
+- am aiming for freq between 100 and 1000
 
 ![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
 
-## iterate 555 freq method
-- 8254
+
+
+## freq-1.z80
+configure a timer/counter, read its value, calculate the frequency, and store the result in memory. The div16 subroutine is used to perform a 16-bit division operation by shifting bits, 
+
+## freq-2.z80
+reads values from a specific port, averages them, calculates an angle based on the average value, performs some calibration and conversion routines, and uses lookup tables for division and multiplication to optimize calculations
+
+## freq-3.z80
+ measure the frequency of a signal on bit 1 of Port 06 within the range of 200 to 1000 Hz ,  code assumes that the incrementing of the HL register represents a known time interval, which can be used to calculate the frequency. For more accurate and efficient frequency measurement, it is recommended to use dedicated timer hardware
+
+### freq-8254-1.z80
 - [adc](https://github.com/SteveJustin1963/tec-ADC-DAC)
 
-
-## 8254 interval timer
-if we can guess a duration from the code internally while we read the freq pulses we maybe able to gauge the angle. but if not then use an 
-8254 Programmable Interval Timer (PIT) to generate a regular square wave and use this to calculate the input frequency then turn that into the angle. 
-
-in the code:
-
-1. **Memory Locations and Constants:**
-   - `timer_value`, `frequency_low`, and `frequency_high`: These memory locations are used to store the timer/counter value, low byte of frequency, and high byte of frequency, respectively.
-   - `pit_control_port` and `pit_data_port`: These constants represent the I/O port addresses for the PIT control and data ports.
-   - `frequency_divisor`: This constant is used as the divisor for frequency calculation.
-   - `clock_frequency`: This constant represents the clock frequency (assumed to be 4 MHz in this example).
-
-2. **Program Start (`org 0x0000`):**
-   - The program starts executing at the address `0x0000`.
-
-3. **Main Program (`main`):**
-   - The program initializes the PIT counter 0 in square wave mode by sending appropriate control values to the PIT control port.
-   - The initial count value for counter 0 is set to 0xFFFF (maximum 16-bit value), effectively setting the timer to count down from its maximum value.
-   - The program then reads the timer/counter value from the PIT and stores it in the memory locations `timer_value` and `timer_value + 1`.
-   - It calculates the frequency by dividing the clock frequency by the `frequency_divisor` using a subroutine called `div16`.
-   - The calculated frequency's low and high bytes are stored in `frequency_low` and `frequency_high` memory locations.
-   - The program then halts, waiting for further instructions.
-
-4. **Subroutine `div16`:**
-   - This subroutine divides the 16-bit number in HL by 16 (equivalent to a right shift by 4 bits, which is a division by 2^4 = 16).
-   - It performs 4 shifts (one shift per bit in the low byte) using the `srl` instruction and the `djnz` loop to repeat the shift 4 times.
-
-5. **Additional Subroutines and Code:**
-   - There's a comment suggesting that additional subroutines and code can be added at this point in the program.
-
-6. **End of Program (`end main`):**
-   - This marks the end of the program.
+rather than use  duration from code execution time to guage an interval, try 8254 Programmable Interval Timer (PIT) to generate a regular square wave and use this to calculate the input frequency then turn that into the angle. 
 
 code assumes a certain clock frequency and configuration for the PIT.  with a different clock frequency or configuration, need to adjust the constants and calculations accordingly. Additionally, the code doesn't include the handling of the square wave signal itself; it focuses on initializing the PIT and calculating the frequency based on the timer/counter values. If you want to perform additional tasks with the generated square wave, you'll need to extend the code accordingly.
 
