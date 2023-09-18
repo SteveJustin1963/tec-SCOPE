@@ -3,7 +3,7 @@
 
 ## 15-9-23
 
-<iframe src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fstephen.justin%2Fposts%2Fpfbid0Az33F2p3WP94kgWWu8bke92oqccymWreoRx8hAYxJmwwZmCqqSxnJkLLqTXGQuCNl&show_text=true&width=500" width="500" height="608" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+https://www.facebook.com/photo?fbid=3601574340075925&set=a.1401180343448680
 
 
 ## 12-9-23
