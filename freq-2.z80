@@ -4,11 +4,50 @@
 - and then performs some calibration and conversion routines. 
 - uses lookup tables for division and multiplication to optimize the calculations. 
 
-- reads values from a specific port,
-- averages them, 
-- calculates an angle based on the average value, 
-- and then performs some calibration and conversion routines. 
-- uses lookup tables for division and multiplication to optimize the calculations. 
+Program
+│
+├── Initialization
+│   ├── Set DE (accumulator) to 0
+│   ├── Set BC (loop counter) to 100
+│
+├── Averaging Loop (Repeat 100 Times)
+│   ├── Read a value from port 0x07 into A
+│   ├── Add A to DE (accumulator)
+│   ├── Add any carry to D
+│   ├── Decrement BC (loop counter)
+│   └── Continue looping if BC is not zero
+│
+├── Average Value Calculation
+│   ├── The average value is now in DE
+│
+├── Angle Calculation
+│   ├── Copy the average value to A
+│   ├── Calculate an angle based on the average value (0 to 90 degrees)
+│
+├── Division Using a Lookup Table
+│   ├── Load C with the value to be divided
+│   ├── Use a lookup table to perform division
+│   └── Retrieve quotient and remainder
+│
+├── Scaling Factor and Multiplication
+│   ├── Load HL with a scaling factor (e.g., 1000 pulses per unit)
+│   ├── Load DE with a value to be added for multiplication
+│   └── Perform multiplication using a loop and add scaling factor
+│
+├── Conversion and Calibration
+│   ├── Check if the angle is not below 90 degrees
+│   │   ├── If not, perform calibration at 0 and 90 degrees based on user prompts
+│   │   └── Double the angle value for conversion
+│   └── If the angle is below 90 degrees, proceed to conversion
+│
+├── Halt and Lookup Table
+│   ├── Halt the processor
+│   └── Define a lookup table for division
+│
+└── Memory Locations for Calibration Values
+    ├── Define memory locations to store calibration values at 0 and 90 degrees
+    └── Store the calibration values as needed
+
 
 code steps
 
