@@ -4,6 +4,159 @@
 - and then performs some calibration and conversion routines. 
 - uses lookup tables for division and multiplication to optimize the calculations. 
 
+- reads values from a specific port,
+- averages them, 
+- calculates an angle based on the average value, 
+- and then performs some calibration and conversion routines. 
+- uses lookup tables for division and multiplication to optimize the calculations. 
+
+code steps
+
+1. **Initialization**:
+   - `ORG 0000h` specifies the origin of the program, indicating that it starts at address 0000h.
+   - `LD DE, 0` initializes DE as the accumulator for averaging.
+   - `LD BC, 0064h` initializes BC as the loop counter for 100 loops.
+
+2. **Averaging Loop**:
+   - `AVG_LOOP` is a label for the loop.
+   - `IN A, (07h)` reads a value from port 0x07 and stores it in register A.
+   - `ADD A, E` adds the port value to the accumulator E.
+   - `LD E, A` stores the result back in E.
+   - `ADC A, D` adds any carry from the previous addition to D.
+   - `LD D, A` stores the result back in D.
+   - `DEC BC` decrements the loop counter.
+   - `JR NZ, AVG_LOOP` jumps back to `AVG_LOOP` if BC is not zero, continuing the loop.
+
+3. **Average Value Calculation**:
+   - The average value is now in DE.
+
+4. **Angle Calculation**:
+   - `LD A, E` copies the average value to A.
+   - The code then performs some operations to calculate an angle based on the average value. It seems to scale the value between 0 and 90 degrees.
+
+5. **Division Using a Lookup Table**:
+   - `LD C, A` loads the value to be divided into C.
+   - `LD HL, DIV_LOOKUP_TABLE` loads the address of a division lookup table.
+   - `ADD HL, BC` adjusts HL to point to the desired lookup table entry.
+   - `LD A, (HL)` retrieves the quotient from the lookup table.
+   - `INC HL` increments HL to point to the remainder.
+   - `LD B, (HL)` retrieves the remainder from the lookup table.
+
+6. **Scaling Factor and Multiplication**:
+   - `LD HL, 1000` loads a scaling factor (e.g., 1000 pulses per unit).
+   - `LD DE, 1000` loads a value to be added for multiplication.
+   - The code then performs a multiplication using a loop and adds the scaling factor.
+
+7. **Conversion and Calibration**:
+   - `LD A, H` copies the value from H register to A.
+   - `CP 90` compares it with 90 for calibration.
+   - `JR NC, CONVERT` jumps to the `CONVERT` routine if the value is not below 90.
+   - `CALIBRATE_0` and `CALIBRATE_90` routines handle calibration at 0 and 90 degrees, respectively. They read and store calibration values based on user prompts.
+   - `CONVERT` doubles the value in A for conversion.
+
+8. **Halt and Lookup Table**:
+   - `HALT` halts the processor.
+   - `DIV_LOOKUP_TABLE` defines a lookup table for division.
+
+9. **Memory Locations for Calibration Values**:
+   - `CALIB_0` and `CALIB_90` are memory locations where calibration values at 0 and 90 degrees are stored.
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ORG 0000h  ; Start of program
+
+; Read and average the values from port 0x07 for calibration
+LD DE, 0       ; Initialize DE as the accumulator for averaging
+LD BC, 0064h   ; Initialize BC as the loop counter for 100 loops
+
+AVG_LOOP:
+  IN A, (07h)   ; Read the value from port 0x07
+  ADD A, E      ; Add the port value to E
+  LD E, A       ; Store result back in E
+  ADC A, D      ; Add any carry from previous addition to D
+  LD D, A       ; Store result back in D
+  DEC BC        ; Decrement the loop counter
+  JR NZ, AVG_LOOP ; Continue looping until BC becomes zero
+
+; Average value is now in DE
+
+; Calculate the angle based on the average value
+LD A, E        ; Copy the average value to A
+
+; Convert the average value to an angle
+; Calculate angle = (value - minValue) * 90 / (maxValue - minValue)
+LD E, 0        ; Clear E register for minValue
+SUB E          ; Subtract minValue from A
+LD E, 255      ; Load maxValue (255) into E
+SUB E          ; Subtract maxValue from A
+LD E, 0        ; Clear E register for minValue
+SUB E          ; Subtract minValue from A
+
+; Perform division using a lookup table
+LD C, A        ; Load the value to be divided into C
+LD HL, DIV_LOOKUP_TABLE  ; Load the address of the division lookup table
+
+ADD HL, BC     ; Adjust HL to point to the desired lookup table entry
+LD A, (HL)     ; Retrieve the quotient from the lookup table
+INC HL         ; Increment HL to point to the remainder
+LD B, (HL)     ; Retrieve the remainder from the lookup table
+
+; Angle is now stored in A register, and remainder in B can be used for interpolation
+
+; Apply scaling factor to convert the angle to frequency
+LD HL, 1000    ; Scaling factor (e.g., 1000 pulses per unit)
+LD DE, 1000    ; Value to be added for multiplication 
+
+; Perform multiplication using the angle as a loop counter and add the scaling factor
+LD C, A        ; Load the angle to be multiplied into C
+
+MULT_LOOP:
+  ADD HL, DE    ; Accumulate results in HL
+  DEC C         ; Decrement multiplier
+  JR NZ, MULT_LOOP
+
+; Convert the value in HL to an angle
+LD A, H        ; Copy H register to A
+CP 90          ; Compare with 90 (for calibration)
+JR NC, CONVERT ; If not below 90, go to conversion routine
+
+CALIBRATE_0:
+  LD A, 0      ; Prompt for 0 degrees calibration
+  ; Implement code to display the prompt and read the calibration value
+  IN A, (07h)
+  LD (CALIB_0), A  ; Store the calibration value at CALIB_0 memory location
+  RET
+
+CALIBRATE_90:
+  LD A, 90     ; Prompt for 90 degrees calibration
+  ; Implement code to display the prompt and read the calibration value
+  IN A, (07h)
+  LD (CALIB_90), A  ; Store the calibration value at CALIB_90 memory location
+  RET
+
+CONVERT:
+  ADD A, A      ; Double the value in A for conversion
+
+HALT       ; Halt the processor
+
+DIV_LOOKUP_TABLE:
+  DB 0, 0    ; For 0/90
+  DB 1, 1    ; For 1/90
+  DB 2, 2    ; For 2/90
+  ; ... continue for the range of values you need
+
+CALIB_0:       ; Memory location for calibration value at 0 degrees
+  DB 0
+
+CALIB_90:      ; Memory location for calibration value at 90 degrees
+  DB 0
+
+END
+
+
+
+
 code steps
 
 1. **Initialization**:
