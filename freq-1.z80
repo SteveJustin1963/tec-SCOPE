@@ -1,3 +1,54 @@
+Program
+│
+├── Memory Locations and I/O Port Addresses
+│   ├── timer_value, frequency_low, frequency_high
+│   ├── timer_port, timer_value_port
+│   ├── frequency_divisor, clock_frequency
+│
+├── Initialization of Timer/Counter
+│   ├── Load BC with timer_port
+│   ├── Set A to 0x0F (Timer Configuration)
+│   ├── Send A to timer_port (Configure Timer/Counter)
+│
+├── Initialization of Frequency Storage Locations
+│   ├── Clear A to 0
+│   ├── Store 0 in frequency_low and frequency_high
+│
+├── Reading Timer/Counter Value
+│   ├── Load BC with timer_value_port
+│   ├── Input value from timer_value_port to A
+│   ├── Store A in timer_value
+│
+├── Calculating Frequency
+│   ├── Load A with timer_value
+│   ├── Increment A
+│   ├── Load L with A
+│   ├── Load HL from memory (timer_value + 1)
+│   ├── Load DE from memory (timer_value + 3)
+│   ├── Exchange DE and HL
+│
+├── Divide Timer Value by Frequency Divisor
+│   ├── Calculate BC as clock_frequency / frequency_divisor
+│   ├── Call div16 subroutine
+│
+├── Storing Frequency
+│   ├── Load HL with frequency_low
+│   ├── Store L in memory (HL)
+│   ├── Increment HL
+│   ├── Store H in memory (HL)
+│
+└── Divide 16-bit Number by 16 (In-Place Division)
+    ├── Clear A
+    ├── Load B with 4 (Number of Divisions)
+    ├── div16_loop
+    │   ├── Shift right HL (Divide by 2)
+    │   ├── Decrement B
+    │   ├── Loop until B is zero
+    └── Return
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 1. **Memory Locations and I/O Port Addresses**:
    - `timer_value`, `frequency_low`, and `frequency_high` are equated to specific memory locations. These locations will be used to store the timer/counter value and frequency information.
    - `timer_port` and `timer_value_port` are equated to I/O port addresses. These ports are used for configuring the timer and reading its value.
