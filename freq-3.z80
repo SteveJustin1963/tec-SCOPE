@@ -1,3 +1,27 @@
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+1. The program starts by clearing the accumulator `A` and resetting Port 06 to zero. It then introduces a 1 ms delay using the `DELAY_MS` subroutine to ensure a stable starting point.
+
+2. The main loop labeled `LOOP` is where the frequency measurement occurs. It repeatedly checks the signal on bit 1 of Port 06.
+
+3. The `READ_BIT` subroutine reads bit 1 from Port 06 and returns the result in the `A` register.
+
+4. The `MEASURE` subroutine is responsible for measuring the frequency. It uses the `HL` register pair as a simple timer counter. Here's how it works:
+
+   - `START_TIMER`: This marks the start of the timer operation.
+   - `WAIT_LOW`: It waits for the signal on bit 1 to go low.
+   - `WAIT_HIGH`: While the signal is high, it increments the `HL` register (acting as a timer).
+   - `STOP_TIMER`: When the signal goes from high to low, it stores the value of `HL` in the memory location `FreqCount`. This value represents the time elapsed while the signal was high.
+
+5. After stopping the timer, the code would typically include logic to convert the time count in `FreqCount` to frequency based on the timer resolution. This conversion logic is not provided in the code but should be implemented according to your specific timer configuration.
+
+6. The program then repeats the measurement by jumping back to the `LOOP` label.
+
+Please note that this code relies on the assumption that the incrementing of the `HL` register represents a known time interval, which can be used to calculate the frequency. The accuracy and resolution of the measurement depend on the timer resolution and the frequency of the input signal.
+
+For more accurate and efficient frequency measurement, it is recommended to use dedicated timer hardware or the Z80's built-in timers, if available, rather than relying solely on software-based timing.
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 Start
 │
 ├── Initialize
@@ -30,29 +54,9 @@ Start
 └── End
 
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-1. The program starts by clearing the accumulator `A` and resetting Port 06 to zero. It then introduces a 1 ms delay using the `DELAY_MS` subroutine to ensure a stable starting point.
 
-2. The main loop labeled `LOOP` is where the frequency measurement occurs. It repeatedly checks the signal on bit 1 of Port 06.
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-3. The `READ_BIT` subroutine reads bit 1 from Port 06 and returns the result in the `A` register.
-
-4. The `MEASURE` subroutine is responsible for measuring the frequency. It uses the `HL` register pair as a simple timer counter. Here's how it works:
-
-   - `START_TIMER`: This marks the start of the timer operation.
-   - `WAIT_LOW`: It waits for the signal on bit 1 to go low.
-   - `WAIT_HIGH`: While the signal is high, it increments the `HL` register (acting as a timer).
-   - `STOP_TIMER`: When the signal goes from high to low, it stores the value of `HL` in the memory location `FreqCount`. This value represents the time elapsed while the signal was high.
-
-5. After stopping the timer, the code would typically include logic to convert the time count in `FreqCount` to frequency based on the timer resolution. This conversion logic is not provided in the code but should be implemented according to your specific timer configuration.
-
-6. The program then repeats the measurement by jumping back to the `LOOP` label.
-
-Please note that this code relies on the assumption that the incrementing of the `HL` register represents a known time interval, which can be used to calculate the frequency. The accuracy and resolution of the measurement depend on the timer resolution and the frequency of the input signal.
-
-For more accurate and efficient frequency measurement, it is recommended to use dedicated timer hardware or the Z80's built-in timers, if available, rather than relying solely on software-based timing.
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Z80 SBC Code to Measure Frequency on Port 06 (Bit 1)
 ; Frequency Range: 200 to 1000 Hz
 
