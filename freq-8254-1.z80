@@ -25,9 +25,29 @@
 
 6. **End of Program (`end main`):**
    - This marks the end of the program.
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+- Main Program
+  |- Initialize PIT counter 0
+  |  |- Set control port
+  |  |- Set initial count value
+  |- Read timer/counter value from PIT
+  |- Calculate frequency
+  |  |- Divide 16-bit number by 16 (Subroutine)
+  |- Store values
+  |- Halt program
+- Subroutine div16
+  |- Clear a temporary variable
+  |- Set loop counter
+  |- Loop:
+  |  |- Right-shift HL by 1 bit
+  |  |- Decrement the loop counter
+  |- Return
+- Additional Subroutines and Code (if any)
+- End of Program
 
-   
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
 ; Define memory locations
 timer_value    equ 0x8000   ; Memory location to store timer/counter value
 frequency_low  equ 0x8002   ; Memory location to store low byte of frequency
