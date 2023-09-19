@@ -1,4 +1,36 @@
+Start
+│
+├── Initialize
+│   ├── Clear accumulator A to 0
+│   ├── Reset Port 06 to 0
+│   └── Introduce a 1 ms delay (DELAY_MS) for a stable starting point
+│
+├── Measurement Loop (Repeat Forever)
+│   │
+│   ├── Read the signal on bit 1 of Port 06 (READ_BIT)
+│   │
+│   ├── If the signal is low (0)
+│   │   └── Wait for a low-to-high transition (WAIT_LOW)
+│   │
+│   ├── If the signal is high (1)
+│   │   └── Wait for a high-to-low transition (WAIT_HIGH)
+│   │
+│   ├── Measure the frequency (MEASURE) using a timer (HL register)
+│   │   │
+│   │   ├── Start the timer (START_TIMER)
+│   │   ├── Wait for the signal to go low (WAIT_LOW)
+│   │   ├── While the signal is high
+│   │   │   └── Increment the timer (HL)
+│   │   └── When the signal goes low again
+│   │       ├── Stop the timer and store the time count in FreqCount (STOP_TIMER)
+│   │       └── Calculate the frequency based on the timer count (conversion logic not provided)
+│   │
+│   └── Repeat the measurement by going back to the Measurement Loop
+│
+└── End
 
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 1. The program starts by clearing the accumulator `A` and resetting Port 06 to zero. It then introduces a 1 ms delay using the `DELAY_MS` subroutine to ensure a stable starting point.
 
 2. The main loop labeled `LOOP` is where the frequency measurement occurs. It repeatedly checks the signal on bit 1 of Port 06.
