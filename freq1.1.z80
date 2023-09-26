@@ -1,0 +1,83 @@
+    org 0x0000
+
+; Define memory locations
+pulse_start_time  equ 0x8000   ; Memory location to store pulse start time
+pulse_duration    equ 0x8002   ; Memory location to store pulse duration
+frequency_low     equ 0x8004   ; Memory location to store low byte of frequency
+frequency_high    equ 0x8005   ; Memory location to store high byte of frequency
+
+; Define I/O port addresses
+pulse_input_port  equ 0xFF00    ; Port address for reading pulse input
+
+; Initialize memory locations
+    ld hl, pulse_start_time
+    ld (hl), 0x00
+    inc hl
+    ld (hl), 0x00           ; Initialize pulse_start_time to 0
+    ld hl, pulse_duration
+    ld (hl), 0x00
+    inc hl
+    ld (hl), 0x00           ; Initialize pulse_duration to 0
+
+main_loop:
+    ; Wait for a rising edge on the pulse input
+    ld bc, pulse_input_port ; Load the 16-bit port address into BC
+wait_for_rising_edge:
+    in a, (c)              ; Input the value from the I/O port specified by BC into A
+    and 0x01               ; Check the least significant bit (LSB)
+    jr z, wait_for_rising_edge ; If LSB is not set (i.e., not a rising edge), wait
+
+    ; Record the start time
+    ld hl, pulse_start_time
+    call get_current_time  ; Call a subroutine to get the current time (or timer value)
+    ld (hl), a
+
+    ; Wait for a falling edge on the pulse input
+wait_for_falling_edge:
+    in a, (c)              ; Input the value from the I/O port specified by BC into A
+    and 0x01               ; Check the LSB
+    jr nz, wait_for_falling_edge ; If LSB is set (i.e., not a falling edge), wait
+
+    ; Calculate the pulse duration and frequency
+    call get_current_time  ; Get the current time again
+    ld hl, pulse_start_time
+    ld a, (hl)             ; Load the start time
+    sub (hl)               ; Calculate the time difference
+    ld hl, pulse_duration
+    ld (hl), a             ; Store the pulse duration
+
+    ; Calculate frequency (assuming a 4 MHz clock)
+    ld a, (hl)
+    inc a
+    ld l, a
+    ld h, (hl)             ; Load the low byte and the high byte from memory into HL
+    ld bc, 4000000 / 16    ; Clock frequency / frequency_divisor
+    call div16
+
+    ; Store frequency
+    ld hl, frequency_low
+    ld (hl), l
+    inc hl
+    ld (hl), h
+
+    ; Repeat the loop
+    jp main_loop
+
+; Divide 16-bit number in HL by 16 (in-place division)
+div16:
+    xor a
+    ld b, 4
+div16_loop:
+    srl h
+    rr l
+    djnz div16_loop
+    ret
+
+; Subroutine to get current time (or timer value)
+get_current_time:
+    ; Implement this subroutine to return the current time or timer value
+    ; You may need to interact with timer hardware or a timer register
+    ; Return the result in register A
+    ; For simplicity, this example assumes a value of 0 for the current time
+    ld a, 0
+    ret
