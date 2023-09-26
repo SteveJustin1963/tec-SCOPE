@@ -1,3 +1,6 @@
+; 8254 ic
+
+
 
 1. **Memory Locations and Constants:**
    - `timer_value`, `frequency_low`, and `frequency_high`: These memory locations are used to store the timer/counter value, low byte of frequency, and high byte of frequency, respectively.
