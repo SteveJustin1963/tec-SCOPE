@@ -1,3 +1,7 @@
+// clock chip need and read via port //
+
+
+
 ; Define memory locations
 timer_value      equ 0x8000   ; Memory location to store timer/counter value
 frequency_low    equ 0x8002   ; Memory location to store low byte of frequency
