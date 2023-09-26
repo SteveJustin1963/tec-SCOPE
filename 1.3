@@ -1,0 +1,105 @@
+; Define Z80 registers and memory locations
+pulseCount  equ 0x8000
+previousTime equ 0x8002
+currentTime equ 0x8004
+period      equ 0x8006
+frequency   equ 0x8008
+
+; Initialize memory locations
+    ld  hl, pulseCount
+    ld  (hl), 0
+    inc hl
+    ld  (hl), 0
+    ld  hl, previousTime
+    ld  (hl), 0
+    inc hl
+    ld  (hl), 0
+
+main:
+    ; Your main loop code here
+
+    di  ; Disable interrupts
+
+    ; Load current time (16-bit) into DE
+    ld  de, (currentTime)
+    ; Load previous time (16-bit) into HL
+    ld  hl, (previousTime)
+    ; Calculate DE = DE - HL (time elapsed)
+    or  a  ; Clear carry flag
+    sbc hl, de  ; 16-bit subtraction with borrow
+    ; Save period (in HL)
+    ld  (period), hl
+
+    ; Update previousTime with currentTime
+    ld  hl, (currentTime)
+    ld  (previousTime), hl
+
+    ; Load pulseCount into DE
+    ld  de, (pulseCount)
+    ; Load scaling factor (1000 ms) into HL
+    ld  hl, 1000
+
+    ; Multiply DE by HL, result in DE
+    call multiply
+
+    ; Store the result in frequency
+    ld  (frequency), de
+
+    ; Add a delay or other code as needed
+    ; Delay code here
+
+    ei  ; Enable interrupts
+
+    ; Repeat the loop
+    jp  main
+
+multiply:
+    ; Multiply DE by HL, result in DE
+    push bc  ; Save BC on the stack
+    push af  ; Save AF on the stack
+
+    ; Initialize BC to 0 for accumulating the result
+    ld b, 0
+    ld c, 0
+
+    ; Loop for each bit in HL
+    ld a, 16  ; Set loop counter
+mul_loop:
+    ; Shift left DE (or effectively, multiply DE by 2)
+    add hl, hl
+    jr c, mul_add  ; If carry, add DE to BC
+    sla e
+    rl d
+
+    ; Shift right HL (or effectively, divide HL by 2, with rounding towards zero)
+    srl h
+    rr l
+
+    ; Update loop counter
+    dec a
+    jr nz, mul_loop
+    jr mul_end
+
+mul_add:
+    ; Add DE to BC
+    ld a, e
+    add a, c
+    ld c, a
+    ld a, d
+    adc a, b
+    ld b, a
+
+    ; Continue the loop
+    jr mul_loop
+
+mul_end:
+    ; Move result from BC to DE
+    ld d, b
+    ld e, c
+
+    pop af  ; Restore AF from the stack
+    pop bc  ; Restore BC from the stack
+
+    ret
+
+  
