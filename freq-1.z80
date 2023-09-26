@@ -1,185 +1,60 @@
-Program
-│
-├── Memory Locations and I/O Port Addresses
-│   ├── timer_value, frequency_low, frequency_high
-│   ├── timer_port, timer_value_port
-│   ├── frequency_divisor, clock_frequency
-│
-├── Initialization of Timer/Counter
-│   ├── Load BC with timer_port
-│   ├── Set A to 0x0F (Timer Configuration)
-│   ├── Send A to timer_port (Configure Timer/Counter)
-│
-├── Initialization of Frequency Storage Locations
-│   ├── Clear A to 0
-│   ├── Store 0 in frequency_low and frequency_high
-│
-├── Reading Timer/Counter Value
-│   ├── Load BC with timer_value_port
-│   ├── Input value from timer_value_port to A
-│   ├── Store A in timer_value
-│
-├── Calculating Frequency
-│   ├── Load A with timer_value
-│   ├── Increment A
-│   ├── Load L with A
-│   ├── Load HL from memory (timer_value + 1)
-│   ├── Load DE from memory (timer_value + 3)
-│   ├── Exchange DE and HL
-│
-├── Divide Timer Value by Frequency Divisor
-│   ├── Calculate BC as clock_frequency / frequency_divisor
-│   ├── Call div16 subroutine
-│
-├── Storing Frequency
-│   ├── Load HL with frequency_low
-│   ├── Store L in memory (HL)
-│   ├── Increment HL
-│   ├── Store H in memory (HL)
-│
-└── Divide 16-bit Number by 16 (In-Place Division)
-    ├── Clear A
-    ├── Load B with 4 (Number of Divisions)
-    ├── div16_loop
-    │   ├── Shift right HL (Divide by 2)
-    │   ├── Decrement B
-    │   ├── Loop until B is zero
-    └── Return
-
-
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-1. **Memory Locations and I/O Port Addresses**:
-   - `timer_value`, `frequency_low`, and `frequency_high` are equated to specific memory locations. These locations will be used to store the timer/counter value and frequency information.
-   - `timer_port` and `timer_value_port` are equated to I/O port addresses. These ports are used for configuring the timer and reading its value.
-   - `frequency_divisor` and `clock_frequency` are defined as constants, with `frequency_divisor` representing the divisor for frequency calculation, and `clock_frequency` representing the clock frequency assumed to be 4 MHz.
-
-2. **Initialization of Timer/Counter**:
-   - `ld bc, timer_port` loads the I/O port address for timer configuration into BC.
-   - `ld a, 0x0F` sets up the appropriate configuration (0x0F) for the timer/counter in register A.
-   - `out (C), a` sends the data in register A to the I/O port specified by BC, configuring the timer/counter.
-
-3. **Initialization of Frequency Storage Locations**:
-   - `ld a, 0` clears register A to zero.
-   - `ld (frequency_low), a` and `ld (frequency_high), a` store the value of zero in the memory locations designated for frequency storage.
-
-4. **Reading Timer/Counter Value**:
-   - `ld bc, timer_value_port` loads the I/O port address for reading the timer/counter value into BC.
-   - `in a, (C)` inputs the value from the I/O port specified by BC into register A.
-   - `ld (timer_value), a` stores the value from register A into the `timer_value` memory location.
-
-5. **Calculating Frequency**:
-   - `ld a, (timer_value)` loads the timer value from memory into register A.
-   - `inc a` increments the timer value.
-   - `ld l, a` loads the value of A into the low byte register L.
-   - `ld hl, (timer_value + 1)` and `ld de, (timer_value + 3)` load the low and high bytes of the timer value from memory into HL and DE, respectively.
-   - `ex de, hl` exchanges the values between DE and HL.
-
-6. **Dividing Timer Value by Frequency Divisor**:
-   - `ld bc, clock_frequency / frequency_divisor` calculates a divisor and loads it into BC.
-   - `call div16` is a subroutine call to perform a 16-bit division. The subroutine is defined later in the code.
-
-7. **Storing Frequency**:
-   - `ld hl, frequency_low` loads the memory location for the low byte of frequency into HL.
-   - `ld (hl), l` stores the low byte of the frequency in memory.
-   - `inc hl` increments HL to point to the high byte location.
-   - `ld (hl), h` stores the high byte of the frequency in memory.
-
-8. **Divide 16-bit Number by 16 (in-place division)**:
-   - The `div16` subroutine performs a 16-bit division of HL by 16 (a right shift by 4 bits). It uses a loop to shift the bits of HL to the right four times.
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ; Define memory locations
-timer_value    equ 0x8000   ; Memory location to store timer/counter value
-frequency_low  equ 0x8002   ; Memory location to store low byte of frequency
-frequency_high equ 0x8003   ; Memory location to store high byte of frequency
+timer_value      equ 0x8000   ; Memory location to store timer/counter value
+frequency_low    equ 0x8002   ; Memory location to store low byte of frequency
+frequency_high   equ 0x8003   ; Memory location to store high byte of frequency
 
 ; Define I/O port addresses
-timer_port              equ 0xFF00    ; Port address for timer configuration
-timer_value_port        equ 0xFF02    ; Port address for reading timer value
+timer_port        equ 0xFF00    ; Port address for timer configuration
+timer_value_port  equ 0xFF02    ; Port address for reading timer value
 
 ; Define constants
 frequency_divisor equ 16      ; Divisor for frequency calculation
-clock_frequency  equ 4000000  ; Example: assume 4 MHz clock frequency (4000000 Hz)
+clock_frequency  equ 4000000  ; Assume a 4 MHz clock frequency
 
 ; Initialize timer/counter
-    ld bc, timer_port       ; Load the 16-bit port address into BC
-    ld a, 0x0F              ; Set up the appropriate configuration for the timer/counter
-    out (C), a              ; Send the data in A to the I/O port specified by BC
-
+ld bc, timer_port       ; Load the 16-bit port address into BC
+ld a, 0x0F              ; Set up the appropriate configuration for the timer/counter
+out (C), a              ; Send the data in A to the I/O port specified by BC
 
 ; Initialize frequency storage locations
 ld a, 0
 ld (frequency_low), a
 ld (frequency_high), a
-; Define memory locations
-timer_value    equ 0x8000   ; Memory location to store timer/counter value
-frequency_low  equ 0x8002   ; Memory location to store low byte of frequency
-frequency_high equ 0x8003   ; Memory location to store high byte of frequency
 
-; Define I/O port addresses
-timer_port              equ 0xFF00    ; Port address for timer configuration
-timer_value_port        equ 0xFF02    ; Port address for reading timer value
+; Read timer/counter value
+ld bc, timer_value_port   ; Load the 16-bit port address into BC
+in a, (C)                 ; Input the value from the I/O port specified by BC into A
+ld (timer_value), a       ; Store the value from A into the timer_value memory location
 
-; Define constants
-frequency_divisor equ 16      ; Divisor for frequency calculation
-clock_frequency  equ 4000000  ; Example: assume 4 MHz clock frequency (4000000 Hz)
+; Calculate frequency
+ld a, (timer_value)
+inc a
+ld l, a
+ld hl, (timer_value + 1)  ; Load the low byte and the high byte from memory into HL
+ld de, (timer_value + 3)  ; Load the second high byte and the low byte from memory into DE
+ex de, hl                 ; Exchange the values between DE and HL
 
-; Initialize timer/counter
-    ld bc, timer_port       ; Load the 16-bit port address into BC
-    ld a, 0x0F              ; Set up the appropriate configuration for the timer/counter
-    out (C), a              ; Send the data in A to the I/O port specified by BC
+; Divide timer value by frequency divisor (arbitrary calculation)
+ld bc, clock_frequency / frequency_divisor
+call div16
 
+; Store frequency
+ld hl, frequency_low
+ld (hl), l
+inc hl
+ld (hl), h
 
-; Initialize frequency storage locations
-ld a, 0
-ld (frequency_low), a
-ld (frequency_high), a
- 
-
-
- ; Read timer/counter value
-    ld bc, timer_value_port   ; Load the 16-bit port address into BC
-    in a, (C)                 ; Input the value from the I/O port specified by BC into A
-    ld (timer_value), a       ; Store the value from A into the timer_value memory location
-
-   ; Calculate frequency
-    ld a, (timer_value)
-    inc a
-    ld l, a
-    ld hl, (timer_value + 1)  ; Load the low byte and the high byte from memory into HL
-    ld de, (timer_value + 3)  ; Load the second high byte and the low byte from memory into DE
-    ex de, hl                 ; Exchange the values between DE and HL
-
-
-
-    ; Divide timer value by frequency divisor (arbitrary calculation)
-    ld bc, clock_frequency / frequency_divisor
-    call div16
-
-  ; Store frequency
-    ld hl, frequency_low
-    ld (hl), l
-    inc hl
-    ld (hl), h
-
- 
+; Halt or End Program
+halt
 
 ; Divide 16-bit number in HL by 16 (in-place division)
 ; Input: HL - 16-bit number, BC - divisor
 ; Output: HL - quotient
 div16:
-    xor a          ; Clear A register
-    ld b, 4        ; Number of divisions (4-bit shift)
+  xor a          ; Clear A register
+  ld b, 4        ; Number of divisions (4-bit shift)
 div16_loop:
-    srl h          ; Shift right HL (divide by 2)
-    rr l
-    djnz div16_loop
-    ret
-
- 
-
- 
+  srl h          ; Shift right HL (divide by 2)
+  rr l
+  djnz div16_loop
+  ret
