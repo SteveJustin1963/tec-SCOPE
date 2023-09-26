@@ -32,11 +32,21 @@ wait_for_rising_edge:
     call get_current_time  ; Call a subroutine to get the current time (or timer value)
     ld (hl), a
 
-    ; Wait for a falling edge on the pulse input
+      ; Wait for a falling edge on the pulse input
+    ld de, 0 ; Initialize a 16-bit counter in register pair DE
 wait_for_falling_edge:
-    in a, (c)              ; Input the value from the I/O port specified by BC into A
-    and 0x01               ; Check the LSB
-    jr nz, wait_for_falling_edge ; If LSB is set (i.e., not a falling edge), wait
+    in a, (c)          ; Input the value from the I/O port specified by BC into A
+    and 0x01           ; Check the least significant bit (LSB)
+    jr nz, found_falling_edge ; If LSB is not set (i.e., found a falling edge), break the loop
+    
+    inc de             ; Increment DE to count the cycles spent in the loop
+    jr wait_for_falling_edge
+
+found_falling_edge:
+    ; Here, DE contains the number of cycles spent in the loop
+    ; Translate DE into time if necessary
+    ; Then you can proceed to calculate the frequency
+
 
     ; Calculate the pulse duration and frequency
     call get_current_time  ; Get the current time again
