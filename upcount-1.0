@@ -9,35 +9,59 @@ Value3 DB 0
 START:
     ; Initialize the 32-bit value to zero
     LD A, 0
-    LD (Value0), A
-    LD (Value1), A
-    LD (Value2), A
-    LD (Value3), A
+    LD HL, Value0
+    LD (HL), A
+    INC HL
+    LD (HL), A
+    INC HL
+    LD (HL), A
+    INC HL
+    LD (HL), A
 
-    ; Your code to start incrementing the 32-bit value goes here
-    ; Increment the value by 1, taking carry into account
-
-    ; Example: Increment the least significant byte (Value0)
-    LD A, (Value0)
+    ; Increment the least significant byte (Value0)
+    LD HL, Value0
+    LD A, (HL)
     INC A
-    LD (Value0), A
-    ; Check for carry and propagate the carry to the next byte if needed
+    LD (HL), A
 
-    ; Example: Check carry and increment the next byte (Value1)
-    CP 0 ; Check if A is zero
-    JR NZ, NoCarry ; No carry, jump to NoCarry
-    LD A, (Value1) ; Load Value1 into A
-    INC A ; Increment A
-    LD (Value1), A ; Store A back in Value1
+    ; Check for carry and propagate the carry to the next byte (Value1)
+    CP 0
+    JR NZ, NoCarry1
+    INC HL ; Point HL to Value1
+    LD A, (HL)
+    INC A
+    LD (HL), A
 
-NoCarry:
+NoCarry1:
+    ; Check for carry and propagate the carry to the next byte (Value2)
+    CP 0
+    JR NZ, NoCarry2
+    INC HL ; Point HL to Value2
+    LD A, (HL)
+    INC A
+    LD (HL), A
+
+NoCarry2:
+    ; Check for carry and propagate the carry to the next byte (Value3)
+    CP 0
+    JR NZ, NoCarry3
+    INC HL ; Point HL to Value3
+    LD A, (HL)
+    INC A
+    LD (HL), A
+
+NoCarry3:
     ; Your code continues here...
 
-    ; To read the 32-bit value, you can load it into registers
-    LD A, (Value0)
-    LD B, (Value1)
-    LD C, (Value2)
-    LD D, (Value3)
+    ; To read the 32-bit value into registers
+    LD HL, Value0
+    LD A, (HL)
+    INC HL
+    LD B, (HL)
+    INC HL
+    LD C, (HL)
+    INC HL
+    LD D, (HL)
 
     ; Your code to handle requests and display or use the value goes here
 
