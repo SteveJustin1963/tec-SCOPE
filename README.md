@@ -149,6 +149,27 @@ In this modified code, the `toFixedPoint` function scales input values to the Q1
 
 Using fixed-point arithmetic in this manner allows you to maintain better precision than using plain 16-bit integers for calculations involving fractional values. However, it requires careful handling of scaling factors and conversions between fixed-point and real-world units.
 
+#### Q16.16 is a fixed-point representation format 
+where numbers are divided into two parts: a 16-bit integer part and a 16-bit fractional part. It's commonly used in embedded systems and programming when you need to work with fractional numbers but don't want to use floating-point arithmetic due to its computational overhead or limited hardware support.
+
+Here's how Q16.16 fixed-point format works:
+
+- The first 16 bits represent the integer part of the number.
+- The next 16 bits represent the fractional part of the number.
+
+To convert a Q16.16 fixed-point number to a real-world value, you divide the 32-bit fixed-point number by 2^16 (65536). Conversely, to convert a real-world value to the Q16.16 format, you multiply it by 2^16.
+
+Here's a simple example to illustrate the concept:
+
+1. Real-world value: 3.5
+   - Convert to Q16.16: 3.5 * 65536 = 229376 (which is 0x00038000 in hexadecimal).
+
+2. Q16.16 value: 0x00038000
+   - Convert to real-world: 0x00038000 / 65536 = 3.5
+
+In your code, using Q16.16 fixed-point format allows you to perform arithmetic operations on fractional values with integer operations, which can be more efficient on certain hardware platforms and avoids the complexities of floating-point arithmetic.
+
+
 ### count 
 - down 00-FF
 - up, large counter 0000-FFFF 
