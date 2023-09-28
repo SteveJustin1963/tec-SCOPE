@@ -1,3 +1,6 @@
+WORK IN PROGRESS
+
+
 
 # A TEC-1 Controlled Telescope
 
