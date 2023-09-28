@@ -1,3 +1,6 @@
+
+;;;;;up count;;;;;;;;;;;;;;;;;;;;
+
 ; Start of the program
 ORG 0x0000  ; Origin, set program start address
 
@@ -47,3 +50,40 @@ END:
     HALT  ; Halt the CPU
 
 END  ; End of the program
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;down count;;;;;;;;;;;;;;;;
+
+ORG 0000h  ; The origin address of your program
+
+START:
+    LD  BC, 65535  ; Load BC with the initial value FFFFh (65535 in decimal)
+
+LOOP:
+    ; Check if BC has reached zero (0000h)
+    LD  A, C       ; Load the lower byte of BC into register A
+    OR  B          ; Logical OR with the higher byte of BC (B)
+    JP  Z, DONE    ; If A is zero (BC == 0000h), exit the loop
+
+    ; Decrement BC
+    DEC BC
+
+    ; Add delay or other instructions here if needed
+
+    ; Jump back to the loop
+    JP  LOOP
+
+DONE:
+    ; Your code to measure the time here and display it
+
+    ; End the program
+    HALT
+
+    ; Additional code and data go here
+
+    END  ; End of program
+
+
