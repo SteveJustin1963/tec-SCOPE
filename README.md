@@ -81,6 +81,7 @@ Program execution:
 
 ### mp-1.f
 - main program in forth
+- todo convert to fixed point arithmetic with groups of integers
 
 ### count 
 - down 00-FF
