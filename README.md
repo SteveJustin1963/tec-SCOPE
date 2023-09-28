@@ -83,7 +83,7 @@ Program execution:
 - main program in forth
 - todo convert to fixed point arithmetic with groups of integers
 
-  Storing precision in groups of integers, often referred to as fixed-point arithmetic, can be a way to maintain better accuracy than using plain 16-bit integers for certain calculations, especially when dealing with fractional values. Fixed-point arithmetic allows you to represent fractional numbers with a fixed number of integer bits and fractional bits. This approach can help you maintain precision while using integer-based data types.
+Storing precision in groups of integers, often referred to as fixed-point arithmetic, can be a way to maintain better accuracy than using plain 16-bit integers for certain calculations, especially when dealing with fractional values. Fixed-point arithmetic allows you to represent fractional numbers with a fixed number of integer bits and fractional bits. This approach can help you maintain precision while using integer-based data types.
 
 Here's how you might apply fixed-point arithmetic to the provided code:
 
@@ -96,54 +96,7 @@ Here's how you might apply fixed-point arithmetic to the provided code:
 4. **Convert Back**: When you need to display or use the results, convert them back to their original units by reversing the scaling factor.
 
 Here's an example of how you might modify the code to use Q16.16 fixed-point arithmetic:
-
-```forth
-\ Declare variables with Q16.16 fixed-point format
-16 variable azimuth
-16 variable altitude
-16 variable latitude
-16 variable longitude
-16 variable julianDate
-16 variable ut
-32 variable hourangle  \ Q16.16 format (16 bits integer, 16 bits fractional)
-32 variable declination  \ Q16.16 format
-32 variable lst  \ Q16.16 format
-32 variable rightascension  \ Q16.16 format
-
-\ Constants in Q16.16 format
-32768 constant Q_PI
-
-\ Function to convert degrees to Q16.16 fixed-point
-: toFixedPoint ( n -- n*Q16.16 )
-    32768 * ;
-
-\ Function to convert Q16.16 fixed-point to degrees
-: fromFixedPoint ( n -- n/Q16.16 )
-    32768 / ;
-
-\ ... (Rest of your code remains mostly the same)
-
-: toRadians ( 16 -- 32 )
-    Q_PI * 180 16* 16/ ;
-
-\ ... (Modify other functions as needed)
-
-\ Perform calculations using fixed-point arithmetic
-: calculate-declination ( -- )
-    latitude @ fsin
-    altitude @ fsin *
-    latitude @ fcos
-    altitude @ fcos *
-    azimuth @ fcos *
-    f+ f+ 
-    fsin
-    declination ! ;
-
-\ ... (Modify other functions as needed)
-
-\ Run the main function
-main
-```
+-mp16.16.f
 
 In this modified code, the `toFixedPoint` function scales input values to the Q16.16 format, and the `fromFixedPoint` function converts results back to degrees when displaying them. The `hourangle`, `declination`, `lst`, and `rightascension` variables are declared with 32 bits to accommodate the fixed-point format.
 
