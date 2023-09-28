@@ -42,21 +42,46 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 
 ![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/5af4808d-1427-46c5-b78d-ee9c48157a15)
 
-## freq-1.z80
-configure a timer/counter, read its value, calculate the frequency, and store the result in memory. The div16 subroutine is used to perform a 16-bit division operation by shifting bits, 
+## code
+### 1.0
+- configure a timer/counter
+- read its value,
+- calculate the frequency, and store the result in memory.
+- The div16 subroutine is used to perform a 16-bit division operation by shifting bits, 
 
-## freq-2.z80
-reads values from a specific port, averages them, calculates an angle based on the average value, performs some calibration and conversion routines, and uses lookup tables for division and multiplication to optimize calculations
+### 1.01
+- try 8254 is for timing and counting
+- has three 16-bit counters (Counters 0, 1, and 2) with various operating modes.
+Key elements:
+- Registers: timer_value, frequency_low, frequency_high.
+- Ports: pit_control_port, pit_data_port.
+- Constants: frequency_divisor, clock_frequency.
 
-## freq-3.z80
- measure the frequency of a signal on bit 1 of Port 06 within the range of 200 to 1000 Hz ,  code assumes that the incrementing of the HL register represents a known time interval, which can be used to calculate the frequency. For more accurate and efficient frequency measurement, it is recommended to use dedicated timer hardware
+Program execution:
+- Initializes Counter 0 in square wave mode.
+- Reads counter value, calculates frequency using div16 subroutine.
+- Stores frequency in frequency_low and frequency_high.
+- div16 subroutine divides a 16-bit value by 16 for frequency calculation.
 
 
-## freq-8254-1.z80
+### 2.0
+- reads values from a specific port,
+- averages them,
+- calculates an angle based on the average value,
+- performs some calibration and conversion routines,
+- and uses lookup tables for division and multiplication to optimize calculations
 
-rather than use  duration from code execution time to guage an interval, try 8254 Programmable Interval Timer (PIT) to generate a regular square wave and use this to calculate the input frequency then turn that into the angle. 
+### 3.0
+- measure the frequency of a signal on bit 1 of Port 06 within the range of 200 to 1000 Hz 
+- code assumes that the incrementing of the HL register represents a known time interval, which can be used to calculate the frequency.
+- For more accurate and efficient frequency measurement, it is recommended to use dedicated timer hardware
 
-code assumes a certain clock frequency and configuration for the PIT.  with a different clock frequency or configuration, need to adjust the constants and calculations accordingly. Additionally, the code doesn't include the handling of the square wave signal itself; it focuses on initializing the PIT and calculating the frequency based on the timer/counter values. If you want to perform additional tasks with the generated square wave, you'll need to extend the code accordingly.
+### mp-1.f
+- main program in forth
+
+### count 
+- down 00-FF
+- up, large counter 0000-FFFF 
 
 
  
