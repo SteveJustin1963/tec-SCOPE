@@ -1,0 +1,110 @@
+\ Constants for motor control and encoder pins
+1 CONSTANT AltMotorPin
+2 CONSTANT AzMotorPin
+3 CONSTANT AltEncoderPinA
+4 CONSTANT AltEncoderPinB
+5 CONSTANT AzEncoderPinA
+6 CONSTANT AzEncoderPinB
+
+\ Constants for encoder resolution
+1024 CONSTANT AltEncoderResolution
+2048 CONSTANT AzEncoderResolution
+
+\ Constants for motor direction
+1 CONSTANT Forward
+0 CONSTANT Backward
+
+\ Key Constants (CHAR is not necessary in some Forth implementations)
+'W' CONSTANT AltUpKey
+'S' CONSTANT AltDownKey
+'A' CONSTANT AzLeftKey
+'D' CONSTANT AzRightKey
+
+\ Variables for motor direction and encoder counts
+VARIABLE AltMotorDirection
+VARIABLE AzMotorDirection
+VARIABLE AltEncoderCount
+VARIABLE AzEncoderCount
+
+\ Variables for storing angles
+0e FCONSTANT AltitudeAngle
+0e FCONSTANT AzimuthAngle
+
+\ Initialize motor control and encoder pins (you can uncomment these lines when needed)
+: init-pins
+    \ Your initialization code here to set up pin control
+    \ Example: AltMotorPin OUTPUT
+;
+
+\ Initialize variables
+: init-variables
+    Forward AltMotorDirection !
+    Forward AzMotorDirection !
+    0 AltEncoderCount !
+    0 AzEncoderCount !
+    0e AltitudeAngle F!
+    0e AzimuthAngle F!
+;
+
+\ Function to read encoder position (replace with actual logic)
+: READ-ENCODER ( pina pinb -- count )
+    \ Your encoder reading logic here.
+    0  \ Replace with the actual count
+;
+
+\ Function to convert encoder counts to angles
+: convert-to-angle ( encoder-count encoder-resolution mechanical-ratio -- angle )
+    360.  \ Convert to a floating-point number
+    F* F/  \ Calculate the angle
+;
+
+\ Function to update motor direction based on keyboard input
+: update-direction ( key -- )
+    CASE
+        AltUpKey OF
+            Forward AltMotorDirection !
+            AltMotorPin SET-HIGH  \ Replace with your pin control word
+        ENDOF
+        AltDownKey OF
+            Backward AltMotorDirection !
+            AltMotorPin SET-LOW  \ Replace with your pin control word
+        ENDOF
+        AzLeftKey OF
+            Forward AzMotorDirection !
+            AzMotorPin SET-HIGH  \ Replace with your pin control word
+        ENDOF
+        AzRightKey OF
+            Backward AzMotorDirection !
+            AzMotorPin SET-LOW  \ Replace with your pin control word
+        ENDOF
+    ENDCASE
+;
+
+
+\ Main loop
+: main-loop
+    BEGIN
+        KEY? IF
+            update-direction
+        THEN
+
+        \ Read encoder values
+        AltEncoderPinA AltEncoderPinB READ-ENCODER TO AltEncoderCount
+        AzEncoderPinA AzEncoderPinB READ-ENCODER TO AzEncoderCount
+
+        \ Convert encoder counts to angles
+        AltEncoderCount AltEncoderResolution AltMechanicalRatio convert-to-angle TO AltitudeAngle
+        AzEncoderCount AzEncoderResolution AzMechanicalRatio convert-to-angle TO AzimuthAngle
+
+        \ Display angles (or implement other control logic)
+        ." Altitude Angle: " AltitudeAngle F. CR
+        ." Azimuth Angle: " AzimuthAngle F. CR
+
+        100 MS  \ Pause to avoid excessive CPU usage
+    AGAIN
+;
+
+\ Initialize everything
+init-pins
+init-variables
+main-loop
