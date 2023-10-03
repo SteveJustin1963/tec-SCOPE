@@ -61,6 +61,7 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
   \ Initialize electronic level, compass, ADC, and motor control
   \ Set up communication with Stellarium
   \ Configure rotary encoder
+  \ Initialize optical encoders for alt and az axes
 
 \ Read angle and calculate frequency
 : read-angle-and-frequency
@@ -81,6 +82,11 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
   \ Implement automatic slewing for go-to functionality
   \ Enable remote control via TCS
   \ Track telescope position using optical gate
+
+\ Read Differential Optical Encoders
+: read-optical-encoders
+  \ Read optical encoders for alt and az axes
+  \ Calculate precise position information
 
 \ Rotary Encoder Integration
 : integrate-rotary-encoder
@@ -107,6 +113,7 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
     read-angle-and-frequency
     voltage-to-frequency
     motor-control-and-slewing
+    read-optical-encoders
     integrate-rotary-encoder
     auto-tracking-and-guiding
     go-to-functionality
