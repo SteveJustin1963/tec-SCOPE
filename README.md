@@ -48,7 +48,7 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 ## code
  
 
-
+```
 \ Include any necessary headers and libraries here
 
 \ Define constants and variables
@@ -141,7 +141,7 @@ main-loop
 \ Additional features and functionalities can be added as separate code blocks
 
 \ End of the software set
-
+```
 
 
 
