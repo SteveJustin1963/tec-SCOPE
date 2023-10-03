@@ -46,6 +46,106 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 ![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/5af4808d-1427-46c5-b78d-ee9c48157a15)
 
 ## code
+what i want to achieve
+
+
+\ Include any necessary headers and libraries here
+
+\ Define constants and variables
+VARIABLE angle \ Store the telescope's current angle
+VARIABLE frequency \ Store the calculated frequency
+VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward, -1 for backward)
+
+\ Initialize hardware components and communication interfaces
+: initialize-telescope
+  \ Initialize electronic level, compass, ADC, and motor control
+  \ Set up communication with Stellarium
+  \ Configure rotary encoder
+
+\ Read angle and calculate frequency
+: read-angle-and-frequency
+  \ Code for reading angle using the electronic level and compass
+  \ Code for generating frequency from the angle using the 555 oscillator circuit
+  \ Calibration and interpolation
+
+\ Voltage-to-Frequency Conversion
+: voltage-to-frequency
+  \ Code for voltage-to-frequency conversion using NE555 or 8254 timer
+  \ Calibration and interpolation
+
+\ Motor Control and Slewing
+: motor-control-and-slewing
+  \ Code for controlling motors using worm drives
+  \ Implement non-linear interpolation and trigonometry for precise angle control
+  \ Handle manual slewing using switches and joystick
+  \ Implement automatic slewing for go-to functionality
+  \ Enable remote control via TCS
+  \ Track telescope position using optical gate
+
+\ Rotary Encoder Integration
+: integrate-rotary-encoder
+  \ Code for reading the rotary encoder HN3806-AB
+  \ Interface with Timing Belt Drive Pulley
+  \ Ensure precise angle measurement and control
+
+\ Auto-Tracking and Guiding
+: auto-tracking-and-guiding
+  \ Implement automatic tracking to compensate for Earth's rotation
+  \ Integrate guiding capabilities to maintain precise object tracking
+  \ Support long-exposure astrophotography
+
+\ Go-To Functionality
+: go-to-functionality
+  \ Implement go-to capabilities to automatically slew to specific objects
+  \ Calculate necessary coordinates for precise pointing
+  \ Provide user input or database selection for target objects
+
+\ Main Program Loop
+: main-loop
+  initialize-telescope
+  BEGIN
+    read-angle-and-frequency
+    voltage-to-frequency
+    motor-control-and-slewing
+    integrate-rotary-encoder
+    auto-tracking-and-guiding
+    go-to-functionality
+    \ Additional functionalities (camera control, photo compositing, etc.)
+  AGAIN
+
+\ Telescope Control System (TCS)
+: tcs-control
+  \ Define communication protocols for remote control
+  \ Handle commands from remote devices
+
+\ Camera Control and Imaging
+: camera-control
+  \ Implement camera control and image capture
+  \ Explore Lucky Imaging techniques
+
+\ External Communication
+: stellarium-communication
+  \ Establish communication with Stellarium
+  \ Send telescope position data
+  \ Receive and execute movement commands from Stellarium
+
+\ Compile and run the main program
+main-loop
+
+\ Handle user input and commands
+: handle-user-input
+  \ Implement user interface for manual control and configuration
+
+\ Include error handling and exception handling routines as needed
+
+\ Additional features and functionalities can be added as separate code blocks
+
+\ End of the software set
+
+
+
+
+
 ### 1.0
 - configure a timer/counter
 - read its value,
