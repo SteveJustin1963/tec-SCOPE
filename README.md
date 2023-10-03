@@ -46,7 +46,7 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 ![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/5af4808d-1427-46c5-b78d-ee9c48157a15)
 
 ## code
-what i want to achieve
+ 
 
 
 \ Include any necessary headers and libraries here
