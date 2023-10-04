@@ -36,7 +36,7 @@ https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
 - send to I/O port and calculate sudo period with loop counter
 - correlate and calibrate 0 and 90 degrees to period value 
 - then interpolate the other angles , send to 7seg display eg 33.22.11 deg.min.sec.  for less than a second got second onliy , eg 11.1234  
-- converted angle to star position, send to Stellarium over serial port
+- send angle to Stellarium over serial port
 - Stellarium finds location on star map, compare to visual data 
 
 
@@ -66,7 +66,7 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
 \ Read angle and calculate frequency
 : read-angle-and-frequency
   \ Code for reading angle using the electronic level and compass
-  \ Code for generating frequency from the angle using the 555 oscillator circuit
+  \ Code for generating sudo period with counter loop from the pot angle using 555 oscillator circuit
   \ Calibration and interpolation
 
 \ Voltage-to-Frequency Conversion
@@ -76,7 +76,7 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
 
 \ Motor Control and Slewing
 : motor-control-and-slewing
-  \ Code for controlling motors using worm drives
+  \ Code for controlling dc motors using worm drives
   \ Implement non-linear interpolation and trigonometry for precise angle control
   \ Handle manual slewing using switches and joystick
   \ Implement automatic slewing for go-to functionality
@@ -156,7 +156,7 @@ main-loop
 ### 1.0
 - configure a timer/counter
 - read its value,
-- calculate the frequency, and store the result in memory.
+- calculate the freq, and store the result in memory.
 - The div16 subroutine is used to perform a 16-bit division operation by shifting bits, 
 
 ### 1.01
