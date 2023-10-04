@@ -26,16 +26,16 @@ https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
 
 - circuit simulator https://tinyurl.com/2p8fdmws
 - make the 220 value the pot
-- am aiming for freq between 100 and 1000
+- am aiming for freq between 100 and 1000 and no more than 3000
 
 ![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
 
 
 
-- 555 osc circuit,  potentiometer value = freq square pulses= angle 
-- send to I/O port and calculate average = freq number
-- calibrate; correlate at 0 and 90 degrees to freq at these positons- save
-- Interpolate the in between angles from in between freq and send to 7seg display
+- 555 osc circuit,  potentiometer value = period square pulses= angle 
+- send to I/O port and calculate sudo period with loop counter
+- correlate and calibrate 0 and 90 degrees to period value 
+- then interpolate the other angles , send to 7seg display eg 33.22.11 deg.min.sec.  for less than a second got second onliy , eg 11.1234  
 - converted angle to star position, send to Stellarium over serial port
 - Stellarium finds location on star map, compare to visual data 
 
