@@ -9,7 +9,7 @@ https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
 ## wish list
-Dobsons ar just pushed around on a low friction mount, easy to move while looking, but small increments are hard to control, there is no slewing, tracking or stellar co-ordinates, so i want to 
+Dobsons are just pushed or slewed around on a low friction mount, easy to move while looking, but small increments are hard to control often pushing the scope in the wrong direction as the image is inverted and also off axis 45 deg. with motors we could track an object, hunt for a object if its in the feild if viewe or calculate stellar co-ordinates from the readers or encoders, so i want to 
 develop a system to read and control my cheap Dobson 200mm F5 telescope. we can only do so much with an `electronic level and angle gauge` ($16 online) and digital compass to read.
 
 
