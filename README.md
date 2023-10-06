@@ -10,17 +10,11 @@ https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
 
 ## wish list
 Dobsons ar just pushed around on a low friction mount, easy to move while looking, but small increments are hard to control, there is no slewing, tracking or stellar co-ordinates, so i want to 
-develop a system to read and control my cheap Dobson 200mm F5 telescope. 
-
-  - Stage-0 
-- Electronic Level and Angle Gauge, online shops sell $16.
-- digital compass
+develop a system to read and control my cheap Dobson 200mm F5 telescope. we can only do so much with an `electronic level and angle gauge` ($16 online) and digital compass to read.
 
 
-
-# Stage-1 
-
-## 1.1 R to angle 
+## Stages 
+- 1.1 R to angle 
 
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
 
