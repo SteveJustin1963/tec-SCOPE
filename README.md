@@ -1,16 +1,14 @@
 unfinished mess
 
 
-
 # A TEC-1 Controlled Telescope
 
-https://github.com/SteveJustin1963/tec-SCOPE/blob/master/activity_log.md
+my cheap Dobson 200mm F5 telescope
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
 ## wish list
-Dobsons are just pushed or slewed around on a low friction mount, easy to move while looking, but small increments are hard to control often pushing the scope in the wrong direction as the image is inverted and also off axis 45 deg. with motors we could track an object, hunt for a object if its in the feild if viewe or calculate stellar co-ordinates from the readers or encoders, so i want to 
-develop a system to read and control my cheap Dobson 200mm F5 telescope. we can only do so much with an `electronic level and angle gauge` ($16 online) and digital compass to read.
+Dobsons are just pushed by hand on a low friction mount. this system works really well, easy, cheap and settles very fast. but then the star or object moves out of view. if we push while viewing we ofter push the wrong way as the image is inverted. if we use a laser or dot finder the increments are usualy too big and we lose the target easily. if we wanted to take some angle readings we could use an electronic angle gauge, $16 online and a digital compass. dont forget to convert magentic north to real north, sydney is 12+. if we could measure 
 
 
 ## reading
