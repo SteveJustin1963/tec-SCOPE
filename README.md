@@ -143,7 +143,13 @@ main-loop
 \ End of the software set
 ```
 
-
+# Counting
+- Alternative to counting pulses from variable R, use a cap, C
+- https://www.instructables.com/Simple-Capaitance-Meter/
+- convert code to c `count-scm.c`
+- we need a 555 cct to measure cap vale and turn it into pulses, then in the same way feed it into tec1 like the variable r pulses.
+- https://www.google.com/search?q=74HC590&rlz=1C1FKPE_en-GBAU984AU984&sourceid=chrome&ie=UTF-8
+- Encoder counter chip https://www.usdigital.com/products/accessories/interfaces/ics/
 
 
 ### 1.0
