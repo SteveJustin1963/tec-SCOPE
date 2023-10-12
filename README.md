@@ -7,7 +7,7 @@ my cheap Dobson 200mm F5 telescope
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
-## wish list
+## Dobsons = a simple type of reflector telescope
 Dobsons are just pushed by hand on a low friction mount. this system works really well, easy, cheap and settles very fast. but then the star or object moves out of view. if we push while viewing we ofter push the wrong way as the image is inverted. if we use a laser or dot finder the increments are usualy too big and we lose the target easily. if we wanted to take some angle readings we could use an electronic angle gauge, $16 online and a digital compass. dont forget to convert magentic north to real north, sydney is 12+. if we could measure 
 
 
