@@ -103,4 +103,25 @@ mul_end:
 
     ret
 
+
+//////////////////////////////
+
+The code is designed to compute the period between two time points (`previousTime` and `currentTime`) and then calculate the frequency of pulses based on `pulseCount`. Here are some points to note and some suggestions:
+
+1. **Initialization of Memory Locations**: You're initializing `pulseCount` and `previousTime` to 0. This is clear and straightforward. You might want to consider initializing `currentTime`, `period`, and `frequency` as well, for consistency.
+
+2. **Disabling and Enabling Interrupts**: You're correctly disabling interrupts using `di` at the beginning of the main loop and enabling them with `ei` before looping again. This ensures that no interrupt will interfere with your calculations.
+
+3. **Subtraction of Previous and Current Time**: You're calculating the difference between `currentTime` and `previousTime` to get the elapsed time, which is stored in `period`. This is a standard approach.
+
+4. **Multiplication Routine**: The multiplication subroutine (`multiply`) uses the standard shift-and-add method. It takes 16-bit numbers in `DE` and `HL` registers, multiplies them, and returns the result in `DE`. The implementation seems correct at a first glance.
+
+5. **Frequency Calculation**: I assume you're trying to calculate the frequency based on the `pulseCount` and a scaling factor of 1000 ms (1 second). This would give you the number of pulses per second. However, if `pulseCount` is meant to represent the number of pulses within the measured period, then dividing it by the period (instead of multiplying) would give the frequency.
+
+6. **Delay in the Main Loop**: You have a comment indicating where to add delay or other code. Remember to implement this delay, especially if you're using this code to measure real-time events. Without a delay, your main loop might run too quickly and possibly miss some events.
+
+7. **General Tips**:
+    - **Modularity**: If this code is going to grow, consider breaking it down further into smaller subroutines or functions for better readability and maintainability.
+    - **Testing**: Ensure you test this on actual hardware or a reliable emulator to validate its correctness.
+
   
