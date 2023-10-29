@@ -1,0 +1,102 @@
+ORG 0000h
+
+; Variables
+p1:    DB 0       ; Holds value from port 07
+p2:    DB 0       ; Holds value from port 08
+temp1: DB 0       ; Temporary storage for averaging
+temp2: DB 0       ; Temporary storage for averaging
+
+START:
+    ; Read joystick and control motor
+    ; Read joystick vertical position
+    IN A, (11h)      ; Read UP port
+    CP 1             ; Check if UP is pressed
+    JR Z, UpPressed
+    IN A, (12h)      ; Read DOWN port
+    CP 1             ; Check if DOWN is pressed
+    JR Z, DownPressed
+
+    ; If neither UP nor DOWN is pressed, stop vertical motion
+    LD A, 0x00
+    OUT (22h), A
+    JR CheckHorizontal
+
+UpPressed:
+    LD A, 0x01       ; Move motor UP
+    OUT (22h), A
+    JR CheckHorizontal
+
+DownPressed:
+    LD A, 0xFF       ; Move motor DOWN
+    OUT (22h), A
+
+CheckHorizontal:
+    ; Read joystick horizontal position
+    IN A, (13h)      ; Read LEFT port
+    CP 1             ; Check if LEFT is pressed
+    JR Z, LeftPressed
+    IN A, (14h)      ; Read RIGHT port
+    CP 1             ; Check if RIGHT is pressed
+    JR Z, RightPressed
+
+    ; If neither LEFT nor RIGHT is pressed, stop horizontal motion
+    LD A, 0x00
+    OUT (23h), A
+    JR ContinueRoutine
+
+LeftPressed:
+    LD A, 0x01       ; Move motor LEFT
+    OUT (23h), A
+    JR ContinueRoutine
+
+RightPressed:
+    LD A, 0xFF       ; Move motor RIGHT
+    OUT (23h), A
+
+ContinueRoutine:
+    ; Original averaging routine starts here
+    ; Initial reading from ports
+    IN A, (07h)
+    LD (p1), A
+    IN A, (08h)
+    LD (p2), A
+
+    ; Set up the 500ms loop (NOTE: The delay loop values are arbitrary and will likely need adjusting)
+    LD B, 50       ; Outer loop, 10ms x 50 = 500ms
+outerLoop:
+    LD C, 10       ; Inner loop to wait for 1ms
+innerLoop:
+    ; Do some work here to create a delay, e.g., a NOP loop or other time-consuming ops
+    ; Adjust loop count according to the specific clock speed of your Z80
+    ; ...
+
+    ; Re-read ports and average
+    IN A, (07h)
+    LD (temp1), A
+    LD A, (p1)
+    ADD A, (temp1)
+    RRCA            ; Divide by 2 to average
+    LD (p1), A
+
+    IN A, (08h)
+    LD (temp2), A
+    LD A, (p2)
+    ADD A, (temp2)
+    RRCA            ; Divide by 2 to average
+    LD (p2), A
+
+    DEC C
+    JP NZ, innerLoop
+
+    DEC B
+    JP NZ, outerLoop
+
+    ; Transfer averaged values to screen buffer sb1 (assuming sb1 is at some address, say 8000h)
+    LD HL, 8000h   ; Address of sb1
+    LD A, (p1)
+    LD (HL), A     ; Copy p1 value
+    INC HL
+    LD A, (p2)
+    LD (HL), A     ; Copy p2 value
+
+    JR START      ; Loop back to start to continually check joystick and perform averaging
