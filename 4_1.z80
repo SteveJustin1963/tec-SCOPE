@@ -1,0 +1,139 @@
+ORG 0x0000
+
+; Reset or start routine
+START:
+    ; Initialization code...
+    DI               ; Disable interrupts during initialization
+    ; ... any other initialization tasks ...
+    EI               ; Enable interrupts
+    JP MAIN_LOOP     ; Jump to the main loop after initialization
+
+ORG 0x0066
+; The NMI service routine starts here
+NMI:
+    ; Service joystick and control motor
+    ; Read joystick vertical position
+    IN A, (11h)      ; Read UP port
+    CP 1             ; Check if UP is pressed
+    JR Z, UpPressed
+    IN A, (12h)      ; Read DOWN port
+    CP 1             ; Check if DOWN is pressed
+    JR Z, DownPressed
+
+    ; If neither UP nor DOWN is pressed, stop vertical motion
+    LD A, 0x00
+    OUT (22h), A
+    JR CheckHorizontal
+
+UpPressed:
+    LD A, 0x01       ; Move motor UP
+    OUT (22h), A
+    JR CheckHorizontal
+
+DownPressed:
+    LD A, 0xFF       ; Move motor DOWN
+    OUT (22h), A
+
+CheckHorizontal:
+    ; Read joystick horizontal position
+    IN A, (13h)      ; Read LEFT port
+    CP 1             ; Check if LEFT is pressed
+    JR Z, LeftPressed
+    IN A, (14h)      ; Read RIGHT port
+    CP 1             ; Check if RIGHT is pressed
+    JR Z, RightPressed
+
+    ; If neither LEFT nor RIGHT is pressed, stop horizontal motion
+    LD A, 0x00
+    OUT (23h), A
+    RETN
+
+LeftPressed:
+    LD A, 0x01       ; Move motor LEFT
+    OUT (23h), A
+    RETN
+
+RightPressed:
+    LD A, 0xFF       ; Move motor RIGHT
+    OUT (23h), A
+    RETN
+
+ORG 0x0100  ; or wherever your main code should begin after making space for reset and NMI routines
+
+; Variables
+p1:    DB 0       ; Holds value from port 07
+p2:    DB 0       ; Holds value from port 08
+temp1: DB 0       ; Temporary storage for averaging
+temp2: DB 0       ; Temporary storage for averaging
+
+MAIN_LOOP:
+    ; Continually poll joystick ports
+PollJoystick:
+    IN A, (11h)
+    OR A
+    JR NZ, TriggerNMI
+    IN A, (12h)
+    OR A
+    JR NZ, TriggerNMI
+    IN A, (13h)
+    OR A
+    JR NZ, TriggerNMI
+    IN A, (14h)
+    OR A
+    JR NZ, TriggerNMI
+
+    ; Averaging routine
+    ; Initial reading from ports
+    IN A, (07h)
+    LD (p1), A
+    IN A, (08h)
+    LD (p2), A
+
+    ; Set up the 500ms loop
+    LD B, 50       ; Outer loop, 10ms x 50 = 500ms
+outerLoop:
+    LD C, 10       ; Inner loop to wait for 1ms
+innerLoop:
+    ; ... Delay logic ...
+
+    ; Re-read ports and average
+    IN A, (07h)
+    LD (temp1), A
+    LD A, (p1)
+    ADD A, (temp1)
+    RRCA            ; Divide by 2 to average
+    LD (p1), A
+
+    IN A, (08h)
+    LD (temp2), A
+    LD A, (p2)
+    ADD A, (temp2)
+    RRCA            ; Divide by 2 to average
+    LD (p2), A
+
+    DEC C
+    JP NZ, innerLoop
+    DEC B
+    JP NZ, outerLoop
+
+    ; Transfer averaged values to screen buffer sb1
+    LD HL, 8000h
+    LD A, (p1)
+    LD (HL), A
+    INC HL
+    LD A, (p2)
+    LD (HL), A
+
+    JR PollJoystick
+
+TriggerNMI:
+    ; Actual method to trigger an NMI depends on your hardware setup
+    ; Placeholder only, as the Z80 itself can't trigger its own NMI; external hardware/circuitry is needed
+    ; Depending on the hardware, writing to a specific port or setting a specific pin might trigger the NMI
+    ; For this example, it's a NOP (No Operation)
+    NOP
+
+
+// In this structure, the Z80 will start at the START routine, then jump to the MAIN_LOOP where it continuously polls
+// the joystick ports. If any of the joystick ports is active, the code assumes an NMI is triggered externally 
+// and the execution will jump to the NMI routine at 0x0066 to handle the joystick.
