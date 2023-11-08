@@ -304,7 +304,7 @@ In summary, while Q16.16 fixed-point format can be suitable for some application
 
 
 # Stage 3 
-## remove pots and cam motos, replace with geared motor drive and rotary encoders
+## remove pots and cam motors, replace with geared motor drive and rotary encoders
 - remove cams, motors and resistor pots 
 - replace with reduction geared DC or stepper motors and with rotary encoder
 - keep manual slewing and software motor control 
