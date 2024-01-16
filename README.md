@@ -13,7 +13,7 @@ Dobsons are just pushed by hand on a low friction mount. this system works reall
 
 ## reading
 we need to read the alt and azimuth. they are angle measurements. we need to locate the axis of these and mount some kind of reader and turn that into numbers.
-wthe simplest might be to use a var R and feed this into a circuit, like an osc, then count the duration of those pulses to interpolate an angle.
+the simplest might be to use a var R and feed this into a circuit, like an osc, then count the duration of those pulses to interpolate an angle.
 
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
 
