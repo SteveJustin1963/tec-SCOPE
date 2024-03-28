@@ -7,33 +7,27 @@ my cheap ($35) Truss Tube Dobson 200mm F5 telescope
 
 Hey there, stargazers and tech enthusiasts! Ever wondered how you can take your stargazing experience to the next level? Well, hold onto your tec1 because we're about to dive into the exciting world of controlling your Dobsonian telescope using a the tec1 Z80 Single Board Computer (SBC), with motors, and optical encoders. Buckle up for a journey through the cosmos with a touch of DIY tech wizardry!
 
-**Introduction:**
 Let's face it, gazing at the stars has always been mesmerizing. But what if we told you that you can now control your telescope with the power of a Z80 SBC? That's right! Say goodbye to manual adjustments and hello to precision control at your fingertips.
 
-**Importance of Modernizing Your Telescope:**
 Comparatively speaking, traditional telescopes are like driving a horse-drawn carriage in the age of electric cars. They get the job done, but why settle for mediocrity when you can have precision and efficiency? It's like upgrading from a flip phone to a smartphone - once you experience the difference, there's no going back.
 
-**Comparisons:**
 Think of your old telescope as a trusty steed, reliable but limited in its capabilities. Now, imagine upgrading it with the power of a Z80 SBC. It's like going from riding a horse to flying a spaceship! With a Z80 SBC, you're not just observing the stars; you're commanding them.
 
-**Persuasion:**
 Still not convinced? Picture this: You're out in the backyard, gazing up at the night sky. With a traditional telescope, you'd spend precious minutes fiddling with knobs and dials to get the perfect view. But with a Z80 SBC-powered telescope, it's as easy as pressing a button. Who wouldn't want to make stargazing effortless and fun?
 
-**Technical Information:**
 Now, let's get down to the nitty-gritty. By integrating a Z80 SBC into your telescope setup, you gain unprecedented control and accuracy. Optical encoders ensure precise positioning, while motors allow for smooth and silent movement. It's like having a digital assistant for your stargazing adventures!
 
-**Assurance and Confidence:**
 Rest assured, fellow astronomers, we've done our homework. Our DIY guide is the culmination of extensive research and testing to ensure optimal performance. With our step-by-step instructions, even novice tech enthusiasts can transform their Dobsonian telescope into a state-of-the-art marvel.
 
-**Incorporating Forth MINT Code:**
-But wait, there's more! We're not just stopping at hardware upgrades; we're diving into the world of software too. With Forth MINT, a powerful programming language known for its simplicity and efficiency, you can unleash the full potential of your Z80 SBC-powered telescope. From motor control to data processing, Forth MINT empowers you to customize your telescope's functionality with ease.
+But wait, there's more! We're not just stopping at hardware upgrades; we're diving into the world of software too. With the new Forth MINT, a powerful programming language known for its simplicity and efficiency, you can unleash the full potential of your tec1 Z80 SBC-powered telescope. From motor control to data processing, Forth MINT empowers you to customize your telescope's functionality with ease.
 
-**Conclusion:**
 So, what are you waiting for? Grab your tools, fire up your Z80 SBC, and embark on an astronomical journey like never before. With a bit of DIY spirit, the power of modern technology, and the versatility of Forth MINT, the cosmos is yours to explore. Happy stargazing, everyone!
 
 
 ///////////////////////////////////
-old
+
+
+work in progress
 
 
 
