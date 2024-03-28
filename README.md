@@ -1,5 +1,3 @@
-unfinished mess
-
 
 # A TEC-1 Controlled Telescope
 
