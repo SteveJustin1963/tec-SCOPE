@@ -1,6 +1,6 @@
 **Title: DIY Guide: Controlling Your Dobsonian Telescope (circa 1965) with the tec1 Z80 SBC (circa 1985), Motors, and Optical Encoders**
 
-my cheap ($35) Dobson 200mm F5 telescope designed 1965
+my cheap ($35) Truss Tube Dobson 200mm F5 telescope 
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
