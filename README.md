@@ -1,6 +1,6 @@
 **Title: DIY Guide: Controlling Your Dobsonian Telescope (circa 1965) with the tec1 Z80 SBC (circa 1985), Motors, and Optical Encoders**
 
-Attention stargazers and tech enthusiasts! Elevate your stargazing game by harnessing the power of a Z80 Single Board Computer (SBC) to control your Dobsonian telescope with motors and optical encoders. Say farewell to manual adjustments and embrace precision at your fingertips. Imagine upgrading from a horse-drawn carriage to an electric car; that's the leap in efficiency and precision you'll experience. With a Z80 SBC, you're not just observing the stars; you're commanding them effortlessly. Our DIY guide guarantees seamless integration and optimal performance, ensuring even novices can transform their telescope into a state-of-the-art marvel. Moreover, dive into the world of Forth MINT, a powerful programming language, to customize your telescope's functionality with ease. So, seize the moment, ignite your Z80 SBC, and embark on an unparalleled astronomical journey. Happy stargazing!
+Elevate your stargazing game by harnessing the power of your tec-1 to control an old Dobson telescope with motors and optical encoders. The simple friction controlled Alt-Azimuth mount are easily too adapted to get a leap in efficiency and precision. We use a mini Forth interpreter called MINT to easily program and customize the telescope's functionality with ease. So, seize the moment, ignite your tec1 and embark on an unparalleled astronomical journey. Happy stargazing!
 
 
 
