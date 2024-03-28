@@ -1,11 +1,9 @@
+**Title: DIY Guide: Controlling Your Dobsonian Telescope (circa 1965) with the tec1 Z80 SBC (circa 1985), Motors, and Optical Encoders**
 
-# A TEC-1 Controlled Telescope
-
-my cheap Dobson 200mm F5 telescope
+my cheap ($35) Dobson 200mm F5 telescope designed 1965
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
-**Title: DIY Guide: Controlling Your Dobsonian Telescope (circa 1965) with the tec1 Z80 SBC (circa 1985), Motors, and Optical Encoders**
 
 Hey there, stargazers and tech enthusiasts! Ever wondered how you can take your stargazing experience to the next level? Well, hold onto your tec1 because we're about to dive into the exciting world of controlling your Dobsonian telescope using a the tec1 Z80 Single Board Computer (SBC), with motors, and optical encoders. Buckle up for a journey through the cosmos with a touch of DIY tech wizardry!
 
