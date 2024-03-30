@@ -3,8 +3,8 @@ wanting a cheap telescope this came up on guntree for $35, its a truss-tube Dobs
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
 
-if u cant get one, then make it, Dobsonian refelctor telescopes are cheap to make. i want to pait it with my tec1 Z80 SBC and add some parts, motors and econcoders etc. this will elevate my stargazing game by harnessing the power of the tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount can easily adapted with motors to get a leap in efficiency and precision. 
-we have 6 digits so thats plenty to show fine movement.  
+if u cant get one, then make it, Dobsonian refelctor telescopes are cheap to make. i want to connect it with my tec1 Z80 SBC and add some parts, motors and econcoders etc. this will elevate my stargazing game by harnessing the power of the tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount can easily adapted with motors to get a leap in efficiency and precision. 
+we have 6 digits of display so thats plenty to show fine movement in deg. min.sec. for degrees i want 2 digits xx and two dots to show 1xx or 2xx degrees. ie 12=12 1.2=112 and 1.2.=212 deg.
 
 
 also using the new a mini Forth interpreter called MINT to easily program and customize the telescope's functionality with ease. So, seize the moment, ignite your tec1 and embark on an unparalleled astronomical journey. Happy stargazing!
