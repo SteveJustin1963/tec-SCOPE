@@ -1,15 +1,15 @@
-**Title: DIY Guide: Controlling Your Dobsonian Telescope (circa 1965) with the tec1 Z80 SBC (circa 1985), Motors, and Optical Encoders**
-
-Elevate your stargazing game by harnessing the power of your tec-1 to control an old Dobson telescope with motors and optical encoders. The simple friction controlled Alt-Azimuth mount are easily too adapted to get a leap in efficiency and precision. We use a mini Forth interpreter called MINT to easily program and customize the telescope's functionality with ease. So, seize the moment, ignite your tec1 and embark on an unparalleled astronomical journey. Happy stargazing!
-
-
-
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-work in progress
-
-first we need a cheap telescope, this came up on guntree for $35, its a truss-tube Dobson telescope, it has a 200mm mirror and one meter length making it a F5, F/ number is a measure of the speed and clarity of the optical system. It is the ratio of the focal distance to the aperture size. 
+wanting a cheap telescope this came up on guntree for $35, its a truss-tube Dobson telescope, it has a 200mm mirror and one meter length making it a F5, F/ number is a measure of the speed and clarity of the optical system. It is the ratio of the focal distance to the aperture size. 
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
+
+
+
+get urself a cheap or make a cheap Dobsonian refelctor telescope  first conceived in 1965 and use ur tec1 Z80 SBC circa 1985 add some parts, motors and econcoders. 
+this will elevate your stargazing game by harnessing the power of your tec-1 to control the telescope with motors and optical encoders. The simple friction controlled Alt-Azimuth mount is easily adapted to get a leap in efficiency and precision. 
+
+We use a mini Forth interpreter called MINT to easily program and customize the telescope's functionality with ease. So, seize the moment, ignite your tec1 and embark on an unparalleled astronomical journey. Happy stargazing!
+
+
 
 
 
