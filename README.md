@@ -47,11 +47,115 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 
 ![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/5af4808d-1427-46c5-b78d-ee9c48157a15)
 
-## code
- 
 
-```
-\ Include any necessary headers and libraries here
+# Counting
+- Alternative to counting pulses from variable R, use a cap, C
+- https://www.instructables.com/Simple-Capaitance-Meter/
+- convert code to c `count-scm.c`
+- we need a 555 cct to measure cap vale and turn it into pulses, then in the same way feed it into tec1 like the variable r pulses.
+- https://www.google.com/search?q=74HC590&rlz=1C1FKPE_en-GBAU984AU984&sourceid=chrome&ie=UTF-8
+- Encoder counter chip https://www.usdigital.com/products/accessories/interfaces/ics/
+
+## lets dream about the code
+ what do we want it to do? start with 
+ 
+ 1. **Initialization**:
+   - Initializes hardware components such as electronic level, compass, ADC, motor control, rotary encoder, and optical encoders for altitude and azimuth axes.
+   - Sets up communication with external software like Stellarium.
+
+2. **Angle Measurement and Frequency Calculation**:
+   - Reads the telescope's angle using various sensors.
+   - Calculates the frequency needed for tracking based on the angle.
+
+3. **Voltage-to-Frequency Conversion**:
+   - Converts voltage signals to frequency using timers.
+   - Calibration and interpolation are performed for accurate conversion.
+
+4. **Motor Control and Slewing**:
+   - Controls DC motors for movement using worm drives.
+   - Implements manual and automatic slewing for precise angle control.
+   - Supports remote control and tracking of telescope position.
+
+5. **Optical Encoders and Rotary Encoder Integration**:
+   - Reads and interprets data from optical encoders and rotary encoders.
+   - Ensures precise angle measurement and control.
+
+6. **Auto-Tracking, Guiding, and Go-To Functionality**:
+   - Automatically tracks celestial objects to compensate for Earth's rotation.
+   - Integrates guiding capabilities for precise object tracking.
+   - Implements go-to functionality to slew to specific celestial objects.
+
+7. **Telescope Control System (TCS)**:
+   - Defines communication protocols for remote control.
+   - Handles commands from remote devices.
+
+8. **Camera Control and Imaging**:
+   - Controls camera settings and captures images.
+   - Supports techniques like Lucky Imaging for better image quality.
+
+9. **External Communication**:
+   - Establishes communication with external software like Stellarium.
+   - Exchanges telescope position data and movement commands.
+
+10. **Main Program Loop**:
+    - Executes the main control loop that continuously reads sensors, adjusts motor movement, and performs tracking and guiding.
+
+11. **User Interface**:
+    - Implements a user interface for manual control and configuration.
+    - Allows users to interact with the telescope system.
+
+12. **Error Handling**:
+    - Includes error handling and exception handling routines to manage unexpected situations.
+
+## we could add more
+some potential features or functionalities that appear to be missing or could be enhanced:
+
+1. **Integration with Z80 SBC**:
+   - The code doesn't explicitly mention how it interacts with the Z80 SBC. It may need specific functions or communication protocols tailored to the capabilities of the Z80 processor.
+   - Ensure efficient utilization of resources on the Z80 SBC, considering its limited processing power and memory compared to modern systems.
+
+2. **Driver for Motorized Dobsonian**:
+   - Include a motor driver interface that can control the motors of the Dobsonian telescope.
+   - Implement acceleration and deceleration profiles for smooth movement of the telescope.
+
+3. **Feedback Control System**:
+   - Integrate a feedback control loop using the rotary encoders to accurately determine the telescope's position and adjust motor movements accordingly.
+   - Implement PID (Proportional-Integral-Derivative) control for precise tracking and slewing.
+
+4. **Power Management**:
+   - Implement power management features to ensure efficient use of power and to prevent damage to the telescope's components, especially considering the limited power capacity of portable setups like Dobsonian telescopes.
+
+5. **Calibration Procedures**:
+   - Include calibration procedures for the rotary encoders and other sensors to ensure accurate readings and movements.
+   - Provide mechanisms for users to calibrate the telescope's alignment and tracking accuracy.
+
+6. **Safety Features**:
+   - Incorporate safety features such as limit switches to prevent the telescope from moving beyond safe mechanical limits.
+   - Implement emergency stop functionality to halt motor movement in case of unexpected events or user intervention.
+
+7. **Telescope Alignment**:
+   - Include alignment procedures to help users align the telescope's optical axis with celestial objects accurately.
+   - Implement features like star alignment routines to assist users in aligning the telescope with reference stars.
+
+8. **User Interface Enhancements**:
+   - Develop a user-friendly interface for controlling the telescope's movement, tracking modes, and other functionalities.
+   - Consider adding support for remote control via smartphone apps or computer software.
+
+9. **Integration with Stellarium**:
+   - Enhance communication with Stellarium or other planetarium software to provide seamless integration for go-to functionality and object tracking.
+   - Ensure compatibility with standard protocols used by planetarium software for telescope control, such as ASCOM or INDI.
+
+10. **Diagnostic Tools**:
+    - Include diagnostic tools and logging mechanisms to facilitate troubleshooting and debugging of hardware and software issues.
+    - Provide feedback to users about the telescope's status, errors, and warnings.
+
+11. **Expandability and Modularity**:
+    - Design the software architecture to be modular and extensible, allowing for easy addition of new features and support for future upgrades or enhancements.
+    - Consider adding support for optional accessories like autoguiders, cameras, or additional sensors.
+
+ 
+```pseudo
+\ Include necessary headers and libraries here
 
 \ Define constants and variables
 VARIABLE angle \ Store the telescope's current angle
@@ -68,7 +172,7 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
 \ Read angle and calculate frequency
 : read-angle-and-frequency
   \ Code for reading angle using the electronic level and compass
-  \ Code for generating sudo period with counter loop from the pot angle using 555 oscillator circuit
+  \ Code for generating pseudo-period with counter loop from the pot angle using 555 oscillator circuit
   \ Calibration and interpolation
 
 \ Voltage-to-Frequency Conversion
@@ -78,7 +182,7 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
 
 \ Motor Control and Slewing
 : motor-control-and-slewing
-  \ Code for controlling dc motors using worm drives
+  \ Code for controlling DC motors using worm drives
   \ Implement non-linear interpolation and trigonometry for precise angle control
   \ Handle manual slewing using switches and joystick
   \ Implement automatic slewing for go-to functionality
@@ -108,6 +212,16 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
   \ Calculate necessary coordinates for precise pointing
   \ Provide user input or database selection for target objects
 
+\ Alignment Assistance
+: alignment-assistance
+  \ Implement alignment assistance routines to aid users in aligning the telescope accurately with celestial objects
+  \ Provide feedback or guidance during the alignment process to improve user experience
+
+\ Performance Optimization
+: performance-optimization
+  \ Optimize the software's performance to minimize resource usage and maximize efficiency, particularly on resource-constrained platforms like the Z80 SBC
+  \ Profile the code to identify bottlenecks and optimize critical sections for improved responsiveness
+
 \ Main Program Loop
 : main-loop
   initialize-telescope
@@ -119,6 +233,8 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
     integrate-rotary-encoder
     auto-tracking-and-guiding
     go-to-functionality
+    alignment-assistance
+    performance-optimization
     \ Additional functionalities (camera control, photo compositing, etc.)
   AGAIN
 
@@ -152,13 +268,7 @@ main-loop
 \ End of the software set
 ```
 
-# Counting
-- Alternative to counting pulses from variable R, use a cap, C
-- https://www.instructables.com/Simple-Capaitance-Meter/
-- convert code to c `count-scm.c`
-- we need a 555 cct to measure cap vale and turn it into pulses, then in the same way feed it into tec1 like the variable r pulses.
-- https://www.google.com/search?q=74HC590&rlz=1C1FKPE_en-GBAU984AU984&sourceid=chrome&ie=UTF-8
-- Encoder counter chip https://www.usdigital.com/products/accessories/interfaces/ics/
+
 
 
 ### 1.0
