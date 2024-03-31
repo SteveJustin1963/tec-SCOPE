@@ -90,7 +90,7 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
   \ Configure rotary encoder
   \ Initialize optical encoders for alt and az axes
 
-\ Read angle and calculate frequency
+\ Read angle and calculate frequency 
 : read-angle-and-frequency
   \ Code for reading angle using the electronic level and compass
   \ Code for generating pseudo-period with counter loop from the pot angle using 555 oscillator circuit
