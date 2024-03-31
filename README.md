@@ -1,10 +1,11 @@
-wanting a cheap telescope this came up on guntree for $35, its a truss-tube Dobson telescope, it has a 200mm mirror and one meter length making it a F5, F/ number is a measure of the speed and clarity of the optical system. It is the ratio of the focal distance to the aperture size. 
+wanting a cheap telescope this came up on gumtree for $35, its a truss-tube Dobson telescope, it has a 200mm mirror and one meter length making it a F5, F/ number is a measure of the speed and clarity of the optical system. It is the ratio of the focal distance to the aperture size. 
+
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
 
-if u cant get one, then make it, Dobsonian refelctor telescopes are cheap to make. i want to connect it with my tec1 Z80 SBC and add some parts, motors and econcoders etc. this will elevate my stargazing game by harnessing the power of the tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount can easily adapted with motors to get a leap in efficiency and precision. 
-we have 6 digits of display so thats plenty to show fine movement in deg. min.sec. for degrees i want 2 digits xx and two dots to show 1xx or 2xx degrees. ie 12=12 1.2=112 and 1.2.=212 deg. obvioulsy 00=360 and 5.9.=259 , with the 4 digits left we can show minutes and degrees. so our smallest unit is 00.0001 degrees and that into degrees, minutes, and seconds gives 0.006 minutes or 0.36 seconds. So, 0.36 seconds of arc is a fraction of an arcsecond. It would be an incredibly small angle, much smaller than what can be resolved by the human eye or even by most telescopes. To put it in perspective: The apparent size of the Moon in the sky is about 0.5 degrees or 1800 arcseconds. The angular resolution of the human eye is roughly 1 arcminute (the ability to distinguish two points as separate when they are approximately 1 arcminute apart).
+if u cant get one, then make it, Dobsonian reflector telescopes are cheap to make. i want to connect it with my tec1 Z80 SBC and add some parts, motors and encoders etc. this will elevate my stargazing game by harnessing the power of the tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount can easily adapted with motors to get a leap in efficiency and precision. 
+we have 6 digits of display so thats plenty to show fine movement in deg. min.sec. for degrees i want 2 digits xx and two dots to show 1xx or 2xx degrees. ie 12=12 1.2=112 and 1.2.=212 deg. obviously 00=360 and 5.9.=259 , with the 4 digits left we can show minutes and degrees. so our smallest unit is 00.0001 degrees and that into degrees, minutes, and seconds gives 0.006 minutes or 0.36 seconds. So, 0.36 seconds of arc is a fraction of an arcsecond. It would be an incredibly small angle, much smaller than what can be resolved by the human eye or even by most telescopes. To put it in perspective: The apparent size of the Moon in the sky is about 0.5 degrees or 1800 arcseconds. The angular resolution of the human eye is roughly 1 arcminute (the ability to distinguish two points as separate when they are approximately 1 arcminute apart).
 Therefore, 0.36 seconds of arc would be a tiny fraction of the apparent size of even the smallest details visible on the Moon or any other celestial object. It would likely be below the threshold of detectability for most observational purposes. Overall, while 0.36 seconds may be noticeable in certain contexts, such as high-speed photography or precise timing of astronomical events, it is unlikely to have a significant impact on observing the Moon with a telescope like the f/5 200mm aperture telescope. i want to use both asm code and also try the new Forth interpreter called MINT, to program and customize the telescope's functionality, maybe MINT is easier? So seize the moment, ignite your tec1 and embark on an unparalleled astronomical journey. Happy stargazing!
 
 
@@ -12,13 +13,16 @@ Therefore, 0.36 seconds of arc would be a tiny fraction of the apparent size of 
 
 
 
+
+
 ## Dobsons = a simple type of reflector telescope
-Dobsons are just pushed by hand on a low friction mount. this system works really well, easy, cheap and settles very fast. but then the star or object moves out of view. if we push while viewing we ofter push the wrong way as the image is inverted. if we use a laser or dot finder the increments are usualy too big and we lose the target easily. if we wanted to take some angle readings we could use an electronic angle gauge, $16 online and a digital compass. dont forget to convert magentic north to real north, sydney is 12+. if we could measure 
+Dobsons are just pushed by hand on a low friction mount. this system works really well and settles very fast after pushing. but depending where your looking stars or objects moves out of view due to the earths rotation. u dont notice that when u look up with your eyes, ut soon as u look thru the scope u will and with the moon its incredibly fast. if ur looking at the moon and its moving fast out of view u want to push it to keep up, but soon as u do we always push the wrong way as the image is inverted. we have to take our eye away and do it externally or with a laser pointer or dot finder. also small pushes to keep up are always too big and we lose the target anyway. fixing this with software and hardware would be nice
 
 
 ## reading
-we need to read the alt and azimuth. they are angle measurements. we need to locate the axis of these and mount some kind of reader and turn that into numbers.
-the simplest might be to use a var R and feed this into a circuit, like an osc, then count the duration of those pulses to interpolate an angle.
+we need to read the alt and azimuth. they are angle measurements. we need to locate the axis of these and mount some kind of reader and turn that into numbers we can crudley use a mechanical compass and protractor, or their electronic equivalents. an angle gauge and or a compass can be had for under $20 online from asia online. when getting the azimuth from the compass don't forget to convert magnetic north to real north, sydney needs about 12 added (12-). it varies all over the world. the first step in measuring electronically we could measure with a simple R pot and feed this into a circuit like an oscillator, once calibrated for a correct starting position then count the value R at various points of rotation and interpolate the missing R vales and then interpolate them into angle. but reading R needs to also be converted into some sort of voltage or pulse. so we can use a ADC or turn R into pulse with with say a 555 circuit then count the pulses per a period loop to get numbers.
+
+
 
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
 
