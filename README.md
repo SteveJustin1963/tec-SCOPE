@@ -58,100 +58,21 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 
 ## lets dream about the code
  what do we want it to do? start with 
- 
- 1. **Initialization**:
-   - Initializes hardware components such as electronic level, compass, ADC, motor control, rotary encoder, and optical encoders for altitude and azimuth axes.
-   - Sets up communication with external software like Stellarium.
-
-2. **Angle Measurement and Frequency Calculation**:
-   - Reads the telescope's angle using various sensors.
-   - Calculates the frequency needed for tracking based on the angle.
-
-3. **Voltage-to-Frequency Conversion**:
-   - Converts voltage signals to frequency using timers.
-   - Calibration and interpolation are performed for accurate conversion.
-
-4. **Motor Control and Slewing**:
-   - Controls DC motors for movement using worm drives.
-   - Implements manual and automatic slewing for precise angle control.
-   - Supports remote control and tracking of telescope position.
-
-5. **Optical Encoders and Rotary Encoder Integration**:
-   - Reads and interprets data from optical encoders and rotary encoders.
-   - Ensures precise angle measurement and control.
-
-6. **Auto-Tracking, Guiding, and Go-To Functionality**:
-   - Automatically tracks celestial objects to compensate for Earth's rotation.
-   - Integrates guiding capabilities for precise object tracking.
-   - Implements go-to functionality to slew to specific celestial objects.
-
-7. **Telescope Control System (TCS)**:
-   - Defines communication protocols for remote control.
-   - Handles commands from remote devices.
-
-8. **Camera Control and Imaging**:
-   - Controls camera settings and captures images.
-   - Supports techniques like Lucky Imaging for better image quality.
-
-9. **External Communication**:
-   - Establishes communication with external software like Stellarium.
-   - Exchanges telescope position data and movement commands.
-
-10. **Main Program Loop**:
-    - Executes the main control loop that continuously reads sensors, adjusts motor movement, and performs tracking and guiding.
-
-11. **User Interface**:
-    - Implements a user interface for manual control and configuration.
-    - Allows users to interact with the telescope system.
-
-12. **Error Handling**:
-    - Includes error handling and exception handling routines to manage unexpected situations.
-
-## we could add more
-some potential features or functionalities that appear to be missing or could be enhanced:
-
-1. **Integration with Z80 SBC**:
-   - The code doesn't explicitly mention how it interacts with the Z80 SBC. It may need specific functions or communication protocols tailored to the capabilities of the Z80 processor.
-   - Ensure efficient utilization of resources on the Z80 SBC, considering its limited processing power and memory compared to modern systems.
-
-2. **Driver for Motorized Dobsonian**:
-   - Include a motor driver interface that can control the motors of the Dobsonian telescope.
-   - Implement acceleration and deceleration profiles for smooth movement of the telescope.
-
-3. **Feedback Control System**:
-   - Integrate a feedback control loop using the rotary encoders to accurately determine the telescope's position and adjust motor movements accordingly.
-   - Implement PID (Proportional-Integral-Derivative) control for precise tracking and slewing.
-
-4. **Power Management**:
-   - Implement power management features to ensure efficient use of power and to prevent damage to the telescope's components, especially considering the limited power capacity of portable setups like Dobsonian telescopes.
-
-5. **Calibration Procedures**:
-   - Include calibration procedures for the rotary encoders and other sensors to ensure accurate readings and movements.
-   - Provide mechanisms for users to calibrate the telescope's alignment and tracking accuracy.
-
-6. **Safety Features**:
-   - Incorporate safety features such as limit switches to prevent the telescope from moving beyond safe mechanical limits.
-   - Implement emergency stop functionality to halt motor movement in case of unexpected events or user intervention.
-
-7. **Telescope Alignment**:
-   - Include alignment procedures to help users align the telescope's optical axis with celestial objects accurately.
-   - Implement features like star alignment routines to assist users in aligning the telescope with reference stars.
-
-8. **User Interface Enhancements**:
-   - Develop a user-friendly interface for controlling the telescope's movement, tracking modes, and other functionalities.
-   - Consider adding support for remote control via smartphone apps or computer software.
-
-9. **Integration with Stellarium**:
-   - Enhance communication with Stellarium or other planetarium software to provide seamless integration for go-to functionality and object tracking.
-   - Ensure compatibility with standard protocols used by planetarium software for telescope control, such as ASCOM or INDI.
-
-10. **Diagnostic Tools**:
-    - Include diagnostic tools and logging mechanisms to facilitate troubleshooting and debugging of hardware and software issues.
-    - Provide feedback to users about the telescope's status, errors, and warnings.
-
-11. **Expandability and Modularity**:
-    - Design the software architecture to be modular and extensible, allowing for easy addition of new features and support for future upgrades or enhancements.
-    - Consider adding support for optional accessories like autoguiders, cameras, or additional sensors.
+- Defines variables for storing angle, frequency, and motor direction.
+- Initializes hardware components and communication interfaces.
+- Includes routines for reading angle and calculating frequency.
+- Converts voltage to frequency.
+- Controls motors and slewing, including manual and automatic slewing.
+- Reads optical encoders and integrates rotary encoders.
+- Implements auto-tracking, guiding, and go-to functionality.
+- Provides alignment assistance with feedback during the process.
+- Optimizes performance for resource-constrained platforms.
+- Sets up the main program loop to execute functions repeatedly.
+- Handles telescope control system communication and external communication with Stellarium.
+- Manages camera control and imaging.
+- Includes error handling and exception handling.
+- Allows for additional features and functionalities to be added.
+- Handles user input and commands for manual control and configuration.
 
  
 ```pseudo
