@@ -1,4 +1,4 @@
-    org 0x0000
+org 0x0000
 
 ; Define memory locations
 pulse_start_time  equ 0x8000   ; Memory location to store pulse start time
@@ -33,22 +33,17 @@ wait_for_rising_edge:
     ld (hl), a
 
       ; Wait for a falling edge on the pulse input
-    ld de, 0 ; Initialize a 16-bit counter in register pair DE
+    ld de, 0               ; Initialize a 16-bit counter in register pair DE
 wait_for_falling_edge:
-    in a, (c)          ; Input the value from the I/O port specified by BC into A
-    and 0x01           ; Check the least significant bit (LSB)
-    jr nz, found_falling_edge ; If LSB is not set (i.e., found a falling edge), break the loop
+    in a, (c)              ; Input the value from the I/O port specified by BC into A
+    and 0x01               ; Check the least significant bit (LSB)
+    jr nz, found_falling_edge ; If LSB is set (i.e., found a falling edge), break the loop
     
-    inc de             ; Increment DE to count the cycles spent in the loop
+    inc de                 ; Increment DE to count the cycles spent in the loop
     jr wait_for_falling_edge
 
 found_falling_edge:
-    ; Here, DE contains the number of cycles spent in the loop
-    ; Translate DE into time if necessary
-    ; Then you can proceed to calculate the frequency
-
-
-    ; Calculate the pulse duration and frequency
+    ; Calculate the pulse duration
     call get_current_time  ; Get the current time again
     ld hl, pulse_start_time
     ld a, (hl)             ; Load the start time
@@ -57,10 +52,12 @@ found_falling_edge:
     ld (hl), a             ; Store the pulse duration
 
     ; Calculate frequency (assuming a 4 MHz clock)
+    ld hl, pulse_duration
     ld a, (hl)
     inc a
+    ld (hl), a             ; Increment to avoid division by zero
     ld l, a
-    ld h, (hl)             ; Load the low byte and the high byte from memory into HL
+    ld h, 0                ; Load 0 into high byte to ensure correct division
     ld bc, 4000000 / 16    ; Clock frequency / frequency_divisor
     call div16
 
