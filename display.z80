@@ -1,0 +1,65 @@
+ORG 0x0000
+
+; Define I/O port addresses
+keyboard_input_port    EQU 0x00  ; Port address for keyboard data input
+display_select_port    EQU 0x01  ; Port address for 7-segment display select & speaker output
+segment_select_port    EQU 0x02  ; Port address for 7-segment segment select output
+
+; Define segment patterns for each digit
+SEGMENT_0   EQU 0b00111111  ; Segment 0 pattern
+SEGMENT_1   EQU 0b00000110  ; Segment 1 pattern
+SEGMENT_2   EQU 0b01011011  ; Segment 2 pattern
+SEGMENT_3   EQU 0b01001111  ; Segment 3 pattern
+SEGMENT_4   EQU 0b01100110  ; Segment 4 pattern
+SEGMENT_5   EQU 0b01101101  ; Segment 5 pattern
+SEGMENT_6   EQU 0b00111101  ; Segment 6 pattern
+SEGMENT_7   EQU 0b01000111  ; Segment 7 pattern
+SEGMENT_8   EQU 0b01111111  ; Segment 8 pattern
+SEGMENT_9   EQU 0b01101111  ; Segment 9 pattern
+SEGMENT_A   EQU 0b01110111  ; Segment A pattern
+SEGMENT_B   EQU 0b01111100  ; Segment B pattern
+SEGMENT_C   EQU 0b00111001  ; Segment C pattern
+SEGMENT_D   EQU 0b01011110  ; Segment D pattern
+SEGMENT_E   EQU 0b01111001  ; Segment E pattern
+SEGMENT_F   EQU 0b01110001  ; Segment F pattern
+SEGMENT_DP  EQU 0b10000000  ; Decimal point pattern
+
+; Define constants for keyboard and shift states
+SHIFT_MASK    EQU 0b00100000  ; Bit mask for Shift key
+KEY_MASK      EQU 0b00011111  ; Bit mask for keypressed value
+
+MAIN:
+    ; Read keyboard input
+    IN A, (keyboard_input_port)   ; Read input from keyboard
+    AND KEY_MASK                   ; Mask out non-key bits
+
+    ; Check if Shift is pressed
+    IN A, (keyboard_input_port)   ; Read input from keyboard again to check Shift
+    AND SHIFT_MASK                 ; Mask out other bits except Shift
+    LD (shift_state), A            ; Store Shift state for later use
+
+    ; Output to 7-segment display
+    LD A, B                       ; Load the index value from B (which corresponds to the keypressed value)
+    LD DE, display_data           ; Load address of display_data table
+    ADD A, A                      ; Double the value of A for index calculation
+    LD A, (DE)                    ; Load the value from display_data table
+    OUT (display_select_port), A  ; Output to display select port
+
+    ; Output to segment select port
+    LD A, (DE)                    ; Load the value from display_data table
+    AND 0b11111100                ; Mask out the decimal point
+    OUT (segment_select_port), A  ; Output to segment select port
+
+    ; Wait
+    NOP                           ; Add delay if necessary
+
+    JP MAIN                       ; Repeat the loop
+
+; Data table for displaying characters
+display_data:
+    DB SEGMENT_0, SEGMENT_1, SEGMENT_2, SEGMENT_3, SEGMENT_4, SEGMENT_5, SEGMENT_6, SEGMENT_7, SEGMENT_8, SEGMENT_9, SEGMENT_A, SEGMENT_B, SEGMENT_C, SEGMENT_D, SEGMENT_E, SEGMENT_F, SEGMENT_DP
+
+shift_state:                      ; Store shift state
+    DB 0                          ; Initialize with 0
+
+END
