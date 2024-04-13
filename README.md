@@ -16,7 +16,7 @@ Therefore, 0.36 seconds of arc would be a tiny fraction of the apparent size of 
 
 
 ## Dobsons = a simple type of reflector telescope
-Dobsons are just pushed by hand on a low friction mount. this system works really well and settles very fast after pushing. but depending where your looking stars or objects moves out of view due to the earths rotation. u dont notice that when u look up with your eyes, ut soon as u look thru the scope u will and with the moon its incredibly fast. if ur looking at the moon and its moving fast out of view u want to push it to keep up, but soon as u do we always push the wrong way as the image is inverted. we have to take our eye away and do it externally or with a laser pointer or dot finder. also small pushes to keep up are always too big and we lose the target anyway. fixing this with software and hardware would be nice
+Dobsons are just pushed by hand on a low friction mount. this system works really well and settles very fast after pushing. but depending where your looking, stars or objects moves out of view due to the earths rotation. u dont notice that when u look up with your eyes, ut soon as u look thru the scope u will and with the moon its incredibly fast. if ur looking at the moon and its moving fast out of view u want to push it to keep up, but soon as u do we always push the wrong way as the image is inverted. we have to take our eye away and do it externally or with a laser pointer or dot finder. also small pushes to keep up are always too big and we lose the target anyway. fixing this with software and hardware would be nice
 
 
 ## reading
