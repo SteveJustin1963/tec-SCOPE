@@ -20,7 +20,7 @@ Dobsons are just pushed by hand on a low friction mount. this system works reall
 
 
 ## reading 
-we need to read the alt and azimuth (and later inputting). they are angle measurements. we need to locate the axis of these and mount some kind of reader and turn that into numbers we can crudley use, so a mechanical compass and protractor, or their electronic equivalents. an angle gauge and or a compass can be had for under $20 online from asia online. when getting the azimuth from the compass don't forget to compensate and convert magnetic north to real north, sydney need about 12 added. it varies all over the world. now we have a calibration reference. next step in measuring electronically we could measure with a simple R pot and feed this into a mcu that has adc but our tec1 lacks this in this design so we instead make R part of an 555 oscillator circuit, once calibrated for a correct starting position, R will change at various points of rotation so we interpolate the missing R vales in between and then convert them into angles, so the duration between pulses or the freq count over a loop time will correspond to angles.
+we need to read the alt and azimuth (and later inputting). they are angle measurements. we need to locate the axis of these and mount some kind of reader and turn that into numbers we can crudley use, so a mechanical compass and protractor, or their electronic equivalents. an angle gauge and or a compass can be had for under $20 online from asia online. when getting the azimuth from the compass don't forget to compensate and convert magnetic north to real north, sydney need about 12 added. it varies all over the world. now we have a calibration reference. next step in measuring electronically we could measure with a simple R pot and feed this into a mcu that has adc but our tec1 lacks this in this design so we instead make R part of an 555 oscillator circuit, once calibrated for a correct starting position, R will change at various points of rotation so we interpolate the missing R vales in between and then convert them into angles, so the period or freq wrt a counter or code loop can be converted to angles.
 
 
 
@@ -48,15 +48,15 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 ![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/5af4808d-1427-46c5-b78d-ee9c48157a15)
 
 
-# Counting
-- Alternative to counting pulses from variable R, use a cap, C
+# period 
+- Alternative to counting pulses measure the period or delay from variable R, use a cap, C
 - https://www.instructables.com/Simple-Capaitance-Meter/
 - convert code to c `count-scm.c`
 - we need a 555 cct to measure cap vale and turn it into pulses, then in the same way feed it into tec1 like the variable r pulses.
 - https://www.google.com/search?q=74HC590&rlz=1C1FKPE_en-GBAU984AU984&sourceid=chrome&ie=UTF-8
 - Encoder counter chip https://www.usdigital.com/products/accessories/interfaces/ics/
 
-## lets dream about the code
+## lets dream about the code possibilities
  what do we want it to do? start with 
 - Defines variables for storing angle, frequency, and motor direction.
 - Initializes hardware components and communication interfaces.
