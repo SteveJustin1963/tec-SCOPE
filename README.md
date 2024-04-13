@@ -23,10 +23,10 @@ Dobsons are just pushed by hand on a low friction mount. this system works reall
 we need to read the alt and azimuth (and later inputting). they are angle measurements. we need to locate the axis of these and mount some kind of reader and turn that into numbers we can crudley use, so a mechanical compass and protractor, or their electronic equivalents. an angle gauge and or a compass can be had for under $20 online from asia online. when getting the azimuth from the compass don't forget to compensate and convert magnetic north to real north, sydney need about 12 added. it varies all over the world. now we have a calibration reference. next step in measuring electronically we could measure with a simple R pot and feed this into a mcu that has adc but our tec1 lacks this in this design so we instead make R part of an 555 oscillator circuit, once calibrated for a correct starting position, R will change at various points of rotation so we interpolate the missing R vales in between and then convert them into angles, so the period or freq wrt a counter or code loop can be converted to angles.
 
 
-
+## cct
 ![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
 
-- circuit simulator https://tinyurl.com/2p8fdmws
+- circuit simulator using 555 ic https://tinyurl.com/2p8fdmws
 - make the 220 value the pot
 - am aiming for freq between 100 and 1000 and no more than 3000
 
@@ -34,27 +34,20 @@ we need to read the alt and azimuth (and later inputting). they are angle measur
 
 
 
-- 555 osc circuit,  potentiometer value = period square pulses= angle 
-- send to I/O port and calculate sudo period with loop counter
-- correlate and calibrate 0 and 90 degrees to period value 
-- then interpolate the other angles , send to 7seg display eg 33.22.11 deg.min.sec.  for less than a second got second onliy , eg 11.1234  
-- send angle to Stellarium over serial port
-- Stellarium finds location on star map, compare to visual data 
-
-
-## 1.2 volt-freq
+## another 555 cct
 https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency-converter/
 
 ![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/5af4808d-1427-46c5-b78d-ee9c48157a15)
 
 
-# period 
-- Alternative to counting pulses measure the period or delay from variable R, use a cap, C
-- https://www.instructables.com/Simple-Capaitance-Meter/
-- convert code to c `count-scm.c`
-- we need a 555 cct to measure cap vale and turn it into pulses, then in the same way feed it into tec1 like the variable r pulses.
+## 74HC590 8-bit binary counter cct
 - https://www.google.com/search?q=74HC590&rlz=1C1FKPE_en-GBAU984AU984&sourceid=chrome&ie=UTF-8
 - Encoder counter chip https://www.usdigital.com/products/accessories/interfaces/ics/
+
+## cap cct 
+- https://www.instructables.com/Simple-Capaitance-Meter/
+
+
 
 ## lets dream about the code possibilities
  what do we want it to do? start with 
