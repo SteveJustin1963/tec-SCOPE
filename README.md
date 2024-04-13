@@ -5,8 +5,8 @@ wanting a cheap telescope this came up on gumtree for $35, its a truss-tube Dobs
 
 
 if u cant get one, then make it, Dobsonian reflector telescopes are cheap to make. i want to connect it with my tec1 Z80 SBC and add some parts, motors and encoders etc. this will elevate my stargazing game by harnessing the power of the tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount can easily adapted with motors to get a leap in efficiency and precision. 
-we have 6 digits of display so thats plenty to show fine movement in deg. min.sec. for degrees i want 2 digits xx and two dots to show 1xx or 2xx degrees. ie 12=12 1.2=112 and 1.2.=212 deg. obviously 00=360 and 5.9.=259 , with the 4 digits left we can show minutes and degrees. so our smallest unit is 00.0001 degrees and that into degrees, minutes, and seconds gives 0.006 minutes or 0.36 seconds. So, 0.36 seconds of arc is a fraction of an arcsecond. It would be an incredibly small angle, much smaller than what can be resolved by the human eye or even by most telescopes. To put it in perspective: The apparent size of the Moon in the sky is about 0.5 degrees or 1800 arcseconds. The angular resolution of the human eye is roughly 1 arcminute (the ability to distinguish two points as separate when they are approximately 1 arcminute apart).
-Therefore, 0.36 seconds of arc would be a tiny fraction of the apparent size of even the smallest details visible on the Moon or any other celestial object. It would likely be below the threshold of detectability for most observational purposes. Overall, while 0.36 seconds may be noticeable in certain contexts, such as high-speed photography or precise timing of astronomical events, it is unlikely to have a significant impact on observing the Moon with a telescope like the f/5 200mm aperture telescope. i want to use both asm code and also try the new Forth interpreter called MINT, to program and customize the telescope's functionality, maybe MINT is easier? So seize the moment, ignite your tec1 and embark on an unparalleled astronomical journey. Happy stargazing!
+we have 6 digits of display so that's plenty to show fine movement in deg. min.sec. for degrees i want 2 digits xx and two dots to show 1xx or 2xx degrees. ie 12=12 1.2=112 and 1.2.=212 deg. obviously 00=360 and 5.9.=259 , with the 4 digits left we can show minutes and degrees. so our smallest unit is 00.0001 degrees and that into degrees, minutes, and seconds gives 0.006 minutes or 0.36 seconds. So, 0.36 seconds of arc is a fraction of an arc second. It would be an incredibly small angle, much smaller than what can be resolved by the human eye or even by most telescopes. To put it in perspective: The apparent size of the Moon in the sky is about 0.5 degrees or 1800 arc seconds. The angular resolution of the human eye is roughly 1 arc minute (the ability to distinguish two points as separate when they are approximately 1 arc minute apart).
+Therefore, 0.36 seconds of arc would be a tiny fraction of the apparent size of even the smallest details visible on the Moon or any other celestial object. It would likely be below the threshold of detect-ability for most observational purposes. Overall, while 0.36 seconds may be noticeable in certain contexts, such as high-speed photography or precise timing of astronomical events, it is unlikely to have a significant impact on observing the Moon with a telescope like the f/5 200mm aperture telescope. i want to use both assembly code and also try the new Forth interpreter called MINT, to program and customise the telescope's functionality, maybe MINT is easier? So seize the moment, ignite your tec1 and embark on an unparalleled astronomical journey. Happy stargazing!
 
 
 
@@ -16,11 +16,11 @@ Therefore, 0.36 seconds of arc would be a tiny fraction of the apparent size of 
 
 
 ## Dobsons = a simple type of reflector telescope
-Dobsons are just pushed by hand on a low friction mount. this system works really well and settles very fast after pushing. but depending where your looking, stars or objects move out of view due to the earths rotation. u dont notice that when u look up with your eyes, but soon as u look thru the scope u will and with the moon its incredibly fast. if ur looking at the moon and its moving fast out of view u want to push it to keep up, but soon as u do we always push the wrong way as the image is inverted. we have to take our eye away and do it externally or with a laser pointer or dot finder. i have even pulled the eye peice out (mine is a very loose fit) and watched the reflection of light in the eye peice tube to get a sense of diection to go in. also small pushes to keep up are always too big and we lose the target anyway. fixing this with software and hardware would be nice.
+Dobsons are just pushed by hand on a low friction mount. this system works really well and settles very fast after pushing. but depending where your looking, stars or objects move out of view due to the earths rotation. u don't notice that when u look up with your eyes, but soon as u look thru the scope u will and with the moon its incredibly fast. if ur looking at the moon and its moving fast out of view u want to push it to keep up, but soon as u do we always push the wrong way as the image is inverted. we have to take our eye away and do it externally or with a laser pointer or dot finder. i have even pulled the eye piece out (mine is a very loose fit) and watched the reflection of light in the eye piece tube to get a sense of direction to go in. also small pushes to keep up are always too big and we lose the target anyway. fixing this with software and hardware would be nice.
 
 
 ## reading 
-we need to read the alt and azimuth (and later inputting). they are angle measurements. we need to locate the axis of these and mount some kind of reader and turn that into numbers we can crudley use, so a mechanical compass and protractor, or their electronic equivalents. an angle gauge and or a compass can be had for under $20 online from asia online. when getting the azimuth from the compass don't forget to compensate and convert magnetic north to real north, sydney need about 12 added. it varies all over the world. now we have a calibration reference. next step in measuring electronically we could measure with a simple R pot and feed this into a mcu that has adc but our tec1 lacks this in this design so we instead make R part of an 555 oscillator circuit, once calibrated for a correct starting position, R will change at various points of rotation so we interpolate the missing R vales in between and then convert them into angles, so the period or freq wrt a counter or code loop can be converted to angles.
+we need to read the alt and azimuth (and later inputting). they are angle measurements. we need to locate the axis of these and mount some kind of reader and turn that into numbers we can crudely use, so a mechanical compass and protractor, or their electronic equivalents. an angle gauge and or a compass can be had for under $20 online from Asia online. when getting the azimuth from the compass don't forget to compensate and convert magnetic north to real north, Sydney need about 12 added. it varies all over the world. now we have a calibration reference. next step in measuring electronically we could measure with a simple R pot and feed this into a MCU that has ADC but our tec1 lacks this in this design so we instead make R part of an 555 oscillator circuit, once calibrated for a correct starting position, R will change at various points of rotation so we interpolate the missing R vales in between and then convert them into angles, so the period or freq wrt a counter or code loop can be converted to angles.
 
 
 ## cct
@@ -52,14 +52,14 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 ## lets dream about the code possibilities
  what do we want it to do? start with 
 - Defines variables for storing angle, frequency, and motor direction.
-- Initializes hardware components and communication interfaces.
+- Initialises hardware components and communication interfaces.
 - Includes routines for reading angle and calculating frequency.
 - Converts voltage to frequency.
 - Controls motors and slewing, including manual and automatic slewing.
 - Reads optical encoders and integrates rotary encoders.
 - Implements auto-tracking, guiding, and go-to functionality.
 - Provides alignment assistance with feedback during the process.
-- Optimizes performance for resource-constrained platforms.
+- Optimises performance for resource-constrained platforms.
 - Sets up the main program loop to execute functions repeatedly.
 - Handles telescope control system communication and external communication with Stellarium.
 - Manages camera control and imaging.
@@ -81,7 +81,7 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
   \ Initialize electronic level, compass, ADC, and motor control
   \ Set up communication with Stellarium
   \ Configure rotary encoder
-  \ Initialize optical encoders for alt and az axes
+  \ Initialise optical encoders for alt and az axes
 
 \ Read angle and calculate frequency 
 : read-angle-and-frequency
@@ -118,7 +118,7 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
 : auto-tracking-and-guiding
   \ Implement automatic tracking to compensate for Earth's rotation
   \ Integrate guiding capabilities to maintain precise object tracking
-  \ Support long-exposure astrophotography
+  \ Support long-exposure astro-photography
 
 \ Go-To Functionality
 : go-to-functionality
@@ -131,10 +131,10 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
   \ Implement alignment assistance routines to aid users in aligning the telescope accurately with celestial objects
   \ Provide feedback or guidance during the alignment process to improve user experience
 
-\ Performance Optimization
-: performance-optimization
-  \ Optimize the software's performance to minimize resource usage and maximize efficiency, particularly on resource-constrained platforms like the Z80 SBC
-  \ Profile the code to identify bottlenecks and optimize critical sections for improved responsiveness
+\ Performance Optimisation
+: performance-optimisation
+  \ Optimise the software's performance to minimise resource usage and maximise efficiency, particularly on resource-constrained platforms like the Z80 SBC
+  \ Profile the code to identify bottlenecks and optimise critical sections for improved responsiveness
 
 \ Main Program Loop
 : main-loop
@@ -148,7 +148,7 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
     auto-tracking-and-guiding
     go-to-functionality
     alignment-assistance
-    performance-optimization
+    performance-optimisation
     \ Additional functionalities (camera control, photo compositing, etc.)
   AGAIN
 
@@ -165,7 +165,8 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
 \ External Communication
 : stellarium-communication
   \ Establish communication with Stellarium
-  \ Send telescope position data
+  \ Send telescope position
+ data
   \ Receive and execute movement commands from Stellarium
 
 \ Compile and run the main program
@@ -268,8 +269,8 @@ The loss in accuracy between Q16.16 fixed-point and 32-bit floating-point repres
    - **Range**: It can represent values within the range of approximately -32768 to 32767 with fractional values in the range of -1 to (1 - 1/65536).
 
 2. **32-bit Floating-Point Format** (IEEE 754 Single Precision):
-   - **Precision**: Single-precision floating-point numbers provide about 24 bits of precision in the significand (fractional part), which allows for much finer granularity in representing fractional values compared to Q16.16.
-   - **Range**: They have a much larger range of representable values, typically from approximately -3.4e38 to 3.4e38 (positive and negative), which is a significantly wider range compared to Q16.16.
+   - **Precision**: Single-precision floating-point numbers provide about 24 bits of precision in the significant and (fractional part), which allows for much finer granularity in representing fractional values compared to Q16.16.
+   - **Range**: They have a much larger range of re presentable values, typically from approximately -3.4e38 to 3.4e38 (positive and negative), which is a significantly wider range compared to Q16.16.
 
 **Loss of Precision**:
 - When using Q16.16 fixed-point, you may experience a noticeable loss of precision when working with small fractional values or when performing multiple consecutive operations, as the fractional part can only represent values down to 1/65536.
@@ -302,7 +303,8 @@ If you need to work with angular values that require this level of accuracy, con
 In summary, while Q16.16 fixed-point format can be suitable for some applications, it may not provide the required accuracy of two decimal places for degrees, minutes, and seconds. Using floating-point representations with sufficient precision is a more practical approach for achieving the desired accuracy in angular measurements.
 
 
-### count 
+### count
+ 
 - down 00-FF
 - up, large counter 0000-FFFF 
 
