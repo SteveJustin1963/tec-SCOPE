@@ -54,7 +54,7 @@ https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency
 - Defines variables for storing angle, frequency, and motor direction.
 - Initialises hardware components and communication interfaces.
 - Includes routines for reading angle and calculating frequency.
-- Converts voltage to frequency.
+- Converts R to frequency.
 - Controls motors and slewing, including manual and automatic slewing.
 - Reads optical encoders and integrates rotary encoders.
 - Implements auto-tracking, guiding, and go-to functionality.
@@ -86,12 +86,13 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
 \ Read angle and calculate frequency 
 : read-angle-and-frequency
   \ Code for reading angle using the electronic level and compass
-  \ Code for generating pseudo-period with counter loop from the pot angle using 555 oscillator circuit
+  \ Code for generating pseudo-period with counter loop from the R vale from pot angle using 555 oscillator circuit
   \ Calibration and interpolation
 
 \ Voltage-to-Frequency Conversion
 : voltage-to-frequency
-  \ Code for voltage-to-frequency conversion using NE555 or 8254 timer
+  \ Code for R-to-frequency conversion using NE555
+  \ Code for 8254 interval timer
   \ Calibration and interpolation
 
 \ Motor Control and Slewing
@@ -141,7 +142,7 @@ VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward,
   initialize-telescope
   BEGIN
     read-angle-and-frequency
-    voltage-to-frequency
+    R-to-frequency
     motor-control-and-slewing
     read-optical-encoders
     integrate-rotary-encoder
