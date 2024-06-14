@@ -6,7 +6,9 @@ Back in 1976 when I was just 13 years old, I used to poke around in the back of 
 
 I was just luck to find this small telscope but for the sake of this project I will post the plans to make the wood truss and box mounts and then add 203mm Newton mirror+40 mm secondary mirror from ebay for around $200. So with the Tec-1 Z80 SBC and some extra parts; motors and encoders etc, this will elevate our stargazing game by harnessing the power of the mighty Tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount performs easily to the touch of your hand but can also easily be adapted with geared motors to get a leap in efficiency and precision when it comes to slewing and tracking. 
 
-On the Tec-1 we have 6 digits of display so we can show the movement in deg.min.sec. The plan is to show degrees we will use 2 digits xx with two dots to show 1xx or 2xx degrees. 
+On the Tec-1 we have 6 digits of display so we can show the movement in deg.min.sec. The plan is to show the extra degrees by using the 2 dots
+
+on the display. xx 1xx or 2xx. 
 ```
 ie 12=12
 1.2=112
