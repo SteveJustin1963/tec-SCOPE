@@ -1,12 +1,19 @@
  
 
-Back in 1976 when I was just 13 years old, I used to poke around in the back of TV-Week looking for ray guns and crystal radios, that a curious advert caught my eyes, to make a telescope. I showed my Dad and he was in!. The Astro Optical shop in Crows Nest Sydney Australia promoted the opportunity to "Make your own telescope" Wow! We decided to take on this challenge and spent the next 3 years polishing the mirror and building a 12.5-inch reflector telescope. He called it the Fény-Vödör in Hungarian. It was long and heavy tube mounted on equatorial mounts on a large angular metal frame, with geared hand controls. Now, 42 years later on its still in my possession. My Dad passed away in 2000 but I do hope to continue his legacy and interest in astronomy. So now in 2024 I want to use my 1983 Tec-1 to control a smaller manageable telescope and also connect to a modern star map such as Stellarium via a slow serial line. So I purchased an old wooden truss style Dobson telescope from gumtree for a mere $35, its circa 1980s same as the tec-1, a good match. Its has a 200 mm wide mirror ground to a focal length of 1000 mm so its an F5 (focal ratio) = 1000 / 200.
+Back in 1976 when I was just 13 years old, I used to poke around in the back of TV-Week looking for ray guns and crystal radios, then a curious advert caught my eye, The Astro Optical shop in Crows Nest Sydney Australia promoted "Make your own telescope" I showed Dad and he was in! As a kid this was exciting. My child brain wanted instant graification but this became a labour of love and dealyed gratification, after 3 years of work consisting of hundres of hours polishing and lapping that 12 inch mirror on our home made spirograph machine, welding a heavy equatorial with an ice cream bucket size lead counter weight and fabricating a metal and fibre glass tube, countless optical test and reflector coating the glass in some special lab that i never got to see. Easy, not. Finaly the reflector aka Fény-Vödör (in Hungarian) was done. It was long and heavy tube mounted on equatorial mounts on a large angular metal frame, with geared hand controls. Now, 42 years later on its still in my possession. My Dad passed away in 2000 but I do hope to continue his legacy and interest in astronomy. So now in 2024 I want to use my 1983 Tec-1 to control a smaller manageable telescope and also connect to a modern star map such as Stellarium via a slow serial line. So I purchased an old wooden truss style Dobson telescope from gumtree for a mere $35, its circa 1980s same as the tec-1, a good match. Its has a 200 mm wide mirror ground to a focal length of 1000 mm so its an F5 (focal ratio) = 1000 / 200.
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
 I was just luck to find this small telscope but for the sake of this project I will post the plans to make the wood truss and box mounts and then add 203mm Newton mirror+40 mm secondary mirror from ebay for around $200. So with the Tec-1 Z80 SBC and some extra parts; motors and encoders etc, this will elevate our stargazing game by harnessing the power of the mighty Tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount performs easily to the touch of your hand but can also easily be adapted with geared motors to get a leap in efficiency and precision when it comes to slewing and tracking. 
 
-On the Tec-1 we have 6 digits of display so we can show the movement in deg.min.sec. The plan is to show the extra degrees by using the 2 dots
+On the Tec-1 we have 6 digits of display to show the angle. we will limit to deg and minutes, seconds is to fine a resolution. 
+```
+8888.88
+-359.59 azimuth aka 360 compass
+--89.59  altitude
+```
+
+
 
 on the display. xx 1xx or 2xx. 
 ```
