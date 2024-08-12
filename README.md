@@ -5,14 +5,11 @@ Back in 1976 when I was just 13 years old and already a science and scifi  geek,
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
-So with the Tec-1 Z80 SBC and some extra parts; motors and encoders etc, this will elevate our stargazing game by harnessing the power of the mighty Tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount performs easily to the touch of your hand but can also easily be adapted with geared motors to get a leap in efficiency and precision when it comes to slewing and tracking. 
+So with the Tec-1 Z80 SBC and some extra parts; motors and encoders etc, this will elevate our stargazing game by harnessing the power of the mighty Tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount performs easily to the touch of your hand is limited. so if we add a geared shaft to the mount we can get a leap in efficiency and precision by slewing and tracking. On the Tec-1 we have 6 digits of display to show the angle and other things. We will dispay degrees and minutes and seconds if needed but i dont thing we can control movement that fine . 
 
-On the Tec-1 we have 6 digits of display to show the angle. we will limit to deg and minutes, seconds is to fine a resolution. 
-```
-8888.88
--359.59 azimuth aka 360 compass
---89.59  altitude
-```
+the tec1 has 6 digits,  xxxx then xx for address and data, so with units resolution we can show x360.90 for az/ alt. for higher resolution we can show az and alt one at a time. eg n359.59 so that 359 deg and 59 minutes then later show y45.22 thats 45 deg alt and 22 minutes.
+
+
 
 
 
