@@ -1,11 +1,25 @@
-Back in 1976 when I was just 13 and already a science and builder geek, I checked the back of comics and TV-Week and anything that listed items related to science, next to things like ray guns, crystal radios, ufo detector kits, there listed was something new, the Astro Optical shop at Crows Nest Sydney said "Make your own telescope !". So I showed Dad and he was in, mainly because he built one back in his teens. My kid brain wanted it but I my new lesson was hard work and delayed gratification, so after 1 year of polishing the glass on the home made Spiro graph machine, lapping, buffing, testing and then adding the reflective coating the massive 12.5 inch mirror was born. We welded together a heavy equatorial mount, added gears and hand control knobs, added a huge lead counter weight and mounting atop the metal and fiberglass tube to house the optics. Finally after tests and alignments it worked, the reflector telescope was made. We had to modify the carport roof to open to the stars. Now 42 years on it’s still in my possession, dusty and sad but complete. Then in the early 80s came along Talking Electronics and the TEC1 Z80. I lapped up every page and made every project. Sadly I lost the original then many years later I came across the tec1 pcb in 2022, so built another and also acquired a cheap 1980s circa wooden truss 8 inch mirror F5 ratio Dobson telescope. Now a new chance to integrate a telescope controlled with a tec1 both of the same era.  Running the numbers, eye mag of x6 and F5 200mm we get total field of view 8 degrees. Therefore, resolution is approximately 0.7 arcseconds between two points of light
+Back in 1976 when I was just 13 and already a science and builder geek, I checked the back of comics and TV-Week and anything that listed items related to science, next to things like ray guns, crystal radios, ufo detector kits, there listed was something new, the Astro Optical shop at Crows Nest Sydney said "Make your own telescope !". So I showed Dad and he was in, mainly because he built one back in his teens. My kid brain wanted it but I my new lesson was hard work and delayed gratification, so after 1 year of polishing the glass on the home made Spiro graph machine, lapping, buffing, testing and then adding the reflective coating the massive 12.5 inch mirror was born. We welded together a heavy equatorial mount, added gears and hand control knobs, added a huge lead counter weight and mounting atop the metal and fiberglass tube to house the optics. Finally after tests and alignments it worked, the reflector telescope was made. We had to modify the carport roof to open to the stars. Now 42 years on it’s still in my possession, dusty and sad but complete. Then in the early 80s came along Talking Electronics and the TEC1 Z80. I lapped up every page and made every project. Sadly I lost the original then many years later I came across the tec1 pcb in 2022, so built another and also acquired a cheap 1980s circa wooden truss 8 inch mirror F5 ratio Dobson telescope. Now a new chance to integrate a telescope controlled with a tec1 both of the same era.  Running the numbers, eye mag of x6 and F5 200mm we get total field of view 8 degrees. Therefore, resolution is approximately 0.7 arcseconds between two points of light.
+
 
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
-So with the Tec-1 Z80 SBC and some extra parts; motors and encoders etc, this will elevate our stargazing game by harnessing the power of the mighty Tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount performs easily to the touch of your hand is limited. so if we add a geared shaft to the mount we can get a leap in efficiency and precision by slewing and tracking. On the Tec-1 we have 6 digits of display to show the angle and other things. We will dispay degrees and minutes and seconds if needed but i dont thing we can control movement that fine . 
+So with the Tec-1 Z80 SBC and some extra parts; motors and encoders etc, this will elevate our stargazing game by harnessing the power of the mighty Tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount that performs easily to the touch of your hand is limited, so by adding a geared mount we can get a leap in efficiency and precision for slewing and tracking. On the Tec-1 we have 6 digits of display to show the angle of degrees and minutes. the tec1s 6 digits ar aranged as xxxx and xx for address and data programming, 
+```
+combined
+xddd.dd az/alt
+seperate
+az xddd mm
+alt xxdd mm
 
-the tec1 has 6 digits,  xxxx then xx for address and data, so with units resolution we can show x360.90 for az/ alt. for higher resolution we can show az and alt one at a time. eg n359.59 so that 359 deg and 59 minutes then later show y45.22 thats 45 deg alt and 22 minutes.
+more detail we can drop the leading number  
+az ddmm ss
+az 100 to 359 we show d.d.mm ss, use the . or .. or ... to show 1, 2 or 3
+example 4.544 12 = 145 deg 44 min 12 sec
+example 4.5.44 12 = 245 deg 44 min 12 sec
+example 4.5.4.4 12 = 345 deg 44 min 12 sec 
+alt ddmm ss
+```
 
 
 
