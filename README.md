@@ -25,20 +25,6 @@ alt ddmm ss
 
 
 
-on the display. xx 1xx or 2xx. 
-```
-ie 12=12
-1.2=112
-1.2.=212 deg.
-```
-obviously 00=360 and 5.9.=259 , with the 4 digits left we can show minutes and degrees. so our smallest unit is 00.0001 degrees and that into degrees, minutes, and seconds gives 0.006 minutes or 0.36 seconds. So, 0.36 seconds of arc is a fraction of an arc second. It would be an incredibly small angle, much smaller than what can be resolved by the human eye or even by most telescopes. To put it in perspective: The apparent size of the Moon in the sky is about 0.5 degrees or 1800 arc seconds. The angular resolution of the human eye is roughly 1 arc minute (the ability to distinguish two points as separate when they are approximately 1 arc minute apart).
-Therefore, 0.36 seconds of arc would be a tiny fraction of the apparent size of even the smallest details visible on the Moon or any other celestial object. It would likely be below the threshold of detect-ability for most observational purposes. Overall, while 0.36 seconds may be noticeable in certain contexts, such as high-speed photography or precise timing of astronomical events, it is unlikely to have a significant impact on observing the Moon with a telescope like the f/5 200mm aperture telescope. I want to use both assembly code and also try the new Forth interpreter called MINT, to program and customize the telescope's functionality, maybe MINT is easier? So seize the moment, ignite your tec1 and embark on an unparalleled astronomical journey. Happy stargazing!
-
-
-
-
-
-
 
 
 ## Dobsons = a simple type of reflector telescope
