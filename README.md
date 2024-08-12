@@ -5,7 +5,7 @@ Back in 1976 when I was just 13 years old and already a science and scifi  geek,
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
-I was just luck to find this small telscope but for the sake of this project I will post the plans to make the wood truss and box mounts and then add 203mm Newton mirror+40 mm secondary mirror from ebay for around $200. So with the Tec-1 Z80 SBC and some extra parts; motors and encoders etc, this will elevate our stargazing game by harnessing the power of the mighty Tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount performs easily to the touch of your hand but can also easily be adapted with geared motors to get a leap in efficiency and precision when it comes to slewing and tracking. 
+So with the Tec-1 Z80 SBC and some extra parts; motors and encoders etc, this will elevate our stargazing game by harnessing the power of the mighty Tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount performs easily to the touch of your hand but can also easily be adapted with geared motors to get a leap in efficiency and precision when it comes to slewing and tracking. 
 
 On the Tec-1 we have 6 digits of display to show the angle. we will limit to deg and minutes, seconds is to fine a resolution. 
 ```
