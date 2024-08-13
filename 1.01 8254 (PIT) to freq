@@ -1,56 +1,3 @@
-; 8254 ic
-
-
-
-1. **Memory Locations and Constants:**
-   - `timer_value`, `frequency_low`, and `frequency_high`: These memory locations are used to store the timer/counter value, low byte of frequency, and high byte of frequency, respectively.
-   - `pit_control_port` and `pit_data_port`: These constants represent the I/O port addresses for the PIT control and data ports.
-   - `frequency_divisor`: This constant is used as the divisor for frequency calculation.
-   - `clock_frequency`: This constant represents the clock frequency (assumed to be 4 MHz in this example).
-
-2. **Program Start (`org 0x0000`):**
-   - The program starts executing at the address `0x0000`.
-
-3. **Main Program (`main`):**
-   - The program initializes the PIT counter 0 in square wave mode by sending appropriate control values to the PIT control port.
-   - The initial count value for counter 0 is set to 0xFFFF (maximum 16-bit value), effectively setting the timer to count down from its maximum value.
-   - The program then reads the timer/counter value from the PIT and stores it in the memory locations `timer_value` and `timer_value + 1`.
-   - It calculates the frequency by dividing the clock frequency by the `frequency_divisor` using a subroutine called `div16`.
-   - The calculated frequency's low and high bytes are stored in `frequency_low` and `frequency_high` memory locations.
-   - The program then halts, waiting for further instructions.
-
-4. **Subroutine `div16`:**
-   - This subroutine divides the 16-bit number in HL by 16 (equivalent to a right shift by 4 bits, which is a division by 2^4 = 16).
-   - It performs 4 shifts (one shift per bit in the low byte) using the `srl` instruction and the `djnz` loop to repeat the shift 4 times.
-
-5. **Additional Subroutines and Code:**
-   - There's a comment suggesting that additional subroutines and code can be added at this point in the program.
-
-6. **End of Program (`end main`):**
-   - This marks the end of the program.
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-- Main Program
-  |- Initialize PIT counter 0
-  |  |- Set control port
-  |  |- Set initial count value
-  |- Read timer/counter value from PIT
-  |- Calculate frequency
-  |  |- Divide 16-bit number by 16 (Subroutine)
-  |- Store values
-  |- Halt program
-- Subroutine div16
-  |- Clear a temporary variable
-  |- Set loop counter
-  |- Loop:
-  |  |- Right-shift HL by 1 bit
-  |  |- Decrement the loop counter
-  |- Return
-- Additional Subroutines and Code (if any)
-- End of Program
-
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-
 ; Define memory locations
 timer_value    equ 0x8000   ; Memory location to store timer/counter value
 frequency_low  equ 0x8002   ; Memory location to store low byte of frequency
@@ -89,28 +36,10 @@ main:
     ld (timer_value + 1), a; Store high byte
 
     ; Calculate frequency
-    ld bc, clock_frequency / frequency_divisor
+    ld hl, clock_frequency
+    ld bc, frequency_divisor
     call div16
     ld a, l
     ld (frequency_low), a   ; Store low byte of frequency
     ld a, h
-    ld (frequency_high), a  ; Store high byte of frequency
-
-    ; Halt or loop here as needed
-    halt
-
-; Divide 16-bit number in HL by 16 (in-place division)
-; Input: HL - 16-bit number, BC - divisor
-; Output: HL - quotient
-div16:
-    xor a         ; Clear A register
-    ld b, 4       ; Number of divisions (4-bit shift)
-div16_loop:
-    srl h         ; Shift right HL (divide by 2)
-    rr l
-    djnz div16_loop
-    ret
-
-; Additional subroutines and code can be added here
-
-end main    ; End of program
+    ld (frequency_high), a  
