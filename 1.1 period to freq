@@ -1,10 +1,10 @@
-org 0x0000
+org 0x0800
 
 ; Define memory locations
-pulse_start_time  equ 0x8000   ; Memory location to store pulse start time
-pulse_duration    equ 0x8002   ; Memory location to store pulse duration
-frequency_low     equ 0x8004   ; Memory location to store low byte of frequency
-frequency_high    equ 0x8005   ; Memory location to store high byte of frequency
+pulse_start_time  equ 0x0FF0   ; Memory location to store pulse start time
+pulse_duration    equ 0x0FF2   ; Memory location to store pulse duration
+frequency_low     equ 0x0FF4   ; Memory location to store low byte of frequency
+frequency_high    equ 0x0FF5   ; Memory location to store high byte of frequency
 
 ; Define I/O port addresses
 pulse_input_port  equ 0xFF00    ; Port address for reading pulse input
