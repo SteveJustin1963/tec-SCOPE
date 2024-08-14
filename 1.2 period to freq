@@ -10,7 +10,8 @@ frequency_high    equ 0x8005   ; Memory location to store high byte of frequency
 pulse_input_port  equ 0xFF00   ; Port address for reading pulse input
 
 ; Define Timer Register (Example)
-TIMER_REG         equ 0x1234   ; Replace with actual timer register address
+TIMER_REG_LOW     equ 0x10     ; Replace with actual low byte timer register address
+TIMER_REG_HIGH    equ 0x11     ; Replace with actual high byte timer register address
 
 ; Initialize memory locations
     ld hl, pulse_start_time
@@ -73,12 +74,13 @@ div16_loop:
 ; Subroutine to get current time (or timer value)
 get_current_time:
     ; Read the lower byte of the timer
-    in a, (TIMER_REG)
+    ld c, TIMER_REG_LOW
+    in a, (c)
     ld l, a
     ; Read the upper byte of the timer
-    in a, (TIMER_REG + 1)
+    ld c, TIMER_REG_HIGH
+    in a, (c)
     ld h, a
-    ld a, l ; Return the lower byte in A
     ret
 
 ; Subroutine to calculate frequency
