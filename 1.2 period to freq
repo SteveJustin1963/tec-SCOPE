@@ -1,4 +1,4 @@
-    org 0x0000
+org 0x0000
 
 ; Define memory locations
 pulse_start_time  equ 0x8000   ; Memory location to store pulse start time (2 bytes)
@@ -49,9 +49,9 @@ found_falling_edge:
     inc hl
     ld (hl), d
 
-    ; Now, you can proceed to calculate the frequency based on the pulse duration
-
-    ; Your original frequency calculation code can be placed here
+    ; Calculate the frequency based on the pulse duration
+    ; Placeholder for frequency calculation
+    call calculate_frequency
 
     ; Repeat the loop
     jp main_loop
@@ -72,4 +72,10 @@ get_current_time:
     ; You may need to interact with timer hardware or a timer register
     ; Return the result in register A
     ld a, 0  ; Dummy value for demonstration
+    ret
+
+; Placeholder for frequency calculation subroutine
+calculate_frequency:
+    ; Implement the frequency calculation based on pulse duration
+    ; Update frequency_low and frequency_high with the calculated frequency
     ret
