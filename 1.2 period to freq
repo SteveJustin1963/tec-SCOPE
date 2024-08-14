@@ -9,6 +9,9 @@ frequency_high    equ 0x8005   ; Memory location to store high byte of frequency
 ; Define I/O port addresses
 pulse_input_port  equ 0xFF00   ; Port address for reading pulse input
 
+; Define Timer Register (Example)
+TIMER_REG         equ 0x1234   ; Replace with actual timer register address
+
 ; Initialize memory locations
     ld hl, pulse_start_time
     ld (hl), 0x00
@@ -30,7 +33,9 @@ wait_for_rising_edge:
     ; Record the start time
     ld hl, pulse_start_time
     call get_current_time  ; Call a subroutine to get the current time (or timer value)
-    ld (hl), a
+    ld (hl), l             ; Store lower byte
+    inc hl
+    ld (hl), h             ; Store upper byte
 
     ; Initialize a 16-bit counter in register pair DE
     ld de, 0
@@ -50,7 +55,6 @@ found_falling_edge:
     ld (hl), d
 
     ; Calculate the frequency based on the pulse duration
-    ; Placeholder for frequency calculation
     call calculate_frequency
 
     ; Repeat the loop
@@ -68,14 +72,31 @@ div16_loop:
 
 ; Subroutine to get current time (or timer value)
 get_current_time:
-    ; Implement this subroutine to return the current time or timer value
-    ; You may need to interact with timer hardware or a timer register
-    ; Return the result in register A
-    ld a, 0  ; Dummy value for demonstration
+    ; Read the lower byte of the timer
+    in a, (TIMER_REG)
+    ld l, a
+    ; Read the upper byte of the timer
+    in a, (TIMER_REG + 1)
+    ld h, a
+    ld a, l ; Return the lower byte in A
     ret
 
-; Placeholder for frequency calculation subroutine
+; Subroutine to calculate frequency
 calculate_frequency:
-    ; Implement the frequency calculation based on pulse duration
-    ; Update frequency_low and frequency_high with the calculated frequency
+    ; Assuming pulse_duration is stored in DE
+    ld hl, pulse_duration
+    ld e, (hl)
+    inc hl
+    ld d, (hl)
+    
+    ; Divide DE by a suitable factor to get frequency
+    ; Placeholder logic - you need to define the factor based on your timer frequency
+    call div16
+    
+    ; Store result in frequency_low and frequency_high
+    ld hl, frequency_low
+    ld (hl), l
+    inc hl
+    ld (hl), h
+    
     ret
