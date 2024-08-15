@@ -9,10 +9,9 @@ Back in 1977 when I was 14, my Star Wars nerd brain incessantly checked adverts 
 ### Angle display
 The Tec-1 has 6 digits of display to show the angle of degrees and minutes 
 arranged as address xxxx and data xx per default monitor program mode.
-Assuming we done some sort of calibration first the angle numbers will update in real time, 
-for azimuth and alt to 1 degree accuracy thus;
+Assuming we done some sort of calibration first the angle numbers will update in real time, thus;
 
-- press A 0299 23 is 299 degs 23 deg
+- press A then azimuth and alt to 1 degree accuracy is given ie 0299 23 meaning 299 degs 23 deg
 - or press `+` then alt is displayed to higher precision ie 0299 44 meaning 299 degs 44 minutes
 - or press `-` then azimuth is displayed to higher precision ie 0023 16 meaning 23 degs 16 minutes
 
