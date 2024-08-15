@@ -9,8 +9,10 @@ Back in 1977 when I was 14, my Star Wars nerd brain incessantly checked adverts 
 ### display
 The Tec-1 has 6 digits of display to show the angle of degrees and minutes 
 arranged as address xxxx and data xx per default monitor program mode.
+Assuming we dome some sort of calibration 
+I propose when we press A and as we move the scope (motor or hand) the angle numbers will update in real time, 
+as azimuth-alt to 1 degree, thus
 
-I propose when we press A then as you move the scope (motor or hand) the angle numbers will update, as azimuth-alt to 1 degree 
 - 0299 23 is 299 degs 23 deg
 press + once then only alt is displayed to higher precision.
 - 0299 44 is 299 degs 44 minutes
