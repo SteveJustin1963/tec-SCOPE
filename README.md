@@ -6,7 +6,7 @@ Back in 1977 when I was 14, my Star Wars nerd brain incessantly checked adverts 
 ![image](https://github.com/user-attachments/assets/175f6647-cef5-44bb-8ab4-b49f28b1b4a6)
 
 
-### display
+### Angle display
 The Tec-1 has 6 digits of display to show the angle of degrees and minutes 
 arranged as address xxxx and data xx per default monitor program mode.
 Assuming we done some sort of calibration first the angle numbers will update in real time, 
