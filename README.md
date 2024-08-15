@@ -3,13 +3,24 @@ Back in 1976 when I was just 13 and already a science and builder geek, I checke
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
-So with the Tec-1 Z80 SBC and some extra parts; motors and encoders etc, this will elevate our stargazing game by harnessing the power of the mighty Tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount that performs easily to the touch of your hand is limited, so by adding a geared mount we can get a leap in efficiency and precision for slewing and tracking. On the Tec-1 we have 6 digits of display to show the angle of degrees and minutes. the tec1s 6 digits ar aranged as xxxx and xx for address and data programming, 
-```
-combined
-xddd.dd az/alt
-seperate
-az xddd mm
-alt xxdd mm
+So with the Tec-1 Z80 SBC and some extra parts; motors and encoders etc, this will elevate our stargazing game by harnessing the power of the mighty Tec-1 to control the telescope. The simple friction controlled Alt-Azimuth mount will be converted to a geared mount driven my motors and read with encoders to get a leap in efficiency and precision for slewing and tracking. 
+
+![image](https://github.com/user-attachments/assets/175f6647-cef5-44bb-8ab4-b49f28b1b4a6)
+
+
+### display
+The Tec-1 has 6 digits of display to show the angle of degrees and minutes 
+arranged as xxxx and xx for address and data per its default mode in the monitor program.
+
+press A then as you move the scope the numbers will update, as azimuth-alt to 1 degree 
+- 0299 23 is 299 degs 23 deg
+press + once then only alt is displayed to higher precision.
+- 0299 44 is 299 degs 44 minutes
+press - then only az is displayed to higher precision.
+- 0023 16     ie 23 degs 16 minutes
+press A then back to azimuth-alt to 1 degree
+
+
 
 more detail we can drop the leading number  
 az ddmm ss
@@ -18,7 +29,7 @@ example 4.544 12 = 145 deg 44 min 12 sec
 example 4.5.44 12 = 245 deg 44 min 12 sec
 example 4.5.4.4 12 = 345 deg 44 min 12 sec 
 alt ddmm ss
-```
+
 
 
 
