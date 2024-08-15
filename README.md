@@ -13,27 +13,15 @@ Assuming we done some sort of calibration first the angle numbers will update in
 
 - press A then azimuth and alt to 1 degree accuracy is given ie 0299 23 meaning 299 degs 23 deg
 - or press `+` then alt is displayed to higher precision ie 0299 44 meaning 299 degs 44 minutes
+- press + again we more precision ie 0044 51 meaning 44 minutes and 51 seconds
 - or press `-` then azimuth is displayed to higher precision ie 0023 16 meaning 23 degs 16 minutes
+- press - again we more precision ie 0016 22 meaning 16 minutes and 22 seconds
 
 
 
-more detail we can drop the leading number  
-az ddmm ss
-az 100 to 359 we show d.d.mm ss, use the . or .. or ... to show 1, 2 or 3
-example 4.544 12 = 145 deg 44 min 12 sec
-example 4.5.44 12 = 245 deg 44 min 12 sec
-example 4.5.4.4 12 = 345 deg 44 min 12 sec 
-alt ddmm ss
+## What is a Dobsons reflector telescope
+Dobson’s are a type of Newtonian reflector telescope that uses a primary mirror to gather the light then diagonal flat mirror send the light out sideways into a focusing lens for the viewer. To point the telescope tube it’s pushed by hand on its two axis friction mounts. This basic system works well and settles fast after pushing. Most have a finder scope or finder dot to align it to a target or as you view you can push it in small increments. But due to the earth's rotation what you're looking at soon moves out of view. When you push to keep up you tend to aim the wrong way as the mirrors alter the direction and appearance of the image. The moon tends to move really fast in a few minutes it’s out of view.  So fixing this with the tec1 is the way to go, then can slew or track
 
-
-
-
-
-
-
-
-## Dobsons = a simple type of reflector telescope
-Dobsons are just pushed by hand on a low friction mount. This system works really well and settles very fast after pushing. but depending where you're looking, stars or objects move out of view due to the earth's rotation. you don't notice that when you look up with your eyes, but as soon as you look through the scope the moon has moved incredibly fast. Every minute you have to keep pushing to keep up, but as soon as you do we always push the wrong way as the image is inverted. we have to take our eye away and do it externally or with a laser pointer or dot finder. I have even pulled the eyepiece out (mine is a very loose fit) and watched the reflection of light in the eyepiece tube to get a sense of direction to go in. Also small pushes to keep up are always too big and we lose the target anyway. fixing this with software and hardware would be nice.
 
 
 ## reading
