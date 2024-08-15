@@ -11,23 +11,27 @@ VARIABLE SENSOR-X1
 VARIABLE SENSOR-X2
 VARIABLE SENSOR-Y1
 VARIABLE SENSOR-Y2
-SENSOR-X1 0 !
-SENSOR-X2 0 !
-SENSOR-Y1 0 !
-SENSOR-Y2 0 !
+
+\ Initialize sensor variables
+0 SENSOR-X1 !
+0 SENSOR-X2 !
+0 SENSOR-Y1 !
+0 SENSOR-Y2 !
 
 \ Variables to represent the telescope's current pointing position
 VARIABLE TELESCOPE-X  \ Initial X position of the telescope (0)
 VARIABLE TELESCOPE-Y  \ Initial Y position of the telescope (0)
-TELESCOPE-X 0 !
-TELESCOPE-Y 0 !
+
+\ Initialize telescope position
+0 TELESCOPE-X !
+0 TELESCOPE-Y !
 
 \ Function to simulate detecting the position of a moving point of light
 : SIMULATE-DETECT-STAR-POSITION ( -- )
-  STAR-X @ SENSOR-X1 @ - DUP SENSOR-X1 !
-  STAR-X @ SENSOR-X2 @ - DUP SENSOR-X2 !
-  STAR-Y @ SENSOR-Y1 @ - DUP SENSOR-Y1 !
-  STAR-Y @ SENSOR-Y2 @ - DUP SENSOR-Y2 ! ;
+  STAR-X SENSOR-X1 @ - SENSOR-X1 !
+  STAR-X SENSOR-X2 @ - SENSOR-X2 !
+  STAR-Y SENSOR-Y1 @ - SENSOR-Y1 !
+  STAR-Y SENSOR-Y2 @ - SENSOR-Y2 ! ;
 
 \ Function to calculate average from sensor readings
 : AVERAGE-SENSOR ( sensor1 sensor2 -- average )
@@ -51,18 +55,3 @@ STAR-TRACKER-SIMULATION
 \ Output the result of the simulation
 TELESCOPE-X @ . CR
 TELESCOPE-Y @ . CR
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-Incorporating a 4-sensor array into the simulation involves tracking two pairs of coordinates 
-(x1, x2) for the X-axis and (y1, y2) for the Y-axis. These sensor pairs can be used to derive 
-the position of the star by calculating the average or some other means of central tendency.
-
-the SIMULATE-DETECT-STAR-POSITION function simulates the detection of the star's position 
-by the 4-sensor array. The UPDATE-TELESCOPE-POSITION function calculates the average of the 
-two sensor readings for each axis and updates the telescope's position accordingly. 
-The AVERAGE-SENSOR word is a new addition that calculates the average of two sensor readings.
-
-The simulation loop remains the same, running for a set number of iterations and outputting 
-the final pointing position of the telescope at the end. This setup allows you to observe how 
-the telescope's position changes over time as it follows the simulated star's position using 
-readings from the 4-sensor array
-
