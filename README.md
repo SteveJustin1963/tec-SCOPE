@@ -1,4 +1,4 @@
-integrating your tec1d with your 8-inch F5 Dobson telescope
+Integrating your tec1d with your 8-inch F5 Dobson telescope
 
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
 ![image](https://github.com/user-attachments/assets/127c3469-9b72-4adf-8157-af4c271298e7)
@@ -6,12 +6,17 @@ integrating your tec1d with your 8-inch F5 Dobson telescope
 
 
 - at the moment its a push around scope
-- will modify it with motors and encoders
-- crude angle check using compass and protractor, convert magnetic north to true north in Sydney add 12.83°E in 2020 changes 0.04° annualy 
+- add motors 
+- add encoders HN3806-AB, AB 2 phase rectangular orthogonal pulses 600 pulses/rev, max 5000rpm, response 0-20KHz 
+  - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
+  - should not connect AB directly VCC 
+
+- crude angle check using compass and protractor, convert magnetic north to true north in Sydney add 12.83°E in 2020 changes 0.04° annually 
+- crude level use a bubble float. 3 large thumb screw in base, protractor and plumb for angle
 - we need to calibrate the alignment so the angles are correct, we use a known celestial object
-- the current mount is called a alt azximuth , its an x and y so we need 2 motors and 2 encoders
+- the current mount is called a alt / azimuth , its an x and y so we need 2 motors and 2 encoders
 - we need to modify the mount so we have shafts and gears of a sort
-- with code or a joystick we can slew it around or goto some coord via tec1 keypad
+- with code or a joystick we can slew it around or goto some co ords via tec1 keypad
 - or track a position using an optical gates or estimation 
 - will try starmap Stellarium interface via another bitbang port x.200 commands
 - what to do for long-exposure astrophotography ?
@@ -29,11 +34,8 @@ display angle
 - or press `-` then azimuth is displayed to higher precision ie 0023 16 meaning 23 degs 16 minutes
 - press - again we more precision ie 0016 22 meaning 16 minutes and 22 seconds  
 
-Rotary Encoder HN3806-AB 
-- generates 600 pulses per revolution and has a green A phase, white B phase, red Vcc power +, and black V0.
-- powered by a DC5-24V power source 
-- output of AB 2 phase rectangular orthogonal pulses. It has a maximum mechanical speed of 5000 R/min and a response frequency of 0-20KHz. The encoder comes with a 1.5 meter cable and should not have its AB 2 phase output directly connected to VCC to avoid damaging the output triode. It is suitable for use in intelligent control and various displacement measurement applications.
-- Timing Belt Drive Pulley to its 6mm shaft. will construct a wood wheel and invert a drive belt with the teeth facing out so the drive pulley can interface with it
+
+- Timing Belt Drive Pulley to its 6mm shaft.  will construct a wood wheel and invert a drive belt with the teeth facing out so the drive pulley can interface with it
   
 ![image](https://github.com/user-attachments/assets/27685599-0ccf-404d-9e11-eb6efa607bb2)
 
