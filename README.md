@@ -1,3 +1,5 @@
+https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/scope-steps1.png
+
 Integrating your tec1d with your 8-inch F5 Dobson telescope
 
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
