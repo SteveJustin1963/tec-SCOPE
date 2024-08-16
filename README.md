@@ -24,293 +24,36 @@ Dobson’s are a type of Newtonian reflector telescope that uses a primary mirro
 
 
 
-## reading
- we need to read the alt and azimuth (and later inputting). They are angle measurements. We need to locate the axis of these and mount some kind of reader and turn that into numbers we can crudely use, such as a mechanical compass and protractor, or their electronic equivalents. an angle gauge and or a compass can be had for under $20 online from Asia online. When getting the azimuth from the compass don't forget to compensate and convert magnetic north to true north, Sydney needs about 12 added (magnetic declination was 12.83°E in 2020 with 0.04° annual change). It varies all over the world. Now we have a calibration reference. next step in measuring electronically we could measure with a simple R pot and feed this into a MCU that has ADC but our tec1 lacks this in this design so we instead make R part of an 555 oscillator circuit, once calibrated for a correct starting position, R will change at various points of rotation so we interpolate the missing R values in between and then convert them into angles, so the period or freq wrt a counter or code loop can be converted to angles.
+## reading angles
+### manual
+angle measurements.
+on the axis of mount a reader and turn that into numbers 
+ mechanical compass convert magnetic north to true north, Sydney needs about 12 added (magnetic declination was 12.83°E in 2020 with 0.04° annual change).
+ 
+ and protractor,
+ or electronic equivalents. 
+ 
+ 
+  
+ 
+##  desire list for software
+- control motors
+- read encovers
+- Calibration and interpolation
+- display values
+- slewing 
+- tracking to compensate for Earth's rotation, or moons movement
+- camera control, long-exposure astro-photography
+- starmap communication with Stellarium
+- Enable remote control via TCS
+- Track telescope position using optical gate
+- go-to-functionality, slew to specific objects coordinates, user database
+- alignment-assistance in aligning telescope with celestial objects
 
-
-## cct
-![image](https://user-images.githubusercontent.com/58069246/210936069-624b8c93-c571-4490-845a-cee685932f91.png)
-
-- circuit simulator using 555 ic https://tinyurl.com/2p8fdmws
-- make the 220 value the pot
-- am aiming for freq between 100 and 1000 and no more than 3000
-
-![image](https://user-images.githubusercontent.com/58069246/220818068-d6cbff32-57e3-4e6c-9fc0-8369b4c0e593.png)
-
-
-
-## another 555 cct
-https://www.electronics-lab.com/ne555-timer-sparks-low-cost-voltage-to-frequency-converter/
-
-![image](https://github.com/SteveJustin1963/tec-SCOPE/assets/58069246/5af4808d-1427-46c5-b78d-ee9c48157a15)
-
-
-## 74HC590 8-bit binary counter cct
-- https://www.google.com/search?q=74HC590&rlz=1C1FKPE_en-GBAU984AU984&sourceid=chrome&ie=UTF-8
-- Encoder counter chip https://www.usdigital.com/products/accessories/interfaces/ics/
-
-## cap cct
- - https://www.instructables.com/Simple-Capaitance-Meter/
-
-
-
-## let's dream about the code possibilities
- What do we want it to do? start with
- - Defines variables for storing angle, frequency, and motor direction.
-- Initialises hardware components and communication interfaces.
-- Includes routines for reading angle and calculating frequency.
-- Converts R to frequency.
-- Controls motors and slewing, including manual and automatic slewing.
-- Reads optical encoders and integrates rotary encoders.
-- Implements auto-tracking, guiding, and go-to functionality.
-- Provides alignment assistance with feedback during the process.
-- Optimises performance for resource-constrained platforms.
-- Sets up the main program loop to execute functions repeatedly.
-- Handles telescope control system communication and external communication with Stellarium.
-- Manages camera control and imaging.
-- Includes error handling and exception handling.
-- Allows for additional features and functionalities to be added.
-- Handles user input and commands for manual control and configuration.
-
-
- ```pseudo
-\ Include necessary headers and libraries here
-
-\ Define constants and variables
-VARIABLE angle \ Store the telescope's current angle
-VARIABLE frequency \ Store the calculated frequency
-VARIABLE motor_direction \ Store the motor direction (0 for stop, 1 for forward, -1 for backward)
-
-\ Initialize hardware components and communication interfaces
-: initialize-telescope
- \ Initialize electronic level, compass, ADC, and motor control
- \ Set up communication with Stellarium
- \ Configure rotary encoder
- \ Initialise optical encoders for alt and az axes
-
-\ Read angle and calculate frequency
- : read-angle-and-frequency
- \ Code for reading angle using the electronic level and compass
- \ Code for generating pseudo-period with counter loop from the R value from pot angle using 555 oscillator circuit
- \ Calibration and interpolation
-
-\ Voltage-to-Frequency Conversion
-: voltage-to-frequency
- \ Code for R-to-frequency conversion using NE555
- \ Code for 8254 interval timer
- \ Calibration and interpolation
-
-\ Motor Control and Slewing
-: motor-control-and-slewing
- \ Code for controlling DC motors using worm drives
- \ Implement non-linear interpolation and trigonometry for precise angle control
- \ Handle manual slewing using switches and joystick
- \ Implement automatic slewing for go-to functionality
- \ Enable remote control via TCS
- \ Track telescope position using optical gate
-
-\ Read Differential Optical Encoders
-: read-optical-encoders
- \ Read optical encoders for alt and az axes
- \ Calculate precise position information
-
-\ Rotary Encoder Integration
-: integrate-rotary-encoder
- \ Code for reading the rotary encoder HN3806-AB
- \ Interface with Timing Belt Drive Pulley
- \ Ensure precise angle measurement and control
-
-\ Auto-Tracking and Guiding
-: auto-tracking-and-guiding
- \ Implement automatic tracking to compensate for Earth's rotation
- \ Integrate guiding capabilities to maintain precise object tracking
- \ Support long-exposure astro-photography
-
-\ Go-To Functionality
-: go-to-functionality
- \ Implement go-to capabilities to automatically slew to specific objects
- \ Calculate necessary coordinates for precise pointing
- \ Provide user input or database selection for target objects
-
-\ Alignment Assistance
-: alignment-assistance
- \ Implement alignment assistance routines to aid users in aligning the telescope accurately with celestial objects
- \ Provide feedback or guidance during the alignment process to improve user experience
-
-\ Performance Optimisation
-: performance-optimisation
- \ Optimize the software's performance to minimize resource usage and maximize efficiency, particularly on resource-constrained platforms like the Z80 SBC
- \ Profile the code to identify bottlenecks and optimize critical
-sections for improved responsiveness
-
-\ Main Program Loop
-: main-loop
- initialize-telescope
- BEGIN
- read-angle-and-frequency
- R-to-frequency
- motor-control-and-slewing
- read-optical-encoders
- integrate-rotary-encoder
- auto-tracking-and-guiding
- go-to-functionality
- alignment-assistance
- performance-optimisation
- \ Additional functionalities (camera control, photo compositing, etc.)
- AGAIN
-
-\ Telescope Control System (TCS)
-: tcs-control
- \ Define communication protocols for remote control
- \ Handle commands from remote devices
-
-\ Camera Control and Imaging
-: camera-control
- \ Implement camera control and image capture
- \ Explore Lucky Imaging techniques
-
-\ External Communication
-: stellarium-communication
- \ Establish communication with Stellarium
- \ Send telescope position
- data
- \ Receive and execute movement commands from Stellarium
-
-\ Compile and run the main program
-main-loop
-
-\ Handle user input and commands
-: handle-user-input
- \ Implement user interface for manual control and configuration
-
-\ Include error handling and exception handling routines as needed
-
-\ Additional features and functionalities can be added as separate code blocks
-
-\ End of the software set
-```
-
-
-
-
-### 1.0
-- configure a timer/counter
-- read its value,
-- calculate the freq, and store the result in memory.
-- The div16 subroutine is used to perform a 16-bit division operation by shifting bits,
-
- ### 1.01
-- try 8254 is for timing and counting
-- has three 16-bit counters (Counters 0, 1, and 2) with various operating modes.
-Key elements:
-- Registers: timer_value, frequency_low, frequency_high.
-- Ports: pit_control_port, pit_data_port.
-- Constants: frequency_divisor, clock_frequency.
-
-Program execution:
-- Initializes Counter 0 in square wave mode.
-- Reads counter value, calculates frequency using div16 subroutine.
-- Stores frequency in frequency_low and frequency_high.
-- div16 subroutine divides a 16-bit value by 16 for frequency calculation.
-
-
-### 2.0
-- reads values from a specific port,
-- averages them,
-- calculates an angle based on the average value,
-- performs some calibration and conversion routines,
-- and uses lookup tables for division and multiplication to optimize calculations
-
-### 3.0
-- measure the frequency of a signal on bit 1 of Port 06 within the range of 200 to 1000 Hz
- - code assumes that the incrementing of the HL register represents a known time interval, which can be used to calculate the frequency.
-- For more accurate and efficient frequency measurement, it is recommended to use dedicated timer hardware
-
-### mp-1.f
-- main program in forth
-- todo convert to fixed point arithmetic with groups of integers
-
+ 
 Storing precision in groups of integers, often referred to as fixed-point arithmetic, can be a way to maintain better accuracy than using plain 16-bit integers for certain calculations, especially when dealing with fractional values. Fixed-point arithmetic allows you to represent fractional numbers with a fixed number of integer bits and fractional bits. This approach can help you maintain precision while using integer-based data types.
 
-Here's how you might apply fixed-point arithmetic to the provided code:
-
-1. **Choose a Fixed-Point Format**: Determine how many bits you want to allocate for the integer part and how many bits for the fractional part of your fixed-point numbers. This allocation depends on the required precision for your calculations. For example, you might use a Q16.16 format, which uses 16 bits for the integer part and 16 bits for the fractional part.
-
-2. **Scale Values**: Scale your input values (e.g., angles) and constants accordingly. When you read input values like degrees, convert them to your fixed-point format by multiplying them by a suitable scaling factor (e.g., 2^16 for Q16.16).
-
-3. **Perform Calculations**: Perform calculations using fixed-point arithmetic. When multiplying or dividing fixed-point numbers, consider the scaling factor. For example, when multiplying two Q16.16 fixed-point numbers, you would scale the result down by shifting right by 16 bits.
-
-4. **Convert Back**: When you need to display or use the results, convert them back to their original units by reversing the scaling factor.
-
-Here's an example of how you might modify the code to use Q16.16 fixed-point arithmetic:
--mp16.16.f
-
-In this modified code, the `toFixedPoint` function scales input values to the Q16.16 format, and the `fromFixedPoint` function converts results back to degrees when displaying them. The `hourangle`, `declination`, `lst`, and `rightascension` variables are declared with 32 bits to accommodate the fixed-point format.
-
-Using fixed-point arithmetic in this manner allows you to maintain better precision than using plain 16-bit integers for calculations involving fractional values. However, it requires careful handling of scaling factors and conversions between fixed-point and real-world units.
-
-#### Q16.16 is a fixed-point representation format
- where numbers are divided into two parts: a 16-bit integer part and a 16-bit fractional part. It's commonly used in embedded systems and programming when you need to work with fractional numbers but don't want to use floating-point arithmetic due to its computational overhead or limited hardware support.
-
-Here's how Q16.16 fixed-point format works:
-
-- The first 16 bits represent the integer part of the number.
-- The next 16 bits represent the fractional part of the number.
-
-To convert a Q16.16 fixed-point number to a real-world value, you divide the 32-bit fixed-point number by 2^16 (65536). Conversely, to convert a real-world value to the Q16.16 format, you multiply it by 2^16.
-
-Here's a simple example to illustrate the concept:
-
-1. Real-world value: 3.5
- - Convert to Q16.16: 3.5 * 65536 = 229376 (which is 0x00038000 in hexadecimal).
-
-2. Q16.16 value: 0x00038000
- - Convert to real-world: 0x00038000 / 65536 = 3.5
-
-In your code, using Q16.16 fixed-point format allows you to perform arithmetic operations on fractional values with integer operations, which can be more efficient on certain hardware platforms and avoids the complexities of floating-point arithmetic.
-
-The loss in accuracy between Q16.16 fixed-point and 32-bit floating-point representations primarily depends on the range of values you need to represent and the precision required for your specific application. Here's a general comparison of the two formats:
-
-1. **Q16.16 Fixed-Point Format**:
- - **Precision**: The Q16.16 format provides 16 bits of fractional precision, which means it can represent values with a fractional part as small as 1/65536.
- - **Range**: It can represent values within the range of approximately -32768 to 32767 with fractional values in the range of -1 to (1 - 1/65536).
-
-2. **32-bit Floating-Point Format** (IEEE 754 Single Precision):
- - **Precision**: Single-precision floating-point numbers provide about 24 bits of precision in the significant and (fractional part), which allows for much finer granularity in representing fractional values compared to Q16.16.
- - **Range**: They have a much larger range of representable values, typically from approximately -3.4e38 to 3.4e38 (positive and negative), which is a significantly wider range compared to Q16.16.
-
-**Loss of Precision**:
-- When using Q16.16 fixed-point, you may experience a noticeable loss of precision when working with small fractional values or when performing multiple consecutive operations, as the fractional part can only represent values down to 1/65536.
-- In contrast, 32-bit floating-point numbers can represent much smaller fractions and a wider range of values without significant loss of precision.
-
-**Example**:
-Consider representing the value 0.0001:
-- In Q16.16, it would be approximately 6.1035e-06 (which is 6.1035 / 65536).
-- In 32-bit floating-point, it can be precisely represented as 1.0e-4.
-
-If you need to perform calculations that require high precision, especially with very small fractional values or a wide range of values, 32-bit floating-point would generally be a better choice. However, if memory or computational efficiency is a concern, Q16.16 fixed-point can still be suitable for many applications with reasonable precision requirements.
-
-In summary, the loss in accuracy between Q16.16 fixed-point and 32-bit floating-point depends on the specific numerical range and precision requirements of your application. For tasks involving very small or large values and extensive calculations, 32-bit floating-point offers superior precision, while Q16.16 fixed-point is more efficient for tasks within its narrower range and precision capabilities.
-
-Q16.16 fixed-point format alone may not provide the accuracy of degrees, minutes, and seconds to two decimal places, especially if you want precise representations of angular values. Each decimal place in degrees corresponds to a factor of 60 (e.g., degrees to minutes or minutes to seconds), which requires more precision than Q16.16 can offer.
-
-To achieve accuracy to two decimal places for degrees, minutes, and seconds, you would typically need a more granular representation, such as a fixed-point format with a higher number of fractional bits or, more commonly, floating-point numbers. Here's a brief overview of the requirements for achieving two decimal places of accuracy for degrees, minutes, and seconds:
-
-1. **Degrees (0.01 degree accuracy):**
- - You can represent degrees with two decimal places by using a fixed-point format with at least 2 decimal places (e.g., Q16.16 or Q32.32) or by using a floating-point number with single precision (e.g., IEEE 754 single-precision).
-
-2. **Minutes (0.01 minute accuracy):**
- - To represent minutes with two decimal places (0.01 minutes accuracy), you'll need a format with at least 4 fractional bits.
-
-3. **Seconds (0.01 second accuracy):**
- - For two decimal places of seconds (0.01
-seconds accuracy), you'll require a representation with at least 6 fractional bits.
-
-If you need to work with angular values that require this level of accuracy, consider using floating-point representations, such as 32-bit or 64-bit floating-point numbers (single or double precision). Floating-point numbers are designed to handle a wide range of values with high precision and are commonly used in applications involving angles and coordinates that require sub-degree accuracy.
-
-In summary, while Q16.16 fixed-point format can be suitable for some applications, it may not provide the required accuracy of two decimal places for degrees, minutes, and seconds. Using floating-point representations with sufficient precision is a more practical approach for achieving the desired accuracy in angular measurements.
-
-
+ 
 ### count
 
  - down 00-FF
