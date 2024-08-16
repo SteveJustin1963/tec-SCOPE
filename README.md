@@ -22,8 +22,8 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
 - what to do for long-exposure astrophotography ?
 
 code
--try asm, mint with and without APU
-
+- try asm, mint with and without APU
+- we need a menu of ato f and numbers to select functions
 
 display angle
 - read data from encode, convert to angle, display on tec1 seven seg display
