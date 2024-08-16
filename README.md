@@ -58,38 +58,3 @@ LS7183
   
 ![image](https://github.com/user-attachments/assets/27685599-0ccf-404d-9e11-eb6efa607bb2)
 
- ## References
-- https://www.google.com.au/sky/
-- https://edu.kde.org/kstars/
-- https://www.indilib.org/
-- https://www.tiesncuffs.com.au/pages/custom-embroidered-patches?gclid=Cj0KCQjw-daUBhCIARIsALbkjSZYO9V_ij_ypJlVEb1Inib6CAAIR20-39V1JrN4Nm-13fe0FwE5aqgaAheQEALw_wcB
-- https://github.com/SteveJustin1963/tec-Stepper-Motor-Control
-- https://www.facebook.com/rDUINOScope/
-- https://github.com/PeterForth/Planetarium
-- https://joecreager.com/control-an-h-bridge-with-forth/
-- https://www.facebook.com/groups/623556744820045
-- https://www.facebook.com/groups/2225595150855239
-- https://www.facebook.com/Kiskunf%C3%A9legyh%C3%A1zi-Csillag%C3%A1szati-Egyes%C3%BClet-124849427661821/
-- http://stellarium.org/
-- https://www.hackster.io/neil-pollard/sky-finder-a-lego-alexa-gadget-to-discover-the-night-sky-879e46
-- https://www.instructables.com/Control-Your-Telescope-Using-Stellarium-Arduino/
-- https://www.facebook.com/profile.php?id=150875201997704&ref=br_rs
-- https://create.arduino.cc/projecthub/dEskoG/rduinoscope-4d399c
-- https://github.com/ForthWin/Forth2020UsersGroup/blob/master/ASTROLAB.F?fbclid=IwAR1WDOtVrYgl-IU7aDVg-y2659sf4HU1BfC0qWDlf0LNyo6Y_k4kRzJZ4yA
-- https://makezine.com/projects/build-a-backyard-dobsonian-telescope/
-- https://www.celestron.com/pages/celestron-pwi-telescope-control-software
-- https://www.astronomywa.net.au/different-types-of-telescope-mounts.html
-- https://onstep.groups.io/g/main/wiki/4414
-- https://www.ngc7000.com/telescope-motorization.htm
-- https://www.ngc7000.com/docu-skypikit/EN/EN_200226_DobsonPushtoBoard.pdf
-- https://asa.astronomy.org.au/
-- https://skywatcheraustralia.com.au/product/16-collapsible-dobsonian/
-- https://en.wikipedia.org/wiki/Lucky_imaging
-- https://docs.arduino.cc/built-in-examples/basics/AnalogReadSerial
-- https://electropeak.com/learn/how-to-interface-a-rotary-encoder-with-arduino/
-
-
-
-
-
-
