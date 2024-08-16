@@ -2,44 +2,16 @@ integrating a TEC1-D controlled system with your 8-inch Dobson telescope at F5:
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
 
 
-
 ![image](https://github.com/user-attachments/assets/127c3469-9b72-4adf-8157-af4c271298e7)
-
-
-
-- what can we see ? eye piece 5 mm and 8 inch mirror at F5 gives gives 8 degree field of view thats around 0.6 arc seconds between two points of light.
-
-
-1. **Mechanical and Hardware Setup:**
-   - Mounts
-   - Motors and encoders
-   - Track telescope position using an optical gate
-
-2. **Basic Telescope Control:**
-   - Calibration
-   - Slewing
-   - Tracking to compensate for Earth's rotation or moon's movement
-
-3. **Advanced Telescope Control:**
-   - Go-to functionality (slew to specific object's coordinates, user database)
-   - Alignment assistance in aligning telescope with celestial objects
-
-4. **Communication and Interfacing:**
-   - Starmap communication with Stellarium
-   - Bitbang to starmap
-   - Enable remote control via TCS
-
-5. **Data Handling and Display:**
-   - Interpolation
-   - Display values
-
-6. **Special Features and Enhancements:**
-   - Camera control for long-exposure astrophotography
-
-
-
-
-
+- at the moment its a push around scope
+- will modify it with motors and encoders
+- we need to calibrate the alignment so the angles are correct, we use a known celestial object
+- the current mount is called a alt azximuth , its an x and y so we need 2 motors and 2 encoders
+- we need to modify the mount so we have shafts and gears of a sort
+- with code or a button we can slew it around or goto some coord
+- or track a position using an optical gates or estimation 
+- will try starmap Stellarium interface
+- what to do for long-exposure astrophotography ?
 
 ![image](https://github.com/user-attachments/assets/175f6647-cef5-44bb-8ab4-b49f28b1b4a6)
 
