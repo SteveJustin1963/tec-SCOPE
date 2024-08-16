@@ -1,4 +1,5 @@
 integrating a TEC1-D controlled system with your 8-inch Dobson telescope at F5:
+![image](https://github.com/user-attachments/assets/b08373e5-4f69-48bf-a97e-d734c2b9f143)
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
