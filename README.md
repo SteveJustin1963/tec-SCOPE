@@ -10,11 +10,10 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
 
 
 - motors  ![image](https://github.com/user-attachments/assets/a65c79ff-79d1-4115-a1bc-1dc1dbe430ba)
- - salvage 24v dc motor and shaft from foot massage machine, u see these always thrown out
+  - salvage 24v dc motor and shaft from foot massage machine, u see these always thrown out
 
 
 - encoders ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
-
   - HN3806-AB, AB 2 phase rectangular orthogonal pulses 600 pulses/rev, max 5000rpm, response 0-20KHz 
   - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
   - should not connect AB directly VCC 
