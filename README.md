@@ -34,6 +34,7 @@ Rotary Encoder HN3806-AB
 - powered by a DC5-24V power source 
 - output of AB 2 phase rectangular orthogonal pulses. It has a maximum mechanical speed of 5000 R/min and a response frequency of 0-20KHz. The encoder comes with a 1.5 meter cable and should not have its AB 2 phase output directly connected to VCC to avoid damaging the output triode. It is suitable for use in intelligent control and various displacement measurement applications.
 - Timing Belt Drive Pulley to its 6mm shaft. will construct a wood wheel and invert a drive belt with the teeth facing out so the drive pulley can interface with it
+  
 ![image](https://github.com/user-attachments/assets/27685599-0ccf-404d-9e11-eb6efa607bb2)
 
  ## References
@@ -44,7 +45,7 @@ Rotary Encoder HN3806-AB
 - https://github.com/SteveJustin1963/tec-Stepper-Motor-Control
 - https://www.facebook.com/rDUINOScope/
 - https://github.com/PeterForth/Planetarium
- - https://joecreager.com/control-an-h-bridge-with-forth/
+- https://joecreager.com/control-an-h-bridge-with-forth/
 - https://www.facebook.com/groups/623556744820045
 - https://www.facebook.com/groups/2225595150855239
 - https://www.facebook.com/Kiskunf%C3%A9legyh%C3%A1zi-Csillag%C3%A1szati-Egyes%C3%BClet-124849427661821/
