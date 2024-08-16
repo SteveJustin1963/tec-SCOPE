@@ -12,10 +12,14 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
 - motors, salvage 24v dc motor and shaft from foot massage machine, u see these always thrown out
  ![image](https://github.com/user-attachments/assets/a65c79ff-79d1-4115-a1bc-1dc1dbe430ba)
 
-- encoders
+- encoders ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
+
   - HN3806-AB, AB 2 phase rectangular orthogonal pulses 600 pulses/rev, max 5000rpm, response 0-20KHz 
   - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
   - should not connect AB directly VCC 
+
+
+
 
 - crude angle check using compass and protractor, convert magnetic north to true north in Sydney add 12.83°E in 2020 changes 0.04° annually 
 - crude level use a bubble float. 3 large thumb screw in base, protractor and plumb for angle
