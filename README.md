@@ -2,10 +2,13 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
 
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
 ![image](https://github.com/user-attachments/assets/127c3469-9b72-4adf-8157-af4c271298e7)
-![image](https://github.com/user-attachments/assets/27509173-1c93-455f-ab52-757443135c69)
+
 
 
 - convert push around scope add motors and encoders
+![image](https://github.com/user-attachments/assets/27509173-1c93-455f-ab52-757443135c69)
+
+
 - motors, salvage 24v dc motor and shaft from foot massage machine, u see these always thrown out
  ![image](https://github.com/user-attachments/assets/a65c79ff-79d1-4115-a1bc-1dc1dbe430ba)
 
