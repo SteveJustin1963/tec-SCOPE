@@ -7,7 +7,7 @@ integrating your tec1d with your 8-inch F5 Dobson telescope
 
 - at the moment its a push around scope
 - will modify it with motors and encoders
-- do a cude angle check using compass and protractor, convert magnetic north to true north in Sydney add 12.83°E in 2020 changes 0.04° annualy 
+- crude angle check using compass and protractor, convert magnetic north to true north in Sydney add 12.83°E in 2020 changes 0.04° annualy 
 - we need to calibrate the alignment so the angles are correct, we use a known celestial object
 - the current mount is called a alt azximuth , its an x and y so we need 2 motors and 2 encoders
 - we need to modify the mount so we have shafts and gears of a sort
