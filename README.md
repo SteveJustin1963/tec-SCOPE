@@ -2,7 +2,8 @@ integrating your tec1d with your 8-inch F5 Dobson telescope
 
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
 ![image](https://github.com/user-attachments/assets/127c3469-9b72-4adf-8157-af4c271298e7)
-![image](https://github.com/user-attachments/assets/175f6647-cef5-44bb-8ab4-b49f28b1b4a6)
+![image](https://github.com/user-attachments/assets/27509173-1c93-455f-ab52-757443135c69)
+
 
 - at the moment its a push around scope
 - will modify it with motors and encoders
@@ -10,83 +11,22 @@ integrating your tec1d with your 8-inch F5 Dobson telescope
 - we need to calibrate the alignment so the angles are correct, we use a known celestial object
 - the current mount is called a alt azximuth , its an x and y so we need 2 motors and 2 encoders
 - we need to modify the mount so we have shafts and gears of a sort
-- with code or a button we can slew it around or goto some coord
+- with code or a joystick we can slew it around or goto some coord via tec1 keypad
 - or track a position using an optical gates or estimation 
 - will try starmap Stellarium interface via another bitbang port
 - what to do for long-exposure astrophotography ?
-
-
-
-- display angle
-- read anglel data from encode
-- convert to angles
-- display on tec1 seven seg display
+- display angle, read data from encode, convert to angle, display on tec1 seven seg display
 - we have 6 digit xxxx xx
-
-code
 - press A then azimuth and alt to 1 degree accuracy is given ie 0299 23 meaning 299 degs 23 deg
 - or press `+` then alt is displayed to higher precision ie 0299 44 meaning 299 degs 44 minutes
 - press + again we more precision ie 0044 51 meaning 44 minutes and 51 seconds
 - or press `-` then azimuth is displayed to higher precision ie 0023 16 meaning 23 degs 16 minutes
 - press - again we more precision ie 0016 22 meaning 16 minutes and 22 seconds  
- 
 
- 
-Storing precision in groups of integers, often referred to as fixed-point arithmetic, can be a way to maintain better accuracy than using plain 16-bit integers for certain calculations, especially when dealing with fractional values. Fixed-point arithmetic allows you to represent fractional numbers with a fixed number of integer bits and fractional bits. This approach can help you maintain precision while using integer-based data types.
-
- 
-### count
-
- - down 00-FF
-- up, large counter 0000-FFFF
-
-
-
- ## 1.3 ADC
-- https://github.com/SteveJustin1963/tec-ADC-DAC
-
-
-
-
-
-# Stage 2
-## pots with cam angle motors
-- Two DC motor drives attached to the telescope mount using threaded rod with nuts = worm drives acting as a swinging cam
-- The worm drive and cam radius design will enhance torque control and minimize backlash.
-- add 2 switch joystick to enable manual slewing
- - tec1 also outputs 2 motor on off controls
-- optical gate counts rotations from slotted wheel on shaft to workout movement
-- calibrate at 0 and 90 degrees, also resistor pots are left on for comparison/ extra calibration
- - motor turns vs angle is non-linear due to the cam action. non-linear interpolation and trigonometry used to calculate angles
-- Stellarium gets position data via serial and also can issue movement commands back to motors
-
-
-![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/shaft-cont-1.png)
-![image](https://user-images.githubusercontent.com/58069246/210935138-3a75fd25-d7a7-4a21-80bd-966cc343f6ca.png)
-![image](https://user-images.githubusercontent.com/58069246/210935157-8995b2e2-70dd-4a91-8b7a-2bb5ee303c58.png)
-
-
-
-
-
-
-# Stage 3
- ## remove pots and cam motors, replace with geared motor drive and rotary encoders
-- remove cams, motors and resistor pots
- - replace with reduction geared DC or stepper motors and with rotary encoder
-- keep manual slewing and software motor control
-
-
- ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/3-23.png)
-
-
-
-
- ## Rotary Encoder HN3806-AB
-
- ![](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/pics/3-23-2.png)
-
-The Rotary Encoder HN3806-AB is a device that is used to measure the rotational speed, angle, acceleration, and length of an object. It generates 600 pulses per revolution and has a green A phase, white B phase, red Vcc power +, and black V0. It is powered by a DC5-24V power source and has a shaft size of 613mm. The encoder has a size of 3835.5mm and an output of AB 2 phase rectangular orthogonal pulses. It has a maximum mechanical speed of 5000 R/min and a response frequency of 0-20KHz. The encoder comes with a 1.5 meter cable and should not have its AB 2 phase output directly connected to VCC to avoid damaging the output triode. It is suitable for use in intelligent control and various displacement measurement applications.
+- Rotary Encoder HN3806-AB 
+- generates 600 pulses per revolution and has a green A phase, white B phase, red Vcc power +, and black V0.
+- powered by a DC5-24V power source 
+- The encoder has a size of 3835.5mm and an output of AB 2 phase rectangular orthogonal pulses. It has a maximum mechanical speed of 5000 R/min and a response frequency of 0-20KHz. The encoder comes with a 1.5 meter cable and should not have its AB 2 phase output directly connected to VCC to avoid damaging the output triode. It is suitable for use in intelligent control and various displacement measurement applications.
 
 I need to add a Timing Belt Drive Pulley to its 6mm shaft. will construct a wood wheel and invert a drive belt with the teeth facing out so the drive pulley can interface with it
 
