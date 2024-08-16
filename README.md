@@ -1,4 +1,9 @@
-merging tec1 with circa 80s wooden truss Dobson telescope with a 8 inch mirror rated at F5 ratio. A new chance has emerged to integrate telescope and tec1 to elevate our stargazing game by harnessing the power of the mighty Tec-1 +motors+ encoders to get a leap in efficiency and precision and add abilities like slewing and tracking.  How much can we see with this small telecope? Assuming an eye piece 5 mm and 8 inch mirror at F5 gives an 8 degree field of view thats around 0.6 arc seconds between two points of light.
+- merging tec1 with a 8 inch Dobson telescope F5 
+- motors and encoders
+- efficiency and precision 
+- slewing and tracking
+- what can we see ? eye piece 5 mm and 8 inch mirror at F5 gives gives 8 degree field of view thats around 0.6 arc seconds between two points of light.
+
 
 ![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
 
