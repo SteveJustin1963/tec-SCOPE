@@ -1,7 +1,6 @@
 integrating a TEC1-D controlled system with your 8-inch Dobson telescope at F5:
+
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
-
-
 ![image](https://github.com/user-attachments/assets/127c3469-9b72-4adf-8157-af4c271298e7)
 - at the moment its a push around scope
 - will modify it with motors and encoders
