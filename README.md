@@ -1,36 +1,22 @@
-integrating a TEC1-D controlled system with your 8-inch Dobson telescope at F5:
+integrating your tec1d with your 8-inch F5 Dobson telescope
 
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
 ![image](https://github.com/user-attachments/assets/127c3469-9b72-4adf-8157-af4c271298e7)
+
 - at the moment its a push around scope
 - will modify it with motors and encoders
+- do a cude angle check using compass and protractor, convert magnetic north to true north in Sydney add 12.83°E in 2020 changes 0.04° annualy 
 - we need to calibrate the alignment so the angles are correct, we use a known celestial object
 - the current mount is called a alt azximuth , its an x and y so we need 2 motors and 2 encoders
 - we need to modify the mount so we have shafts and gears of a sort
 - with code or a button we can slew it around or goto some coord
 - or track a position using an optical gates or estimation 
-- will try starmap Stellarium interface
+- will try starmap Stellarium interface via another bitbang port
 - what to do for long-exposure astrophotography ?
 
 ![image](https://github.com/user-attachments/assets/175f6647-cef5-44bb-8ab4-b49f28b1b4a6)
 
-
-
-
-
-## reading angles
-### manual
-angle measurements.
-on the axis of mount a reader and turn that into numbers 
- mechanical compass convert magnetic north to true north, Sydney needs about 12 added (magnetic declination was 12.83°E in 2020 with 0.04° annual change).
- 
- and protractor,
- or electronic equivalents. 
- 
- 
-
-
-## display angle
+- display angle
 - read anglel data from encode
 - convert to angles
 - display on tec1 seven seg display
