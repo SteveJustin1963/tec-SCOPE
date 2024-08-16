@@ -5,9 +5,12 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
 ![image](https://github.com/user-attachments/assets/27509173-1c93-455f-ab52-757443135c69)
 
 
-- at the moment its a push around scope
-- add motors 
-- add encoders HN3806-AB, AB 2 phase rectangular orthogonal pulses 600 pulses/rev, max 5000rpm, response 0-20KHz 
+- convert push around scope add motors and encoders
+- motors, salvage 24v dc motor and shaft from foot massage machine, u see these always thrown out
+ ![image](https://github.com/user-attachments/assets/a65c79ff-79d1-4115-a1bc-1dc1dbe430ba)
+
+- encoders
+  - HN3806-AB, AB 2 phase rectangular orthogonal pulses 600 pulses/rev, max 5000rpm, response 0-20KHz 
   - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
   - should not connect AB directly VCC 
 
@@ -36,6 +39,13 @@ display angle
 
 
 - Timing Belt Drive Pulley to its 6mm shaft.  will construct a wood wheel and invert a drive belt with the teeth facing out so the drive pulley can interface with it
+
+LS7183
+
+
+
+
+
   
 ![image](https://github.com/user-attachments/assets/27685599-0ccf-404d-9e11-eb6efa607bb2)
 
