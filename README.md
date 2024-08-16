@@ -2,6 +2,7 @@ integrating your tec1d with your 8-inch F5 Dobson telescope
 
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
 ![image](https://github.com/user-attachments/assets/127c3469-9b72-4adf-8157-af4c271298e7)
+![image](https://github.com/user-attachments/assets/175f6647-cef5-44bb-8ab4-b49f28b1b4a6)
 
 - at the moment its a push around scope
 - will modify it with motors and encoders
@@ -14,7 +15,7 @@ integrating your tec1d with your 8-inch F5 Dobson telescope
 - will try starmap Stellarium interface via another bitbang port
 - what to do for long-exposure astrophotography ?
 
-![image](https://github.com/user-attachments/assets/175f6647-cef5-44bb-8ab4-b49f28b1b4a6)
+
 
 - display angle
 - read anglel data from encode
