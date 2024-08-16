@@ -1,7 +1,8 @@
 integrating a TEC1-D controlled system with your 8-inch Dobson telescope at F5:
 ![image](https://github.com/user-attachments/assets/b08373e5-4f69-48bf-a97e-d734c2b9f143)
 
-![image](https://user-images.githubusercontent.com/58069246/210939819-5d845b3c-116c-424e-b404-cfd4097ebc1e.png)
+![image](https://github.com/user-attachments/assets/127c3469-9b72-4adf-8157-af4c271298e7)
+
 
 
 - what can we see ? eye piece 5 mm and 8 inch mirror at F5 gives gives 8 degree field of view thats around 0.6 arc seconds between two points of light.
