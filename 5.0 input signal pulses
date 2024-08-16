@@ -54,35 +54,4 @@ CREATE pulse_input_port  FF00   \ Port address for reading pulse input
 ;
 
 \ Entry point
-main-loop
-\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-
-
-1. **Initialization**:
-   - The code begins by defining memory locations and constants for storing pulse-related information, such as the start time and duration.
-   - It also defines a constant for the I/O port address used to read the pulse input.
-   - Memory locations for pulse-related variables are initialized to zero.
-
-2. **Waiting for Rising Edge**:
-   - The code enters a loop that waits for a rising edge on the pulse input. It continually checks the input port until a rising edge is detected (a change from low to high).
-
-3. **Recording Start Time**:
-   - When a rising edge is detected, the code calls a subroutine (`GET-CURRENT-TIME`) to get the current time or timer value. It then stores this time as the pulse start time.
-
-4. **Waiting for Falling Edge**:
-   - After recording the start time, the code enters another loop that waits for a falling edge on the pulse input (a change from high to low).
-
-5. **Calculating Pulse Duration**:
-   - When a falling edge is detected, the code calls the `calculate-pulse-duration` subroutine.
-   - This subroutine calculates the pulse duration by subtracting the pulse start time from the current time.
-   - The calculated duration is then stored in the `pulse_duration` variable.
-
-6. **Main Loop**:
-   - The code repeats the process, continuously monitoring the input for changes in the pulse signal, recording start times, and calculating durations.
-   - You can add further processing or output as needed within this loop.
-
-7. **Entry Point**:
-   - The `main-loop` word is called to start the program execution.
-
-Overall, this code is designed to measure the duration of pulses in an input signal, recording the start time when a rising edge is detected and calculating the duration when a falling edge is detected. The duration values are stored in memory variables for further use or processing.
+main-loop 
