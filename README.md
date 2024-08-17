@@ -19,7 +19,7 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
   - HN3806-AB, AB 2 phase rectangular orthogonal pulses 600 pulses/rev, max 5000rpm, response 0-20KHz 
   - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
   - should not connect AB directly VCC 
-
+  - think about using LS7183
 
 
 
@@ -51,7 +51,7 @@ display angle
 - 
 ![image](https://github.com/user-attachments/assets/27685599-0ccf-404d-9e11-eb6efa607bb2)
 
-- think about using LS7183
+
 
 - read this https://www.instructables.com/Control-Your-Telescope-Using-Stellarium-Arduino/
 
