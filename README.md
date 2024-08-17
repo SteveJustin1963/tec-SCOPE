@@ -48,6 +48,7 @@ display angle
 
 
 - Timing Belt Drive Pulley to its 6mm shaft.  will construct a wood wheel and invert a drive belt with the teeth facing out so the drive pulley can interface with it
+![image](https://github.com/user-attachments/assets/27685599-0ccf-404d-9e11-eb6efa607bb2)
 
 - think about using LS7183
 
@@ -56,5 +57,5 @@ display angle
 
 
   
-![image](https://github.com/user-attachments/assets/27685599-0ccf-404d-9e11-eb6efa607bb2)
+
 
