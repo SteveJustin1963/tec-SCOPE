@@ -22,6 +22,12 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
   - think about using LS7183
 
 
+- mount
+- https://www.ebay.com.au/sch/i.html?_from=R40&_trksid=p2332490.m570.l1313&_nkw=Harmonic+Reducer+160&_sacat=0
+
+- 
+
+
 
 - crude angle check using compass and protractor, convert magnetic north to true north in Sydney add 12.83°E in 2020 changes 0.04° annually 
 - crude level use a bubble float. 3 large thumb screw in base, protractor and plumb for angle
