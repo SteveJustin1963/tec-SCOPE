@@ -22,9 +22,7 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
   - think about using LS7183
 
 
-- mount
-- Harmonic+Reducer
-- worm drive
+
 
 - 
 
@@ -41,7 +39,6 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
 
  
 code 
-- we need a menu of ato f and numbers to select functions
 
 display angle
 - read data from encode, convert to angle, display on tec1 seven seg display
@@ -52,13 +49,15 @@ display angle
 - or press `-` then azimuth is displayed to higher precision ie 0023 16 meaning 23 degs 16 minutes
 - press - again we more precision ie 0016 22 meaning 16 minutes and 22 seconds  
 
-
+mount
 - Timing Belt Drive Pulley to its 6mm shaft.  will construct a wood wheel and invert a drive belt with the teeth facing out so the drive pulley can interface with it
-- 
+- Harmonic+Reducer
+- worm drive
+
 ![image](https://github.com/user-attachments/assets/27685599-0ccf-404d-9e11-eb6efa607bb2)
 
 
-
+starmap
 - read this https://www.instructables.com/Control-Your-Telescope-Using-Stellarium-Arduino/
 
 
