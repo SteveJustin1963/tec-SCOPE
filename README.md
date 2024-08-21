@@ -28,8 +28,7 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
 
 - 
 
-
-
+ functions
 - crude angle check using compass and protractor, convert magnetic north to true north in Sydney add 12.83°E in 2020 changes 0.04° annually 
 - crude level use a bubble float. 3 large thumb screw in base, protractor and plumb for angle
 - we need to calibrate the alignment so the angles are correct, we use a known celestial object
@@ -40,8 +39,8 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
 - will try starmap Stellarium interface via another bitbang port x.200 commands
 - what to do for long-exposure astrophotography ?
 
-code
-- try asm, mint with and without APU
+ 
+code 
 - we need a menu of ato f and numbers to select functions
 
 display angle
