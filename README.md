@@ -57,8 +57,9 @@ mount
 - Harmonic+Reducer
 - worm drive
 
-starmap
-- read this https://www.instructables.com/Control-Your-Telescope-Using-Stellarium-Arduino/
+ 
+ideas
+- https://www.instructables.com/Control-Your-Telescope-Using-Stellarium-Arduino/
 
 
 
