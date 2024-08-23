@@ -1,3 +1,5 @@
+/////////////////// first version //////////////////////////
+
 \ Declare variables
 variable azimuth
 variable altitude
@@ -78,7 +80,7 @@ pi fconstant 3.14159265358979323846
 main
 
 
-/////////////////////// 8 bit integer with trig lookup  //////////////////////////////////////////////
+/////////////////////// add integer and trig lookup  //////////////////////////////////////////////
 
 
 \ Define scaling factor for fixed-point arithmetic
@@ -175,7 +177,7 @@ main
 
 
 
-////////////////////// using 9511 and integer level on forth ////////////////////////////////////
+////////////////////// add 9511 and integer ////////////////////////////////////
 \ Declare variables for final results (integer for Forth)
 variable azimuth
 variable altitude
@@ -300,6 +302,129 @@ variable rightascension
 
 \ Run the main function
 main
-////////////////////////////////////////////////////
 
 
+
+//////////////////add send float //////////////////////////////////
+\ Define a helper word to send a 32-bit float to the 9511
+: send-float ( f -- )
+    dup 24 rshift 0xFF and 9511-write-data \ Send the most significant byte
+    dup 16 rshift 0xFF and 9511-write-data \ Send the next byte
+    dup 8  rshift 0xFF and 9511-write-data \ Send the next byte
+    0xFF and 9511-write-data ;             \ Send the least significant byte
+
+\ Define π as a 32-bit float (assuming IEEE-754 format)
+\ This is the binary representation of π in IEEE-754 format: 40490FDB
+: pi ( -- )
+    0x40490FDB send-float ; \ Load π onto the 9511 stack
+
+\ Convert to radians using 9511
+: toRadians ( -- )
+    pi  \ Push π onto the 9511 stack
+    0x42B40000 send-float \ Load 180.0 (in IEEE-754 format) onto the 9511 stack
+    0x2A 9511-write-cmd \ Multiply π by the input angle (on 9511 stack)
+    0x2B 9511-write-cmd \ Divide by 180
+    \ Result remains on the 9511 stack
+;
+
+: calculate-declination ( -- )
+    latitude f@ send-float
+    0x25 9511-write-cmd \ sin(latitude)
+    altitude f@ send-float
+    0x25 9511-write-cmd \ sin(altitude)
+    0x2A 9511-write-cmd \ multiply sin(latitude) * sin(altitude)
+    
+    latitude f@ send-float
+    0x27 9511-write-cmd \ cos(latitude)
+    altitude f@ send-float
+    0x27 9511-write-cmd \ cos(altitude)
+    0x2A 9511-write-cmd \ multiply cos(latitude) * cos(altitude)
+    
+    azimuth f@ send-float
+    0x27 9511-write-cmd \ cos(azimuth)
+    0x2A 9511-write-cmd \ multiply with cos(azimuth)
+    
+    0x20 9511-write-cmd \ add the results
+    0x26 9511-write-cmd \ sin^-1 to get declination
+    9511-read-result declination f! ; \ Store the final result in declination
+
+: calculate-hourangle ( -- )
+    altitude f@ send-float
+    0x25 9511-write-cmd \ sin(altitude)
+    
+    latitude f@ declination f@ send-float
+    0x2A 9511-write-cmd \ multiply sin(latitude) * sin(declination)
+    0x20 9511-write-cmd \ subtract sin(altitude) - result
+    
+    latitude f@ send-float
+    0x27 9511-write-cmd \ cos(latitude)
+    declination f@ send-float
+    0x27 9511-write-cmd \ cos(declination)
+    0x2A 9511-write-cmd \ multiply cos(latitude) * cos(declination)
+    
+    0x2B 9511-write-cmd \ divide result
+    0x28 9511-write-cmd \ cos^-1 to get hourangle
+    9511-read-result hourangle f! ; \ Store the final result in hourangle
+
+: calculate-lst ( -- )
+    0x42C8E147 send-float \ Load 100.46 (in IEEE-754 format) onto the 9511 stack
+    
+    julianDate f@ send-float
+    0x3F7CFB12 send-float \ Load 0.985647 (in IEEE-754 format)
+    0x2A 9511-write-cmd \ multiply julianDate * 0.985647
+    0x20 9511-write-cmd \ add to 100.46
+    
+    longitude f@ send-float
+    0x20 9511-write-cmd \ add longitude
+    
+    ut f@ send-float
+    0x41700000 send-float \ Load 15.0 (in IEEE-754 format)
+    0x2A 9511-write-cmd \ multiply UT * 15.0
+    0x20 9511-write-cmd \ add to the previous sum
+    
+    0x43B40000 send-float \ Load 360.0 (in IEEE-754 format)
+    0x2D 9511-write-cmd \ mod 360.0
+    
+    0x41700000 send-float \ Load 15.0 (in IEEE-754 format)
+    0x2B 9511-write-cmd \ divide by 15.0
+    
+    9511-read-result lst f! ; \ Store the final result in lst
+
+: calculate-rightascension ( -- )
+    lst f@ send-float
+    hourangle f@ send-float
+    0x20 9511-write-cmd \ subtract hourangle from LST
+    
+    0x41C00000 send-float \ Load 24.0 (in IEEE-754 format)
+    0x2D 9511-write-cmd \ mod 24.0
+    
+    9511-read-result rightascension f! ; \ Store the final result in rightascension
+
+: main ( -- )
+    \ Assume values for azimuth, altitude, latitude, longitude, Julian date, and UT
+    150e azimuth f!  
+    30e altitude f!
+    30e latitude f!
+    -90e longitude f!
+    2459200e julianDate f!
+    12e ut f!
+    
+    \ Convert azimuth, altitude, and latitude to radians using 9511
+    azimuth f@ toRadians azimuth f!
+    altitude f@ toRadians altitude f!
+    latitude f@ toRadians latitude f!
+
+    \ Perform calculations using 9511
+    calculate-declination
+    calculate-hourangle
+    calculate-lst
+    calculate-rightascension
+
+    \ Print the results (converted to integer values for display)
+    rightascension f@ ." Right Ascension: " .
+    declination f@ ." Declination: " .
+    lst f@ ." Local Sidereal Time: " . ;
+
+\ Run the main function
+main
+/////////////////////////////////////////////////////////////////
