@@ -78,6 +78,104 @@ pi fconstant 3.14159265358979323846
 main
 
 
+//////////////////////
+\ 8 bit integer with trig lookup
+
+
+\ Define scaling factor for fixed-point arithmetic
+256 constant SCALE
+804 constant PI  \ PI * 256 = 3.14159265358979323846 * 256 ≈ 804
+
+\ Sine lookup table for angles from 0 to 90 degrees (scaled by 256)
+create sinTable
+0 , 45 , 89 , 134 , 178 , 223 , 267 , 311 , 354 , 398 , 441 , 484 , 526 , 568 , 610 , 652 , 693 , 734 , 775 , 815 , 854 , 894 , 933 , 971 , 1009 , 1047 , 1084 , 1121 , 1157 , 1193 , 1228 , 1263 , 1297 , 1331 , 1364 , 1396 , 1428 , 1460 , 1491 , 1521 , 1551 , 1580 , 1609 , 1637 , 1665 , 1692 , 1718 , 1744 , 1770 , 1795 , 1819 , 1843 , 1866 , 1889 , 1911 , 1932 , 1953 , 1973 , 1993 , 2012 , 2030 , 2048 , 2066 , 2083 , 2099 , 2115 , 2130 , 2145 , 2159 , 2173 , 2186 , 2199 , 2211 , 2223 , 2234 , 2244 , 2254 , 2264 , 2273 , 2281 , 2289 , 2297 , 2304 , 2310 , 2316 , 2321 , 2326 , 2330 , 2334 , 2337 , 2340 , 2342 , 2344 , 2346 , 2346 , 2347 , 2346 , 2346 , 2344 , 2342 , 2340 , 2337 , 2334 , 2330 , 2326 , 2321 , 2316 , 2310 , 2304 , 2297 , 2289 , 2281 , 2273 , 2264 , 2254 , 2244 , 2234 , 2223 , 2211 , 2199 , 2186 , 2173 , 2159 , 2145 , 2130 , 2115 , 2099 , 2083 , 2066 , 2048 , 2030 , 2012 , 1993 , 1973 , 1953 , 1932 , 1911 , 1889 , 1866 , 1843 , 1819 , 1795 , 1770 , 1744 , 1718 , 1692 , 1665 , 1637 , 1609 , 1580 , 1551 , 1521 , 1491 , 1460 , 1428 , 1396 , 1364 , 1331 , 1297 , 1263 , 1228 , 1193 , 1157 , 1121 , 1084 , 1047 , 1009 , 971 , 933 , 894 , 854 , 815 , 775 , 734 , 693 , 652 , 610 , 568 , 526 , 484 , 441 , 398 , 354 , 311 , 267 , 223 , 178 , 134 , 89 , 45 , 0 ,
+
+\ Convert degrees to radians (fixed-point)
+: toRadians ( n -- n )
+    PI * 180 / ;
+
+\ Fixed-point sine using lookup table
+: sin ( n -- n )
+    \ Ensure input is within 0-360 degrees
+    360 mod
+    dup 90 < if sinTable + @ exit then \ 0-90 degrees
+    dup 180 < if 180 swap - sinTable + @ negate exit then \ 90-180 degrees
+    dup 270 < if 180 swap - sinTable + @ exit then \ 180-270 degrees
+    360 swap - sinTable + @ negate ; \ 270-360 degrees
+
+\ Fixed-point cosine derived from sine
+: cos ( n -- n )
+    90 swap - sin ;
+
+\ Declare variables (8-bit)
+variable azimuth
+variable altitude
+variable latitude
+variable longitude
+variable julianDate
+variable ut
+variable hourangle
+variable declination
+variable lst
+variable rightascension
+
+\ Calculate declination
+: calculate-declination ( -- )
+    latitude @ sin altitude @ sin * SCALE / \ sin(lat) * sin(alt)
+    latitude @ cos altitude @ cos * SCALE / \ cos(lat) * cos(alt)
+    azimuth @ cos * SCALE / + \ + cos(az)
+    SCALE / declination ! ;
+
+\ Calculate hour angle
+: calculate-hourangle ( -- )
+    altitude @ sin latitude @ declination @ sin * SCALE / - \ sin(alt) - sin(lat) * sin(dec)
+    latitude @ cos declination @ cos * SCALE / / \ / (cos(lat) * cos(dec))
+    SCALE / hourangle ! ;
+
+\ Calculate local sidereal time
+: calculate-lst ( -- )
+    100 * 46 + \ 100.46
+    julianDate @ 985 / 647 * + \ + 0.985647 * julianDate
+    longitude @ + \ + longitude
+    ut @ 15 * + \ + 15 * UT
+    360 mod \ mod 360
+    15 / lst ! ;
+
+\ Calculate right ascension
+: calculate-rightascension ( -- )
+    lst @ hourangle @ - \ LST - hour angle
+    24 mod rightascension ! ; \ mod 24 to keep within 24 hours
+
+: main ( -- )
+    \ Assume values for azimuth, altitude, latitude, longitude, Julian date, and UT
+    150 azimuth !
+    30 altitude !
+    30 latitude !
+    -90 longitude !
+    245 julianDate !  \ Example scaled Julian date (for simplicity)
+    12 ut !
+
+    \ Convert azimuth, altitude, and latitude to radians
+    azimuth @ toRadians azimuth !
+    altitude @ toRadians altitude !
+    latitude @ toRadians latitude !
+
+    \ Perform calculations
+    calculate-declination
+    calculate-hourangle
+    calculate-lst
+    calculate-rightascension
+
+    \ Print the results (example using dot notation)
+    rightascension @ . ." Right Ascension: "
+    declination @ . ." Declination: "
+    lst @ . ." Local Sidereal Time: " ;
+
+\ Run the main function
+main
+
+
+
 
 
 
