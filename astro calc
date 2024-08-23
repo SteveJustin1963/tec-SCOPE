@@ -1,57 +1,3 @@
-
-- Main Function (main)
-  |- Set values for azimuth, altitude, latitude, longitude, julianDate, and ut
-  |- Convert azimuth, altitude, and latitude to radians
-  |- Call calculate-declination
-  |- Call calculate-hourangle
-  |- Call calculate-lst
-  |- Call calculate-rightascension
-  |- Print the results for right ascension, declination, and local sidereal time
-
-- Function to convert degrees to radians (toRadians)
-  |- Multiply the input by PI
-  |- Divide the result by 180
-  |- Return the result
-
-- Function to calculate declination (calculate-declination)
-  |- Calculate the sine of latitude and altitude
-  |- Calculate the cosine of latitude and altitude
-  |- Calculate the cosine of azimuth
-  |- Add the three cosine values
-  |- Calculate the arcsine of the sum
-  |- Store the result in declination variable
-
-- Function to calculate hour angle (calculate-hourangle)
-  |- Calculate the sine of altitude
-  |- Calculate the sine of latitude
-  |- Subtract the two sine values
-  |- Calculate the cosine of latitude
-  |- Calculate the cosine of declination
-  |- Multiply the two cosine values
-  |- Divide the subtraction result by the multiplication result
-  |- Calculate the arccosine of the division result
-  |- Store the result in hourangle variable
-
-- Function to calculate local sidereal time (calculate-lst)
-  |- Add 100.46 to the longitude
-  |- Multiply julianDate by 0.985647 and add the result
-  |- Add the longitude to the previous result
-  |- Multiply ut by 15 and add the result
-  |- Perform a modulo operation with 360.0
-  |- Divide the result by 15.0
-  |- Store the result in lst variable
-
-- Function to calculate right ascension (calculate-rightascension)
-  |- Divide lst by hourangle
-  |- Convert the result to radians
-  |- Divide the radians result by 180.0
-  |- Divide the result by 15.0
-  |- Subtract the result from 15.0 and multiply by 15.0
-  |- Store the result in rightascension variable
-
-
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
 \ Declare variables
 variable azimuth
 variable altitude
@@ -82,8 +28,7 @@ pi fconstant 3.14159265358979323846
 
 : calculate-hourangle ( -- )
     altitude f@ fsin
-    latitude f@ fsin f*
-    f-
+    latitude f@ declination f@ fsin f* f-  \ Corrected formula
     latitude f@ fcos
     declination f@ fcos f*
     f/
@@ -100,8 +45,8 @@ pi fconstant 3.14159265358979323846
     lst f! ;
 
 : calculate-rightascension ( -- )
-    lst f@ hourangle f@ f/ toRadians 180.0e f/ 15.0e f/ f-
-    15.0e f* 
+    lst f@ hourangle f@ f-  \ LST - hourangle
+    24.0e fmod  \ Keep it within 24-hour range
     rightascension f! ;
 
 : main ( -- )
@@ -124,10 +69,10 @@ pi fconstant 3.14159265358979323846
     calculate-lst
     calculate-rightascension
 
-    \ Print the results (replace these with your Forth system's method of output if different)
-    rightascension f@ f. ." Right Ascension: "
-    declination f@ f. ." Declination: "
-    lst f@ f. ." Local Sidereal Time: " ;
+    \ Print the results
+    rightascension f@ ." Right Ascension: " f.
+    declination f@ ." Declination: " f.
+    lst f@ ." Local Sidereal Time: " f. ;
 
 \ Run the main function
 main
