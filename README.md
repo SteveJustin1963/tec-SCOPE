@@ -44,13 +44,12 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
 code 
 
 display angle
-- read data from encode, convert to angle, display on tec1 seven seg display
-- we have 6 digit xxxx xx
-- press A then azimuth and alt to 1 degree accuracy is given ie 0299 23 meaning 299 degs 23 deg
-- or press `+` then alt is displayed to higher precision ie 0299 44 meaning 299 degs 44 minutes
-- press + again we more precision ie 0044 51 meaning 44 minutes and 51 seconds
-- or press `-` then azimuth is displayed to higher precision ie 0023 16 meaning 23 degs 16 minutes
-- press - again we more precision ie 0016 22 meaning 16 minutes and 22 seconds  
+- read data from encoders, convert to angle, display on tec1s seven segment display of 6 digits xxxx xx
+- press A gives the azimuth and alt together to 1 degree accuracy, eg az= 0299 alt = 23 displayed as 0299 23
+- press B then only az is displayed deg-min eg 0299 44 meaning 299 degs 44 minutes
+- press C then only alt is displayed deg-min eg 0023 51 meaning 23 deg 51 min
+- no need for precision in seconds unless the machanicals of the telescope can justify it  
+
 
 mount
 - Timing Belt Drive Pulley to its 6mm shaft.  will construct a wood wheel and invert a drive belt with the teeth facing out so the drive pulley can interface with it
