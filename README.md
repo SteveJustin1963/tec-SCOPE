@@ -26,16 +26,21 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
 
 
 
+calibrate
+- angle check using iphone for compass,
+  - it has a level guide in it as well with the little cross in the middle. adjust thumb screw in base
+  - true north in Sydney add 12.83°E in 2020 changes 0.04° annually
+- a plastic protractor and plumb for angle
+- once positioned right then calibrate with alignment to a known celestial object
 
-- 
+mount
+- we are using alt and azimuth, like x and y
+- we need 2 motors and 2 encoders
+- the dobson neds to be modified so movement is made on shafts and gears
 
- functions
-- crude angle check using compass and protractor, convert magnetic north to true north in Sydney add 12.83°E in 2020 changes 0.04° annually 
-- crude level use a bubble float. 3 large thumb screw in base, protractor and plumb for angle
-- we need to calibrate the alignment so the angles are correct, we use a known celestial object
-- the current mount is called a alt / azimuth , its an x and y so we need 2 motors and 2 encoders
-- we need to modify the mount so we have shafts and gears of a sort
-- with code or a joystick we can slew it around or goto some co ords via tec1 keypad
+control
+- we will ise a simple  x y joystick slew it around with the dc motors
+- and also via via tec1 commands
 - or track a position using an optical gates or estimation 
 - will try starmap Stellarium interface via another bitbang port x.200 commands
 - what to do for long-exposure astrophotography ?
