@@ -16,8 +16,9 @@ m // VARIABLE m
 // Routine to read the up & down clock signals from the latch
 : R		//READ-PULSES ( -- )
   p C@ 		// Read the byte from the latch
-  " 1 & 0=( c +!)(2 & -1=( c +!)())	// Check bit 0 (UpClk), increment if high0
-  					// Check bit 1 (DnClk), decrement if high
+  " 1& 0=(c+)(c-)	// unsuport feature 
+			//Check bit 0 (UpClk), increment if high0
+  			// Check bit 1 (DnClk), decrement if high
 ;
 
 // Routine to calculate the angle in degrees & minutes
