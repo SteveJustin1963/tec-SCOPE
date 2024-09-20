@@ -1,11 +1,5 @@
-// Definitions for the ports & signals
-//HEX
+// 
 9 p! 		// 0x09 CONSTANT p
-//DECIMAL
-
-c // VARIABLE c
-g // VARIABLE g
-m // VARIABLE m
 
 : I		//INIT ( -- )
   0 c ! 	// Initialize the pulse count to zero
