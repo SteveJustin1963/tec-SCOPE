@@ -17,9 +17,8 @@
 
 // Routine to calculate the angle in degrees & minutes
 : C				//CALC-ANGLE ( -- )
-  c @ 600 /	 //  /MOD   600 pulses per revolution
-  $ g ! 			// Store the degrees
-  60 * m ! 			// Convert remaining pulses to minutes & store
+  c 600 / g!	 //  /MOD   600 pulses per revolution
+  /r  60* m! 	// Convert remaining pulses to minutes & store 
 ;
 
 // Routine to display the angle
