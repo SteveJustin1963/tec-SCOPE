@@ -12,9 +12,11 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
 
 ![image](https://github.com/user-attachments/assets/a65c79ff-79d1-4115-a1bc-1dc1dbe430ba)
 
-- motors  
-  - salvage 24v dc motor and shaft from foot massage machine, u see these always thrown out
+- motors
+  - dc motors , massage motors, cheap geared motors, ebau, ali etc
 
+- gears
+  - insert a on base 
 
  ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
 
