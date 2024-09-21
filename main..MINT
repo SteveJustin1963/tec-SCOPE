@@ -1,5 +1,5 @@
 // 
-9 p! 		// io port 0x09 
+9 p! 		// io port 0x09 differential encoder counter chip
 
 : I		//INIT ( -- )
   0 c ! 	// Initialize the pulse count to zero
