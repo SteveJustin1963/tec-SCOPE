@@ -1,5 +1,5 @@
 // 
-9 p! 		//   LS138--> 74193 --> eg. io 0x09
+9 p! 		//   74138--> 74193 --> eg. io 0x09
 
 : I		//INIT ( -- )
   0 c ! 	// Initialize the pulse count to zero
