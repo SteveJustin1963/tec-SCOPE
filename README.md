@@ -15,8 +15,7 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
 - motors
   - dc motors , massage motors, cheap geared motors, ebau, ali etc
 
-- gears
-  - insert a on base 
+
 
  ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
 
@@ -38,7 +37,14 @@ calibrate
 mount
 - we are using alt and azimuth, like x and y
 - we need 2 motors and 2 encoders
-- the dobson neds to be modified so movement is made on shafts and gears
+- the dobson needs to be modified so movement is made on shafts and gears
+- gears
+  - rocker base atatch inverted drive belt with the teeth facing out so interfaces with Belt Drive Pulley to its 6mm shaft
+
+![image](https://github.com/user-attachments/assets/27685599-0ccf-404d-9e11-eb6efa607bb2)
+
+- Harmonic+Reducer
+- worm drive
 
 control
 - we will ise a simple  x y joystick slew it around with the dc motors
@@ -58,13 +64,7 @@ display angle
 - no need for precision in seconds unless the machanicals of the telescope can justify it  
 
 
-mount
-- Timing Belt Drive Pulley to its 6mm shaft.  will construct a wood wheel and invert a drive belt with the teeth facing out so the drive pulley can interface with it
 
-![image](https://github.com/user-attachments/assets/27685599-0ccf-404d-9e11-eb6efa607bb2)
-
-- Harmonic+Reducer
-- worm drive
 
  
 ideas
