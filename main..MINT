@@ -1,5 +1,5 @@
 // 
-9 p! 		// io port 0x09 differential encoder >  chip LS7183 / LS7184 > counter 74LS193 
+9 p! 		// io port 0x09  LS138--> 74193
 
 : I		//INIT ( -- )
   0 c ! 	// Initialize the pulse count to zero
