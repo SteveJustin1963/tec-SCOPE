@@ -10,7 +10,7 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
 - convert push around scope add motors and encoders
 ![image](https://github.com/user-attachments/assets/27509173-1c93-455f-ab52-757443135c69)
 
-
+![image](https://github.com/user-attachments/assets/a65c79ff-79d1-4115-a1bc-1dc1dbe430ba)
 
 - motors
   - dc motors , massage motors, cheap geared motors, ebau, ali etc
