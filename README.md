@@ -54,7 +54,7 @@ control
 - what to do for long-exposure astrophotography ?
 
  
-code 
+### code ideas
 
 display angle
 - read data from encoders, convert to angle, display on tec1s seven segment display of 6 digits xxxx xx
@@ -344,7 +344,7 @@ To test the program without actual hardware:
 
 This MINT program reads from two input ports connected to a differential encoder and calculates the telescope's altitude between 0 and 90 degrees. It demonstrates quadrature decoding, pulse counting, and conversion of pulses to degrees, minutes, and seconds within the constraints of the MINT language and an 8-bit microprocessor environment.
 
-Feel free to adjust the pulses per degree, port numbers, and any other parameters to match your specific hardware setup. If you have any questions or need further assistance, please let me know!
+ 
 
 
 
@@ -357,13 +357,13 @@ Feel free to adjust the pulses per degree, port numbers, and any other parameter
 
 **Introduction:**
 
-Given your requirements:
+Given requirements:
 
 - **Interrupt Handling:** Implement interrupt handling in MINT to update the altitude only when the telescope moves.
 - **Encoder Specifications:** The differential rotary encoder outputs 600 pulses per 360 degrees, geared 10:1 to increase it to 6000 pulses per 360 degrees.
 - **Altitude Measurement Range:** Measure altitude between 0-90 degrees.
   
-We'll update the MINT code to:
+ update code to:
 
 - Use interrupts to read the encoder signals only when movement occurs.
 - Adjust calculations to accommodate the new encoder resolution (6000 pulses per 360 degrees, or 1500 pulses per 90 degrees).
@@ -642,8 +642,7 @@ s t { | a !                      // Combine s and t into previous state 'a'
 
 By incorporating interrupt handling and adjusting the calculations for the new encoder resolution, the updated MINT program efficiently measures the altitude between 0 and 90 degrees when the telescope moves. The main program remains free to perform other tasks when the telescope is stationary, optimizing the use of system resources.
 
-**Feel free to modify the code to suit your specific hardware setup and application needs. If you have any questions or need further assistance, please let me know!**
-
+ 
 
 
 
