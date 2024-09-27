@@ -64,7 +64,287 @@ display angle
 - no need for precision in seconds unless the machanicals of the telescope can justify it  
 
 ### encoder.MINT
+**MINT Program to Read a Differential Encoder and Measure Altitude Between 0-90 Degrees**
 
+---
+
+This program reads from two input ports connected to a differential (quadrature) encoder attached to a telescope. It measures the altitude between 0 and 90 degrees by decoding the quadrature signals and converting the pulse count into degrees, minutes, and seconds.
+
+---
+
+**Complete MINT Program:**
+
+```mint
+// Initialize variables
+1 p !                            // p = Port number for encoder signal A
+2 q !                            // q = Port number for encoder signal B
+[0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0 ] o !  // o = Direction array for quadrature decoding
+100 e !                          // e = Pulses per degree (adjust based on encoder resolution)
+e 90 * m !                       // m = Maximum pulse count (for 90 degrees)
+0 c !                            // c = Pulse count initialized to 0
+
+// Read initial encoder state
+p /I s !                         // Read signal A into s
+q /I t !                         // Read signal B into t
+s t { | a !                      // Combine s and t into previous state a
+
+// Start infinite loop
+/U (
+  // Read current encoder state
+  p /I s !                       // Read signal A into s
+  q /I t !                       // Read signal B into t
+  s t { | b !                    // Combine s and t into current state b
+
+  // Decode quadrature signals
+  a 4 * b + n !                  // n = (a << 2) + b, transition code
+  o n ? r !                      // r = Direction from direction array o[n]
+
+  // Update pulse count based on direction
+  r 0 > (
+    c 1 + c !                    // If r > 0, increment pulse count c
+  ) /E (
+    r 0 < (
+      c 1 - c !                  // If r < 0, decrement pulse count c
+    )
+  )
+
+  // Ensure pulse count is within 0 and maximum count
+  c 0 < (
+    0 c !                        // If c < 0, set c to 0
+  )
+  c m > (
+    m c !                        // If c > m, set c to maximum count m
+  )
+
+  // Update previous state
+  a b !                          // Set previous state a to current state b
+
+  // Convert pulse count to degrees, minutes, and seconds
+  c e / d !                      // d = c / e, degrees
+  c e % f !                      // f = c % e, fractional pulses after degrees
+  f 60 * g !                     // g = f * 60
+  g e / j !                      // j = g / e, minutes
+  g e % h !                      // h = g % e, fractional pulses after minutes
+  h 60 * i !                     // i = h * 60
+  i e / k !                      // k = i / e, seconds
+
+  // Output the angle
+  `Degrees: ` d . /N             // Print degrees
+  `Minutes: ` j . /N             // Print minutes
+  `Seconds: ` k . /N             // Print seconds
+)
+```
+
+---
+
+**Explanation:**
+
+1. **Initialization:**
+
+   - **Port Numbers:**
+     - `1 p !` assigns port `1` to variable `p`, representing encoder signal **A**.
+     - `2 q !` assigns port `2` to variable `q`, representing encoder signal **B**.
+
+   - **Direction Array:**
+     - `[0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0 ] o !` initializes the direction array `o` for quadrature decoding. This array maps transitions to movement directions.
+
+   - **Pulses per Degree and Maximum Count:**
+     - `100 e !` sets pulses per degree `e` (adjust based on your encoder's resolution).
+     - `e 90 * m !` calculates the maximum pulse count `m` corresponding to 90 degrees.
+
+   - **Pulse Count Initialization:**
+     - `0 c !` initializes the pulse count `c` to zero.
+
+2. **Reading Initial Encoder State:**
+
+   - **Read Signals:**
+     - `p /I s !` reads signal **A** from port `p` into variable `s`.
+     - `q /I t !` reads signal **B** from port `q` into variable `t`.
+
+   - **Combine Signals into Previous State:**
+     - `s t { | a !` combines `s` and `t` into a two-bit number `a`, representing the previous state.
+
+3. **Main Loop:**
+
+   - **Start Infinite Loop:**
+     - `/U (` begins an infinite loop.
+
+   - **Read Current Encoder State:**
+     - `p /I s !` reads signal **A** into `s`.
+     - `q /I t !` reads signal **B** into `t`.
+     - `s t { | b !` combines `s` and `t` into a two-bit number `b`, representing the current state.
+
+   - **Quadrature Decoding:**
+     - `a 4 * b + n !` computes the transition code `n` by combining previous and current states.
+     - `o n ? r !` retrieves the movement direction `r` from the direction array `o` using index `n`.
+
+   - **Update Pulse Count:**
+     - If `r > 0`, increment pulse count `c`.
+     - If `r < 0`, decrement pulse count `c`.
+
+     ```mint
+     r 0 > (
+       c 1 + c !
+     ) /E (
+       r 0 < (
+         c 1 - c !
+       )
+     )
+     ```
+
+   - **Clamp Pulse Count within Limits:**
+     - Ensure `c` stays between `0` and `m` (maximum pulse count for 90 degrees).
+
+     ```mint
+     c 0 < (
+       0 c !
+     )
+     c m > (
+       m c !
+     )
+     ```
+
+   - **Update Previous State:**
+     - `a b !` updates the previous state `a` to the current state `b`.
+
+   - **Convert Pulse Count to Degrees, Minutes, and Seconds:**
+     - **Degrees (`d`):** `c e / d !` calculates degrees by integer division of pulse count by pulses per degree.
+     - **Fractional Pulses (`f`):** `c e % f !` calculates the remaining pulses after degrees.
+     - **Total Minutes (`g`):** `f 60 * g !` converts fractional pulses to minutes.
+     - **Minutes (`j`):** `g e / j !` calculates minutes by dividing total minutes by pulses per degree.
+     - **Fractional Pulses After Minutes (`h`):** `g e % h !` calculates remaining pulses after minutes.
+     - **Total Seconds (`i`):** `h 60 * i !` converts remaining pulses to seconds.
+     - **Seconds (`k`):** `i e / k !` calculates seconds.
+
+   - **Output Angle:**
+     - Prints the degrees, minutes, and seconds to the console.
+
+     ```mint
+     `Degrees: ` d . /N
+     `Minutes: ` j . /N
+     `Seconds: ` k . /N
+     ```
+
+   - **End of Loop:**
+     - The loop continues indefinitely, continuously updating the angle as the encoder signals change.
+
+---
+
+**Variables Used:**
+
+- **Ports and Signals:**
+  - `p`: Port number for signal **A**.
+  - `q`: Port number for signal **B**.
+  - `s`: Temporary variable for reading signal **A**.
+  - `t`: Temporary variable for reading signal **B**.
+
+- **Quadrature Decoding:**
+  - `a`: Previous state of the encoder signals.
+  - `b`: Current state of the encoder signals.
+  - `n`: Transition code combining `a` and `b`.
+  - `o`: Direction array for quadrature decoding.
+  - `r`: Movement direction (-1, 0, or +1).
+
+- **Pulse Count and Limits:**
+  - `c`: Pulse count (number of pulses counted).
+  - `e`: Pulses per degree (encoder resolution).
+  - `m`: Maximum pulse count corresponding to 90 degrees.
+
+- **Angle Calculation:**
+  - `d`: Degrees.
+  - `f`: Fractional pulses after degrees.
+  - `g`: Total minutes (fractional pulses multiplied by 60).
+  - `h`: Fractional pulses after minutes.
+  - `i`: Total seconds (remaining pulses multiplied by 60).
+  - `j`: Minutes.
+  - `k`: Seconds.
+
+---
+
+**Notes and Considerations:**
+
+- **Pulses per Degree (`e`):** Adjust `e` based on your encoder's resolution (number of pulses per degree).
+
+- **Port Numbers (`p` and `q`):** Set `p` and `q` to the correct port numbers for your hardware configuration.
+
+- **Quadrature Encoder Signals:** This program assumes that the encoder outputs standard quadrature signals where transitions correspond to movement.
+
+- **Speed Limitations:** Since MINT runs on an 8-bit microprocessor and uses polling to read signals, it may not handle high-speed encoder signals effectively. This program is suitable for slow-moving applications, such as manually adjusting a telescope.
+
+- **Continuous Output:** The program continuously outputs the angle. You may modify it to update the display only when the angle changes or at specific intervals.
+
+- **No Debouncing:** This program does not implement signal debouncing. If your encoder produces noisy signals, consider adding debouncing logic.
+
+---
+
+**Understanding Quadrature Decoding in This Program:**
+
+- **Quadrature States:** The encoder signals **A** and **B** can be combined into four states (00, 01, 10, 11).
+
+- **Transition Code (`n`):** By shifting the previous state `a` left by 2 bits and adding the current state `b`, we get a unique transition code `n` for each state change.
+
+  ```mint
+  a 4 * b + n !    // n = (a << 2) + b
+  ```
+
+- **Direction Array (`o`):** The array `o` maps each transition code to a movement direction:
+
+  - `+1`: Forward movement (increment pulse count).
+  - `-1`: Backward movement (decrement pulse count).
+  - `0`: No movement or invalid transition.
+
+- **Updating Pulse Count:**
+
+  - **Forward Movement:** If `r` is `+1`, increment `c`.
+  - **Backward Movement:** If `r` is `-1`, decrement `c`.
+
+---
+
+**Example Usage:**
+
+Assuming your encoder has 100 pulses per degree:
+
+- **Adjust Pulses per Degree:**
+
+  ```mint
+  100 e !    // If your encoder has 200 pulses per degree, use 200 e !
+  ```
+
+- **Running the Program:**
+
+  - Load the program into your MINT interpreter.
+  - Ensure the encoder signals are connected to the correct ports.
+  - Run the program. It will continuously display the altitude angle as the telescope moves.
+
+---
+
+**Testing the Program:**
+
+To test the program without actual hardware:
+
+- **Simulate Encoder Signals:**
+
+  - Modify the signal reading part to simulate encoder input by manually changing `s` and `t`.
+
+- **Example Simulation:**
+
+  ```mint
+  // Simulate signals
+  0 s !    // s = 0 or 1 (simulate signal A)
+  1 t !    // t = 0 or 1 (simulate signal B)
+  ```
+
+- **Step Through Transitions:**
+
+  - Manually change `s` and `t` to simulate encoder transitions and observe the output.
+
+---
+
+**Conclusion:**
+
+This MINT program reads from two input ports connected to a differential encoder and calculates the telescope's altitude between 0 and 90 degrees. It demonstrates quadrature decoding, pulse counting, and conversion of pulses to degrees, minutes, and seconds within the constraints of the MINT language and an 8-bit microprocessor environment.
+
+Feel free to adjust the pulses per degree, port numbers, and any other parameters to match your specific hardware setup. If you have any questions or need further assistance, please let me know!
 
 
 
