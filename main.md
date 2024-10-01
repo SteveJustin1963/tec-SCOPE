@@ -12,7 +12,7 @@
 
 // Routine to read the up & down clock signals from the latch
 : R				//READ-PULSES ( -- )
-  p\< c! 			// Read the byte from the latch
+ p /I c !   // Read the byte from the latch
   1& 0=(c 1+ c!)(c 1- c!)	// Check bit 0 (UpClk), increment if low
   				// Check bit 1 (DnClk), decrement if high
 ;
