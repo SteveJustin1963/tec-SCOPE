@@ -15,7 +15,7 @@
 
 
 
- ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
+
 
 - encoders
   - HN3806-AB, AB 2 phase rectangular orthogonal pulses 600 pulses/rev, max 5000rpm, response 0-20KHz 
@@ -648,7 +648,7 @@ By incorporating interrupt handling and adjusting the calculations for the new e
 ideas
 - https://www.instructables.com/Control-Your-Telescope-Using-Stellarium-Arduino/
 
-
+ ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
 
   
 
