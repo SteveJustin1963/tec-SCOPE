@@ -6,13 +6,16 @@ This style of mirror based telescope is pushed by hand. We can leap to a new lev
 ![image](https://github.com/user-attachments/assets/127c3469-9b72-4adf-8157-af4c271298e7)
 ![image](https://github.com/user-attachments/assets/27509173-1c93-455f-ab52-757443135c69)
 
+- gear reduction
+
+![image](https://github.com/user-attachments/assets/a408e69c-c931-4e04-8baf-1d5d31e5bd8f)
+
+![image](https://github.com/user-attachments/assets/f5976cd1-aa51-4682-816e-283c0133a9dd)
+
+
+
+- motors. dc
  
-
- 
-
-
-
-
 
 - encoders
   - HN3806-AB, AB 2 phase rectangular orthogonal pulses 600 pulses/rev, max 5000rpm, response 0-20KHz 
