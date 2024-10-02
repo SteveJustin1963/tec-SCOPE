@@ -1,3 +1,4 @@
+```
 // Initialize variables
 1 p !                            // p = Port number for encoder signal A
 2 q !                            // q = Port number for encoder signal B
@@ -75,3 +76,4 @@ s t { | a !                      // Combine s and t into previous state 'a'
   // Simulate other processing
   1000 ( )                       // Wait loop (adjust as needed)
 )
+```
