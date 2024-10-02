@@ -70,68 +70,8 @@ This program reads from two input ports connected to a differential (quadrature)
 
 ---
 
-**Complete MINT Program:**
-
-```mint
-// Initialize variables
-1 p !                            // p = Port number for encoder signal A
-2 q !                            // q = Port number for encoder signal B
-[0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0 ] o !  // o = Direction array for quadrature decoding
-100 e !                          // e = Pulses per degree (adjust based on encoder resolution)
-e 90 * m !                       // m = Maximum pulse count (for 90 degrees)
-0 c !                            // c = Pulse count initialized to 0
-
-// Read initial encoder state
-p /I s !                         // Read signal A into s
-q /I t !                         // Read signal B into t
-s t { | a !                      // Combine s and t into previous state a
-
-// Start infinite loop
-/U (
-  // Read current encoder state
-  p /I s !                       // Read signal A into s
-  q /I t !                       // Read signal B into t
-  s t { | b !                    // Combine s and t into current state b
-
-  // Decode quadrature signals
-  a 4 * b + n !                  // n = (a << 2) + b, transition code
-  o n ? r !                      // r = Direction from direction array o[n]
-
-  // Update pulse count based on direction
-  r 0 > (
-    c 1 + c !                    // If r > 0, increment pulse count c
-  ) /E (
-    r 0 < (
-      c 1 - c !                  // If r < 0, decrement pulse count c
-    )
-  )
-
-  // Ensure pulse count is within 0 and maximum count
-  c 0 < (
-    0 c !                        // If c < 0, set c to 0
-  )
-  c m > (
-    m c !                        // If c > m, set c to maximum count m
-  )
-
-  // Update previous state
-  a b !                          // Set previous state a to current state b
-
-  // Convert pulse count to degrees, minutes, and seconds
-  c e / d !                      // d = c / e, degrees
-  c e % f !                      // f = c % e, fractional pulses after degrees
-  f 60 * g !                     // g = f * 60
-  g e / j !                      // j = g / e, minutes
-  g e % h !                      // h = g % e, fractional pulses after minutes
-  h 60 * i !                     // i = h * 60
-  i e / k !                      // k = i / e, seconds
-
-  // Output the angle
-  `Degrees: ` d . /N             // Print degrees
-  `Minutes: ` j . /N             // Print minutes
-  `Seconds: ` k . /N             // Print seconds
-)
-```
+### main code
+https://github.com/SteveJustin1963/tec-SCOPE/blob/master/code/main.md
 
 ---
 
@@ -338,10 +278,7 @@ To test the program without actual hardware:
 
 ---
 
-**Conclusion:**
-
-This MINT program reads from two input ports connected to a differential encoder and calculates the telescope's altitude between 0 and 90 degrees. It demonstrates quadrature decoding, pulse counting, and conversion of pulses to degrees, minutes, and seconds within the constraints of the MINT language and an 8-bit microprocessor environment.
-
+ 
  
 
 
