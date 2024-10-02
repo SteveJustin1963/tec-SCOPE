@@ -39,28 +39,28 @@ This style of mirror based telescope is pushed by hand. We can leap to a new lev
 
  
 ### code 
+https://github.com/SteveJustin1963/tec-SCOPE/tree/master/code
 
-display angle
-- read data from encoders, convert to angle, display on tec1s seven segment display of 6 digits xxxx xx
-- press A gives the azimuth and alt together to 1 degree accuracy, eg az= 0299 alt = 23 displayed as 0299 23
-- press B then only az is displayed deg-min eg 0299 44 meaning 299 degs 44 minutes
-- press C then only alt is displayed deg-min eg 0023 51 meaning 23 deg 51 min
-- no need for precision in seconds unless the machanicals of the telescope can justify it  
+work to be done 
+- read encoders x2 with interrupt start
+- motor control x2
+- display data
+  - read data from encoders, convert to angle, display on tec1s seven segment display of 6 digits xxxx xx
+  - press A gives the azimuth and alt together to 1 degree accuracy, eg az= 0299 alt = 23 displayed as 0299 23
+  - press B then only az is displayed deg-min eg 0299 44 meaning 299 degs 44 minutes
+  - press C then only alt is displayed deg-min eg 0023 51 meaning 23 deg 51 min
+  - no need for precision in seconds unless the machanicals of the telescope can justify it  
+- Stellarium integration
+  - /www.instructables.com/Control-Your-Telescope-Using-Stellarium-Arduino/
 
-- https://github.com/SteveJustin1963/tec-SCOPE/blob/master/code/main.md
-- https://github.com/SteveJustin1963/tec-SCOPE/blob/master/code/encoder-int.MINT
-
- 
-### Stellarium
-- /www.instructables.com/Control-Your-Telescope-Using-Stellarium-Arduino/
+- calibration
+  - angle check using iphone for compass,
+    - it has a level guide in it as well with the little cross in the middle. adjust thumb screw in base
+    - true north in Sydney add 12.83°E in 2020 changes 0.04° annually
+  - a plastic protractor and plumb for angle
+  - once positioned right then calibrate with alignment to a known celestial object
 
  ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
 
-### calibrate
-- angle check using iphone for compass,
-  - it has a level guide in it as well with the little cross in the middle. adjust thumb screw in base
-  - true north in Sydney add 12.83°E in 2020 changes 0.04° annually
-- a plastic protractor and plumb for angle
-- once positioned right then calibrate with alignment to a known celestial object
 
 
