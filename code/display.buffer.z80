@@ -1,0 +1,18 @@
+DISPLAY_BUFFER_ADDR  EQU 082Ch  ; Label for the display buffer address
+
+LD B,20               ; Set B with the scan bit (starting at 20h)
+LD HL,DISPLAY_BUFFER_ADDR ; Load HL with the address of the display buffer
+LD A,(HL)             ; Load A with the first byte from the display buffer
+OUT (02),A            ; Output the byte to port 02 (display segments)
+LD A,B                ; Load A with the scan bit
+OUT (01),A            ; Output the scan bit to port 01 (display common lines)
+LD B,40               ; Set B for delay timing
+DELAY_LOOP: DJNZ DELAY_LOOP ; Delay loop (short pause to stabilize the display)
+INC HL                ; Increment HL to point to the next display byte
+LD B,A                ; Reload B with the current scan bit
+XOR A                 ; Clear A (to reset the previous scan bit)
+OUT (01),A            ; Output the cleared value to port 01 (to avoid ghosting)
+RRC B                 ; Rotate the scan bit for the next segment
+JR NC,SCAN_LOOP       ; Jump back if there are more segments to display
+SCAN_LOOP: OUT (02),A ; Final output to clear the segments
+RET                   ; Return from the routine
