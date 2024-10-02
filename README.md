@@ -19,14 +19,14 @@ This style of mirror based telescope is pushed by hand. We can leap to a new lev
 
 
 
-![image](https://github.com/user-attachments/assets/27685599-0ccf-404d-9e11-eb6efa607bb2)
+
 
 ### encoders
   - HN3806-AB, AB 2 phase rectangular orthogonal pulses 600 pulses/rev, max 5000rpm, response 0-20KHz 
   - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
   - should not connect AB directly VCC 
   - feed into quadrature clock converter LS7183 then into two 74193-up-down-counters (4bit)
-
+ ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
 
 
 
@@ -60,7 +60,7 @@ work to be done
   - a plastic protractor and plumb for angle
   - once positioned right then calibrate with alignment to a known celestial object
 
- ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
+
 
 
 
