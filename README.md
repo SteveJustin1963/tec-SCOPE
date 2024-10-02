@@ -23,7 +23,7 @@ Integrating your tec1d with your 8-inch F5 Dobson telescope
   - HN3806-AB, AB 2 phase rectangular orthogonal pulses 600 pulses/rev, max 5000rpm, response 0-20KHz 
   - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
   - should not connect AB directly VCC 
-  - think about using LS7183
+  - feed into quadrature clock converter LS7183 then into two 74193-up-down-counters (4bit)
 
 
 
@@ -38,8 +38,8 @@ mount
 - we are using alt and azimuth, like x and y
 - we need 2 motors and 2 encoders
 - the dobson needs to be modified so movement is made on shafts and gears
-- gears
-  - rocker base atatch inverted drive belt with the teeth facing out so interfaces with Belt Drive Pulley to its 6mm shaft
+- gears, expose side of Alt for 100 :1 worm drive and tap the base Azimuth bolt replace with a rotating mount and another 100:1 worm dive.
+
 
 ![image](https://github.com/user-attachments/assets/27685599-0ccf-404d-9e11-eb6efa607bb2)
 
