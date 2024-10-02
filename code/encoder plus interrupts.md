@@ -1,4 +1,5 @@
 ```
+//mint 2.0
 // Initialize variables
 1 p !                            // p = Port number for encoder signal A
 2 q !                            // q = Port number for encoder signal B
