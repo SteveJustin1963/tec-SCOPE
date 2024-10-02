@@ -1,4 +1,6 @@
-// Initialize variables
+```
+// mint 2.0
+// Initialize variables  
 1 p !                            // p = Port number for encoder signal A
 2 q !                            // q = Port number for encoder signal B
 [0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0 ] o !  // o = Direction array for quadrature decoding
@@ -56,3 +58,4 @@ s t { | a !                      // Combine s and t into previous state a
   `Minutes: ` j . /N             // Print minutes
   `Seconds: ` k . /N             // Print seconds
 )
+```
