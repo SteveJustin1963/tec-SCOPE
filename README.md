@@ -1,3 +1,6 @@
+work in progress, not finshed and tested
+
+
 ## Let your Tec-1D control your 8-inch F5 Dobson telescope
 
 This style of mirror based telescope is pushed by hand. We can leap to a new level of control using motors and encoders coupled to free planetarium software like Stellarium via a simple serial link.
