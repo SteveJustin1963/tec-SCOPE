@@ -1,6 +1,6 @@
 ```
 // MINT 2.0
-// main telescope program
+// simple main telescope program
  
 9 p! 		//   74138--> 74193 --> eg. io 0x09  or a LS7366R via serial io
 
