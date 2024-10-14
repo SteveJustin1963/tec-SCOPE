@@ -15,7 +15,8 @@ This style of mirror based telescope is pushed by hand. We can leap to a new lev
 - alt and azimuth (x and y) are friction coupled, convert to gears and bearing support 
 - we need 2 motors and 2 encoders
 - the dobson needs to be modified so movement is made on shafts and gears
-- reduction gears
+- reduction gears; use foot massage motor with its gear drive and double shaft
+![image](https://github.com/user-attachments/assets/f66e2597-9af3-4984-bb4c-550e19ec3681)
 
 
 
