@@ -1,4 +1,4 @@
-```
+ 
 // mint 2.0
 // Initialize variables  
 1 p !                            // p = Port number for encoder signal A
@@ -58,4 +58,5 @@ s t { | a !                      // Combine s and t into previous state a
   `Minutes: ` j . /N             // Print minutes
   `Seconds: ` k . /N             // Print seconds
 )
-```
+
+
