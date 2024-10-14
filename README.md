@@ -15,14 +15,7 @@ This style of mirror based telescope is pushed by hand. We can leap to a new lev
 - alt and azimuth (x and y) are friction coupled, convert to gears and bearing support 
 - we need 2 motors and 2 encoders
 - the dobson needs to be modified so movement is made on shafts and gears
-- gears
- - expose side of Alt for 100 :1 worm drive 
- - tap the base Azimuth bolt replace with a rotating mount and another 100:1 worm dive.
-
-![image](https://github.com/user-attachments/assets/a408e69c-c931-4e04-8baf-1d5d31e5bd8f)
-![image](https://github.com/user-attachments/assets/f5976cd1-aa51-4682-816e-283c0133a9dd)
-
-
+- reduction gears
 
 
 
