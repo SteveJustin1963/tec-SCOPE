@@ -1,5 +1,7 @@
  
 // mint 2.0
+
+A: 
 // Initialize variables  
 1 p !                            // p = Port number for encoder signal A
 2 q !                            // q = Port number for encoder signal B
@@ -7,13 +9,19 @@
 100 e !                          // e = Pulses per degree (adjust based on encoder resolution)
 e 90 * m !                       // m = Maximum pulse count (for 90 degrees)
 0 c !                            // c = Pulse count initialized to 0
+;
 
+
+:B 
 // Read initial encoder state
 p /I s !                         // Read signal A into s
 q /I t !                         // Read signal B into t
 s t { | a !                      // Combine s and t into previous state a
+;
 
+:S 
 // Start infinite loop
+B
 /U (
   // Read current encoder state
   p /I s !                       // Read signal A into s
@@ -43,7 +51,10 @@ s t { | a !                      // Combine s and t into previous state a
 
   // Update previous state
   a b !                          // Set previous state a to current state b
+;
 
+
+:T 
   // Convert pulse count to degrees, minutes, and seconds
   c e / d !                      // d = c / e, degrees
   c e % f !                      // f = c % e, fractional pulses after degrees
@@ -58,5 +69,8 @@ s t { | a !                      // Combine s and t into previous state a
   `Minutes: ` j . /N             // Print minutes
   `Seconds: ` k . /N             // Print seconds
 )
+;
+
+ABST
 
 
