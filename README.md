@@ -6,8 +6,11 @@ work in progress, not finshed and tested
 
 
 ## Let your Tec-1D control your 8-inch F5 Dobson telescope
-
-This style of mirror based telescope is pushed by hand. We can leap to a new level of control using motors and encoders coupled to free planetarium software like Stellarium via a simple serial link.
+- get urself a cheap or make a mirror based telescope, start with a pushed by hand truss frame type. 
+- next get ur old tc-1 out blow the dust off, have 4k ram and my expansion board
+- mod the mount with 2 motors and 2 encoders
+- get Stellarium put on a laptop with a serial port u can use usb to serial, ull meed 2 serial ports
+- play
 
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
 ![image](https://github.com/user-attachments/assets/127c3469-9b72-4adf-8157-af4c271298e7)
@@ -16,10 +19,13 @@ This style of mirror based telescope is pushed by hand. We can leap to a new lev
  
 
 ### mount
-- alt and azimuth (x and y) are friction coupled, convert to gears and bearing support 
-- we need 2 motors and 2 encoders
-- the dobson needs to be modified so movement is made on shafts and gears
-- reduction gears; use foot massage motor with its gear drive and double shaft
+- alt (up down) and azimuth (side to side) lets say x and y, are friction coupled, convert this to gears and bearing support 
+- we need to add 2 motors and 2 encoders
+- where to get a free motor with a reduction gear? hack one out of a thrown out foot massager, its motor is 24v and has a worm drive shaft coming out each side
+- for the az motor need somthing else as we have no rooom under the mount
+- 
+
+ 
 ![image](https://github.com/user-attachments/assets/f66e2597-9af3-4984-bb4c-550e19ec3681)
 
 
