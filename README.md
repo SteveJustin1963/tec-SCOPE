@@ -1,3 +1,7 @@
+make sure you join a club if you use a laser pointer >1mW
+- https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
+
+
 work in progress, not finshed and tested
 
 
