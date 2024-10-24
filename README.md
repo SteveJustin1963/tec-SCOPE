@@ -1,8 +1,7 @@
-make sure you join a club if you use a laser pointer >1mW
+Make sure you join a club if you use a laser pointer >1mW for star aiming
 - https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
 
-
-work in progress, not finshed and tested
+Nothing works yet! its a work in progress, not finshed and tested
 
 
 ## Let your Tec-1D control your 8-inch F5 Dobson telescope
@@ -162,8 +161,91 @@ loadResetRegister("LOAD_CNTR")
 
 ```
 
+### az with magnetic sensor
+The KMA215 is generally quite accurate for angle measurement applications. Its accuracy specifications are as follows:
 
-### control
+1. **Resolution**: The KMA215 has a resolution of up to **0.1 degrees**, meaning it can detect very small changes in the angle of the magnetic field. This high resolution allows for precise measurement.
+
+2. **Accuracy**: The typical angle accuracy of the KMA215 is around **±1 degree**. This accuracy can vary depending on:
+   - The strength and stability of the magnetic field.
+   - The environmental conditions, such as temperature variations.
+   - Proper alignment and calibration of the sensor with the magnet.
+
+3. **Temperature Stability**: The sensor is designed to operate accurately across a wide temperature range, which is important for applications in automotive and industrial environments. Temperature compensation features help maintain its accuracy under varying conditions.
+
+### pseudocode example 
+for reading the KMA215 sensor using an SPI interface. 
+This pseudocode outlines the steps to initialize the communication, read the angle data, and convert it to a meaningful value:
+
+```plaintext
+// Pseudocode for reading angle data from KMA215 using SPI
+
+// Initialize SPI communication
+InitializeSPI()
+{
+    Set SPI mode to Mode 0 (CPOL = 0, CPHA = 0)
+    Set SPI clock speed (e.g., 1 MHz)
+    Set data order to MSB first
+}
+
+// Function to read angle data
+ReadAngle()
+{
+    // Select the KMA215 (pull CS pin low)
+    SetChipSelectLow()
+    
+    // Send command to read angle data (example command: 0xA0)
+    SendSPIByte(0xA0)
+    
+    // Read the first byte (most significant byte)
+    MSB = ReadSPIByte()
+    
+    // Read the second byte (least significant byte)
+    LSB = ReadSPIByte()
+    
+    // Deselect the KMA215 (pull CS pin high)
+    SetChipSelectHigh()
+    
+    // Combine the MSB and LSB into a 16-bit value
+    RawAngle = (MSB << 8) | LSB
+    
+    // Convert raw angle value to degrees (example conversion)
+    AngleInDegrees = (RawAngle / 65536.0) * 360.0
+    
+    // Return the calculated angle
+    Return AngleInDegrees
+}
+
+// Main routine
+Main()
+{
+    // Initialize SPI
+    InitializeSPI()
+    
+    // Continuously read and display the angle
+    While (true)
+    {
+        Angle = ReadAngle()
+        Print("Angle: ", Angle, " degrees")
+        
+        // Add delay or other processing as needed
+        Delay(100 ms)
+    }
+}
+```
+
+### Explanation:
+1. **InitializeSPI**: Configures the SPI communication settings specific to the KMA215.
+2. **ReadAngle**:
+   - Pulls the chip select (CS) low to initiate communication.
+   - Sends a command (e.g., `0xA0`) to request the angle data.
+   - Reads two bytes (MSB and LSB) from the sensor.
+   - Combines the bytes into a 16-bit value and converts it into degrees.
+3. **Main Loop**: Continuously reads and prints the angle.
+
+
+
+### code loop ideas 
 - we will ise a simple  x y joystick slew it around with the dc motors
 - and also via via tec1 commands
 - or track a position using an optical gates or estimation 
@@ -171,8 +253,7 @@ loadResetRegister("LOAD_CNTR")
 - what to do for long-exposure astrophotography ?
 
  
-### code 
-https://github.com/SteveJustin1963/tec-SCOPE/tree/master/code
+### main code loop
 
 work to be done 
 - read encoders x2 with interrupt start
