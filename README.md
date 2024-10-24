@@ -40,6 +40,94 @@ work in progress, not finshed and tested
   
  ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
 
+### counter chip LS7366R
+
+- assumning we ignore the **INDEX/** pin 
+- and set up the counter for counting (either initializing it with a specific count or clearing it), 
+- we need to configure **MDR0** and **MDR1** accordingly.
+- step-by-step setup:
+
+### 1. **Configure MDR0** (Mode Register 0):
+This register sets up the counting mode, quadrature type, and index behavior.
+
+- **Bits**:  
+  - **B7**: Filter clock division (set as needed; `0` for division factor 1).  
+  - **B6**: Synchronous/Asynchronous index (set to `0` if ignoring the index).  
+  - **B5:B4**: Index function (set to `00` to disable the index).  
+  - **B3:B2**: Counting mode (e.g., `00` for free-running mode).  
+  - **B1:B0**: Quadrature mode (e.g., `11` for x4 quadrature).
+
+Here’s an example configuration for **MDR0**:
+- **MDR0** = `0x03`:
+  - `00`: Disable index (`B5:B4`).
+  - `00`: Free-running count mode (`B3:B2`).
+  - `11`: x4 quadrature mode (`B1:B0`).
+
+**Hex Value for MDR0**: `0x03`
+
+### 2. **Configure MDR1** (Mode Register 1):
+This register sets the data width and flag options.
+
+- **Bits**:  
+  - **B7:B6**: Enable flags like Carry (CY), Borrow (BW), Compare (CMP), etc.  
+  - **B3**: Not used.  
+  - **B2**: Counting enable/disable (set to `0` to enable counting).  
+  - **B1:B0**: Counter byte width (`00` for 4 bytes, `01` for 3 bytes, etc.).
+
+Here’s an example configuration for **MDR1**:
+- **MDR1** = `0x00`:
+  - `00`: 4-byte counter mode (`B1:B0`).
+  - `0`: Enable counting (`B2`).
+  - `0000`: No flags enabled (`B7:B6`).
+
+**Hex Value for MDR1**: `0x00`
+
+### 3. **Load the Counter (CNTR) or Clear It**:
+   - To **clear** the counter: Send the **CLR CNTR** command (`0x20`).
+   - To **load** the counter with a specific value, do the following:
+     1. Write the desired value to the **DTR** register using the **WRITE DTR** command (`0x98`), followed by the value bytes (up to 4 bytes depending on your configuration).
+     2. Send the **LOAD CNTR** command (`0xE0`) to transfer the value from **DTR** to **CNTR**.
+
+### Summary Commands:
+- **MDR0**: `0x03` (Disable index, x4 quadrature, free-running).
+- **MDR1**: `0x00` (4-byte counter, counting enabled, no flags).
+
+### Example Code Sequence:
+
+This setup 
+- ignores the **INDEX/** pin
+- and allows the counter to start with either
+- a specified value
+- or a cleared state.
+``` 
+// Pseudocode to configure LS7366R
+
+// Function to write a single byte to a register
+Function singleByteWrite(register, value):
+    // Implement SPI write sequence to send 'value' to 'register'
+
+// Function to reset/load registers without data
+Function loadResetRegister(op_code):
+    // Implement SPI sequence to send 'op_code'
+
+// Set up MDR0 (disable index, x4 quadrature, free-running)
+singleByteWrite("WRITE_MDR0", 0x03)
+
+// Set up MDR1 (4-byte counter, counting enabled, no flags)
+singleByteWrite("WRITE_MDR1", 0x00)
+
+// To clear the counter
+loadResetRegister("CLR_CNTR")
+
+// To load a specific value into the counter
+// Send each byte of the value to the DTR register
+For each byte in value:
+    singleByteWrite("WRITE_DTR", byte)
+
+// Transfer the loaded value from DTR to CNTR
+loadResetRegister("LOAD_CNTR")
+
+```
 
 
 ### control
