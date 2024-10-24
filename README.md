@@ -275,6 +275,13 @@ work to be done
   - once positioned right then calibrate with alignment to a known celestial object
 
 
+### cct and pcb
+work in progress
+
+https://easyeda.com/editor#id=6fda983c09c847fbb6907fb4d6588c4f
+
+
+
 
 
 
