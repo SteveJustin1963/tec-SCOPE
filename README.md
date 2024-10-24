@@ -41,6 +41,39 @@ work in progress, not finshed and tested
  ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
 
 ### counter chip LS7366R
+LS7366R is a quadrature encoder counter IC designed to interface with rotary or linear encoders. 
+It can track position, direction, and speed by counting the pulses from the encoder. 
+The LS7366R can operate in various modes, including 1X, 2X, or 4X decoding, to count the pulses per encoder cycle, 
+and it supports a 32-bit counter for high precision.
+
+Key features include:
+- SPI interface for communication with microcontrollers or processors.
+- Quadrature decoding for up to four times the encoder resolution.
+- Support for various count modes (up, down, quadrature, and modulo).
+- A 32-bit counter register that allows for high-resolution tracking.
+
+The **A** and **B** signals from the rotary encoder are part of a **quadrature output**. 
+This means the encoder uses the two signals (A and B) that are 90 degrees out of phase to determine both the **position** and **direction** of movement. 
+
+Here's how it works:
+1. **A and B Signals**: 
+   - The encoder produces two square wave signals (A and B). 
+   - These signals are offset by 90 degrees (a quarter of a cycle). This phase difference is what allows the system to determine the direction of rotation.
+
+2. **Counting Pulses**:
+   - As the encoder rotates, these signals will alternate between HIGH (1) and LOW (0).
+   - If you count the transitions (rising or falling edges) on each channel, you can determine the movement's distance or angle.
+
+3. **Determining Direction**:
+   - By checking the sequence in which A and B change states, you can tell if the movement is clockwise or counterclockwise:
+     - If **A** leads **B** (A changes state before B), it indicates movement in one direction (e.g., clockwise).
+     - If **B** leads **A**, it indicates movement in the opposite direction (e.g., counterclockwise).
+
+When connected to the LS7366R:
+- The LS7366R uses these signals to increment or decrement the counter based on the direction and the number of pulses detected.
+- It supports different counting modes (e.g., 1X, 2X, 4X) to capture pulses for higher resolution, using both edges of A and B.
+
+### setup
 
 - assumning we ignore the **INDEX/** pin 
 - and set up the counter for counting (either initializing it with a specific count or clearing it), 
