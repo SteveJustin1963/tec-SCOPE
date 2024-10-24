@@ -31,10 +31,13 @@ work in progress, not finshed and tested
 
 
 ### encoders
-  - HN3806-AB, AB 2 phase rectangular orthogonal pulses 600 pulses/rev, max 5000rpm, response 0-20KHz 
+  - HN3806-AB (around $15), has AB 2 phase rectangular orthogonal pulses 600 pulses/rev aka 2 wires, max 5000rpm we are not going that fast, response 0-20KHz 
   - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
-  - should not connect AB directly VCC 
-  - feed into quadrature clock converter LS7183 then into two 74193-up-down-counters (4bit)
+  - do not connect AB directly VCC!! go to the chip 
+  - 
+
+
+  
  ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
 
 
