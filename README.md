@@ -33,14 +33,17 @@ Nothing works yet! its a work in progress, not finshed and tested
   - HN3806-AB (around $15), has AB 2 phase rectangular orthogonal pulses 600 pulses/rev aka 2 wires, max 5000rpm we are not going that fast, response 0-20KHz 
   - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
   - do not connect AB directly VCC!! go to the chip 
-  - 
+
+ ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
+
 ### SPI
 
 ![image](https://github.com/user-attachments/assets/c596d7a4-f89f-4522-9ba0-565d6488245d)
 
 https://easyeda.com/editor#id=6fda983c09c847fbb6907fb4d6588c4f
-  
- ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
+
+will try and bring spi, LS7366R and 9511 into one system.
+
 
 ### counter chip LS7366R
 LS7366R runs on SPI and is a quadrature encoder counter IC designed to interface with rotary or linear encoders. 
