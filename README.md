@@ -44,16 +44,11 @@ https://easyeda.com/editor#id=6fda983c09c847fbb6907fb4d6588c4f
 
 will try and bring spi, LS7366R and 9511 into one system.
 
-#### notes on 9511 decoding in the cct
-Pin 2 is not for the address, 
-Pin 2 is connected HIGH so that 
-the the output /P=Q (Pin 19) 
-will only go low when the 
-address is $C2 AND /MREQ is HIGH.
- 
-address A0 is not connected to this IC. 
-A0 is a 'wildcard' so the output will 
-go low for I/O address $C2 AND $C3, A0=0 and A0=1. 
+#### notes on 9511 decoding in the cct from CJ
+Pin 2 is not for the address, Pin 2 is connected HIGH so that 
+the the output /P=Q (Pin 19) will only go low when the 
+address is $C2 AND /MREQ is HIGH. address A0 is not connected to this IC. 
+A0 is a 'wildcard' so the output will go low for I/O address $C2 AND $C3, A0=0 and A0=1. 
 because the 9511 needs two I/O addresses.
 
 make sense? you would expect /IORQ here since we want to do an I/O operation.
