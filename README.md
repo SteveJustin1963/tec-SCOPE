@@ -34,13 +34,16 @@ Nothing works yet! its a work in progress, not finshed and tested
   - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
   - do not connect AB directly VCC!! go to the chip 
   - 
+### SPI
 
+![image](https://github.com/user-attachments/assets/c596d7a4-f89f-4522-9ba0-565d6488245d)
 
+https://easyeda.com/editor#id=6fda983c09c847fbb6907fb4d6588c4f
   
  ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
 
 ### counter chip LS7366R
-LS7366R is a quadrature encoder counter IC designed to interface with rotary or linear encoders. 
+LS7366R runs on SPI and is a quadrature encoder counter IC designed to interface with rotary or linear encoders. 
 It can track position, direction, and speed by counting the pulses from the encoder. 
 The LS7366R can operate in various modes, including 1X, 2X, or 4X decoding, to count the pulses per encoder cycle, 
 and it supports a 32-bit counter for high precision.
@@ -274,11 +277,8 @@ work to be done
   - a plastic protractor and plumb for angle
   - once positioned right then calibrate with alignment to a known celestial object
 
+ 
 
-### cct and pcb
-work in progress
-
-https://easyeda.com/editor#id=6fda983c09c847fbb6907fb4d6588c4f
 
 
 
