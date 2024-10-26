@@ -44,6 +44,12 @@ https://easyeda.com/editor#id=6fda983c09c847fbb6907fb4d6588c4f
 
 will try and bring spi, LS7366R and 9511 into one system.
 
+
+![Schematic_tec-Scope_2024-10-27](https://github.com/user-attachments/assets/1f147e35-a57e-4186-a9ad-0921173dd106)
+
+
+
+
 #### notes on 9511 decoding in the cct from CJ
 Pin 2 is not for the address, Pin 2 is connected HIGH so that 
 the the output /P=Q (Pin 19) will only go low when the 
