@@ -283,10 +283,7 @@ Main()
 - will try starmap Stellarium interface via another bitbang port x.200 commands
 - what to do for long-exposure astrophotography ?
 
- 
-### main code loop
-
-work to be done 
+#### work to be done 
 - read encoders x2 with interrupt start
 - motor control x2
 - display data
@@ -305,6 +302,26 @@ work to be done
   - a plastic protractor and plumb for angle
   - once positioned right then calibrate with alignment to a known celestial object
 
+ 
+
+### scope-1.mint 
+
+Code Summary
+
+1. **SPI Configuration and Operation**:
+   - The code initializes the LS7366R using SPI communication, configures the counting mode (x4 quadrature, free-running), clears or loads the counter, and retrieves a 32-bit count value.
+
+2. **FPU (AM9511A) Configuration and Operation**:
+   - The FPU is set up with basic functions for initializing, storing arguments, performing addition, checking for errors, and retrieving results. This allows calculations within the MINT program, handling floating-point arithmetic where needed.
+
+3. **Main Program Flow**:
+   - The `:START` routine initializes the LS7366R, clears the counter, initializes FPU arguments, performs a simple operation (addition), checks for errors, and reads back the results. The program then enters an infinite loop awaiting further input or commands.
+
+### Testing and Validation Tips
+
+- **Verify Port Addresses**: Ensure that all defined ports (e.g., `DATA_PORT`, `COMMAND_PORT`, `STATUS_PORT`, `SPI_CS_PORT`, etc.) align with the actual connections in your TEC-SCOPE hardware.
+- **Timing**: Adjust delays if necessary for SPI reliability and FPU response.
+- **Testing Routine**: Test each section independently before running the complete program to validate SPI communication, FPU operations, and data integrity.
  
 
 
