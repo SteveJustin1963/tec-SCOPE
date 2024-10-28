@@ -45,19 +45,22 @@ https://easyeda.com/editor#id=6fda983c09c847fbb6907fb4d6588c4f
 will try and bring spi, LS7366R and 9511 into one system.
 
 
-![Schematic_tec-Scope_2024-10-27](https://github.com/user-attachments/assets/1f147e35-a57e-4186-a9ad-0921173dd106)
+![Schematic_tec-Scope_2024-10-28](https://github.com/user-attachments/assets/85bd0e3b-1a09-4705-82ca-f70607eb217d)
 
 
+![image](https://github.com/user-attachments/assets/8b14bf61-c2c7-4876-a1f8-0532bd1bec4c)
+
+![image](https://github.com/user-attachments/assets/7e883bfa-3c77-4b0a-9d6d-fd45692880f7)
 
 
-#### notes on 9511 decoding in the cct from CJ
+#### notes on 9511 decoding in the cct from Craig Jones
+Thanks Craig for your advice!
+
 Pin 2 is not for the address, Pin 2 is connected HIGH so that 
 the the output /P=Q (Pin 19) will only go low when the 
 address is $C2 AND /MREQ is HIGH. address A0 is not connected to this IC. 
 A0 is a 'wildcard' so the output will go low for I/O address $C2 AND $C3, A0=0 and A0=1. 
-because the 9511 needs two I/O addresses.
-
-make sense? you would expect /IORQ here since we want to do an I/O operation.
+because the 9511 needs two I/O addresses... you would expect /IORQ here since we want to do an I/O operation.
 Using /MREQ here is a technique to extend the time the chip select is low.
 When /MREQ is low the Z80 its doing a memory read or write, 
 when /MREQ is high the Z80  is doing another bus operation 
