@@ -1,5 +1,7 @@
 ///////////////////////////////////////////
 
+// large labels used for clarity, MINT as you know ....
+
 // Constants and Port Definitions
 
 // Constants for SPI communication with LS7366R
