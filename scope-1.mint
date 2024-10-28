@@ -1,6 +1,6 @@
 ///////////////////////////////////////////
 
-// large labels used for clarity, MINT as you know ....
+// sudo mint code
 
 // Constants and Port Definitions
 
