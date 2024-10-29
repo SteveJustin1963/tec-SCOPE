@@ -51,23 +51,6 @@ will try and bring spi, LS7366R and 9511 into one system.
  
 
 
-#### notes on 9511 decoding in the cct from Craig Jones
-Thanks Craig for your advice!
-
-Pin 2 is not for the address, Pin 2 is connected HIGH so that 
-the the output /P=Q (Pin 19) will only go low when the 
-address is $C2 AND /MREQ is HIGH. address A0 is not connected to this IC. 
-A0 is a 'wildcard' so the output will go low for I/O address $C2 AND $C3, A0=0 and A0=1. 
-because the 9511 needs two I/O addresses... you would expect /IORQ here since we want to do an I/O operation.
-Using /MREQ here is a technique to extend the time the chip select is low.
-When /MREQ is low the Z80 its doing a memory read or write, 
-when /MREQ is high the Z80  is doing another bus operation 
-(hint: it's doing an /IOREQ). So the time that /MREQ is not doing 
-a memory read or write is longer than the time for an /IORQ. 
-Therefore the Chip Select time of the 9511 is longer than the /IORQ.
-You will also see that the /IORQ is used to gate the /RD and /WR, 
-this makes sure it's only an /IORQ that reads and writes the 9511.
-
 
 
 
