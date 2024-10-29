@@ -197,9 +197,14 @@ loadResetRegister("LOAD_CNTR")
 ```
 
 ## ATtiny84 Quadrature Encoder Implementation
-am already sick of the LS7366R, lets do it on the Tiny
+am already sick of the LS7366R, lets do it on the ATtiny84
 
 84-QEI
+
+
+
+////////////
+
 
 
 ### az with magnetic sensor
