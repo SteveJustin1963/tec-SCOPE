@@ -1,6 +1,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+// ATtiny84
+
 // Define encoder pins
 #define ENCODER1_A PA0
 #define ENCODER1_B PA1
