@@ -84,7 +84,9 @@ Key features include:
 - Quadrature decoding for up to four times the encoder resolution.
 - Support for various count modes (up, down, quadrature, and modulo).
 - A 32-bit counter register that allows for high-resolution tracking.
+- expenisve chip! will write a ATtiny84 Quadrature Encoder Implementation and the chip is under $3
 
+### rotary encoder
 The **A** and **B** signals from the rotary encoder are part of a **quadrature output**. 
 This means the encoder uses the two signals (A and B) that are 90 degrees out of phase to determine both the **position** and **direction** of movement. 
 
@@ -106,7 +108,7 @@ When connected to the LS7366R:
 - The LS7366R uses these signals to increment or decrement the counter based on the direction and the number of pulses detected.
 - It supports different counting modes (e.g., 1X, 2X, 4X) to capture pulses for higher resolution, using both edges of A and B.
 
-### setup
+### control the LS7366R 
 
 - assumning we ignore the **INDEX/** pin 
 - and set up the counter for counting (either initializing it with a specific count or clearing it), 
@@ -158,15 +160,14 @@ Here’s an example configuration for **MDR1**:
 - **MDR0**: `0x03` (Disable index, x4 quadrature, free-running).
 - **MDR1**: `0x00` (4-byte counter, counting enabled, no flags).
 
-### Example Code Sequence:
+### Pseudocode to configure LS7366R
 
-This setup 
-- ignores the **INDEX/** pin
-- and allows the counter to start with either
-- a specified value
-- or a cleared state.
 ``` 
-// Pseudocode to configure LS7366R
+// ignores the **INDEX/** pin
+// and allows the counter to start with either
+// a specified value
+// or a cleared state.
+  
 
 // Function to write a single byte to a register
 Function singleByteWrite(register, value):
@@ -194,6 +195,12 @@ For each byte in value:
 loadResetRegister("LOAD_CNTR")
 
 ```
+
+## ATtiny84 Quadrature Encoder Implementation
+am already sick of the LS7366R, lets do it on the Tiny
+
+84-QEI
+
 
 ### az with magnetic sensor
 The KMA215 is generally quite accurate for angle measurement applications. Its accuracy specifications are as follows:
