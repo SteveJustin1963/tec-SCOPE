@@ -40,7 +40,7 @@ Nothing works yet! its a work in progress, not finshed and tested
 
 ![image](https://github.com/user-attachments/assets/c596d7a4-f89f-4522-9ba0-565d6488245d)
 
-https://easyeda.com/editor#id=6fda983c09c847fbb6907fb4d6588c4f
+ 
 
 will try and bring spi, LS7366R and 9511 into one system.
 
@@ -48,9 +48,7 @@ will try and bring spi, LS7366R and 9511 into one system.
 ![Schematic_tec-Scope_2024-10-28](https://github.com/user-attachments/assets/85bd0e3b-1a09-4705-82ca-f70607eb217d)
 
 
-![image](https://github.com/user-attachments/assets/8b14bf61-c2c7-4876-a1f8-0532bd1bec4c)
-
-![image](https://github.com/user-attachments/assets/7e883bfa-3c77-4b0a-9d6d-fd45692880f7)
+ 
 
 
 #### notes on 9511 decoding in the cct from Craig Jones
