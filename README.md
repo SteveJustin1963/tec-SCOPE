@@ -4,8 +4,8 @@ Make sure you join a club if you use a laser pointer >1mW for star aiming
 Nothing works yet! its a work in progress, not finshed and tested
 
 
-## Let your Tec-1D control your 8-inch F5 Dobson telescope
-- get urself a cheap or make a mirror based telescope, start with a pushed by hand truss frame type. 
+## Let your SCC or Tec-1 control your telescope
+- get urself a cheap 8-inch F5 Dobson or make one, the pushed by hand truss frame type. 
 - next get ur old tec-1 out blow the dust off, add an extra 2k ram total 4k and as well as my expansion board
 - mod the mount with 2 motors and 2 encoders
 - get Stellarium put on a laptop with a serial port u can use usb to serial, ull meed 2 serial ports
