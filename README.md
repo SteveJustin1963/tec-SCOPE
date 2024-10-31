@@ -65,7 +65,8 @@ Key features include:
 - Quadrature decoding for up to four times the encoder resolution.
 - Support for various count modes (up, down, quadrature, and modulo).
 - A 32-bit counter register that allows for high-resolution tracking.
-- expenisve chip! will write a ATtiny84 Quadrature Encoder Implementation and the chip is under $3
+- expenisve chip! over $30
+- try a ATtiny85 with Quadrature Encoder Implementation for $1
 
 ### rotary encoder
 The **A** and **B** signals from the rotary encoder are part of a **quadrature output**. 
@@ -141,47 +142,10 @@ Here’s an example configuration for **MDR1**:
 - **MDR0**: `0x03` (Disable index, x4 quadrature, free-running).
 - **MDR1**: `0x00` (4-byte counter, counting enabled, no flags).
 
-### Pseudocode to configure LS7366R
-
-``` 
-// ignores the **INDEX/** pin
-// and allows the counter to start with either
-// a specified value
-// or a cleared state.
-  
-
-// Function to write a single byte to a register
-Function singleByteWrite(register, value):
-    // Implement SPI write sequence to send 'value' to 'register'
-
-// Function to reset/load registers without data
-Function loadResetRegister(op_code):
-    // Implement SPI sequence to send 'op_code'
-
-// Set up MDR0 (disable index, x4 quadrature, free-running)
-singleByteWrite("WRITE_MDR0", 0x03)
-
-// Set up MDR1 (4-byte counter, counting enabled, no flags)
-singleByteWrite("WRITE_MDR1", 0x00)
-
-// To clear the counter
-loadResetRegister("CLR_CNTR")
-
-// To load a specific value into the counter
-// Send each byte of the value to the DTR register
-For each byte in value:
-    singleByteWrite("WRITE_DTR", byte)
-
-// Transfer the loaded value from DTR to CNTR
-loadResetRegister("LOAD_CNTR")
-
-```
+ 
 
 ## ATtiny84 Quadrature Encoder Implementation
-am already sick of the LS7366R, lets do it on the ATtiny84
-
-84-QEI
-
+am already sick of the LS7366R, lets do it on the ATtiny84 and 85
 
 
 ////////////
@@ -189,22 +153,28 @@ am already sick of the LS7366R, lets do it on the ATtiny84
 
 
 ### az with magnetic sensor
-The KMA215 is generally quite accurate for angle measurement applications. Its accuracy specifications are as follows:
-
-1. **Resolution**: The KMA215 has a resolution of up to **0.1 degrees**, meaning it can detect very small changes in the angle of the magnetic field. This high resolution allows for precise measurement.
-
-2. **Accuracy**: The typical angle accuracy of the KMA215 is around **±1 degree**. This accuracy can vary depending on:
+we shud add a KMA215 
+- accurate for angle measurement
+- Resolution to 0.1 degrees
+- angle accuracy ±1 degree
+- depends on:
    - The strength and stability of the magnetic field.
    - The environmental conditions, such as temperature variations.
    - Proper alignment and calibration of the sensor with the magnet.
+- operate accurately across a wide temperature range
 
-3. **Temperature Stability**: The sensor is designed to operate accurately across a wide temperature range, which is important for applications in automotive and industrial environments. Temperature compensation features help maintain its accuracy under varying conditions.
+### sudo KMA215 SPI 
 
-### pseudocode example 
-for reading the KMA215 sensor using an SPI interface. 
-This pseudocode outlines the steps to initialize the communication, read the angle data, and convert it to a meaningful value:
+- Initialize SPI communication settings specific to the KMA215.
+- ReadAngle
+   - Pulls the chip select (CS) low to initiate communication.
+   - Sends a command (e.g., `0xA0`) to request the angle data.
+   - Reads two bytes (MSB and LSB) from the sensor.
+   - Combines the bytes into a 16-bit value and converts it into degrees.
+- Main Loop, continuously reads and prints the angle.
 
-```plaintext
+
+```
 // Pseudocode for reading angle data from KMA215 using SPI
 
 // Initialize SPI communication
@@ -261,14 +231,6 @@ Main()
 }
 ```
 
-### Explanation:
-1. **InitializeSPI**: Configures the SPI communication settings specific to the KMA215.
-2. **ReadAngle**:
-   - Pulls the chip select (CS) low to initiate communication.
-   - Sends a command (e.g., `0xA0`) to request the angle data.
-   - Reads two bytes (MSB and LSB) from the sensor.
-   - Combines the bytes into a 16-bit value and converts it into degrees.
-3. **Main Loop**: Continuously reads and prints the angle.
 
 
 
