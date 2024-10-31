@@ -377,11 +377,11 @@ To use this system:
    - Send command (0x01 or 0x02)
    - Read 4 bytes for counter or 3 bytes for status
 
-Would you like me to:
-1. Add any specific features to either chip?
-2. Explain the SPI communication protocol in more detail?
-3. Provide example code for the master device to read these encoders?
 
+![image](https://github.com/user-attachments/assets/2b6cd303-1f15-4b7e-a85e-055055a94236)
+
+![image](https://github.com/user-attachments/assets/cb468bee-9abd-48b9-9c95-75f166703ad7)
+![image](https://github.com/user-attachments/assets/3cc8b127-2a64-4820-9200-6a2e945ad0da)
 
 
 
@@ -497,9 +497,5 @@ its all messed up have to fix it!
 
  
 
-![image](https://github.com/user-attachments/assets/2b6cd303-1f15-4b7e-a85e-055055a94236)
-
-![image](https://github.com/user-attachments/assets/cb468bee-9abd-48b9-9c95-75f166703ad7)
-![image](https://github.com/user-attachments/assets/3cc8b127-2a64-4820-9200-6a2e945ad0da)
 
 
