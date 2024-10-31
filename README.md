@@ -58,86 +58,17 @@ Key features include:
 - expenisve chip! over $30
 - try a ATtiny85 with Quadrature Encoder Implementation for $1
 
-control
-- assumning we ignore the **INDEX/** pin 
-- and set up the counter for counting (either initializing it with a specific count or clearing it), 
-- we need to configure **MDR0** and **MDR1** accordingly.
-- step-by-step setup:
-
-### 1. **Configure MDR0** (Mode Register 0):
-This register sets up the counting mode, quadrature type, and index behavior.
-
-- **Bits**:  
-  - **B7**: Filter clock division (set as needed; `0` for division factor 1).  
-  - **B6**: Synchronous/Asynchronous index (set to `0` if ignoring the index).  
-  - **B5:B4**: Index function (set to `00` to disable the index).  
-  - **B3:B2**: Counting mode (e.g., `00` for free-running mode).  
-  - **B1:B0**: Quadrature mode (e.g., `11` for x4 quadrature).
-
-**configuration MDR0**
-- **MDR0** = `0x03`:
-  - `00`: Disable index (`B5:B4`).
-  - `00`: Free-running count mode (`B3:B2`).
-  - `11`: x4 quadrature mode (`B1:B0`).
-
-**Hex Value for MDR0**: `0x03`
-
-### 2. **Configure MDR1** (Mode Register 1):
-This register sets the data width and flag options.
-
-- **Bits**:  
-  - **B7:B6**: Enable flags like Carry (CY), Borrow (BW), Compare (CMP), etc.  
-  - **B3**: Not used.  
-  - **B2**: Counting enable/disable (set to `0` to enable counting).  
-  - **B1:B0**: Counter byte width (`00` for 4 bytes, `01` for 3 bytes, etc.).
-
-Here’s an example configuration for **MDR1**:
-- **MDR1** = `0x00`:
-  - `00`: 4-byte counter mode (`B1:B0`).
-  - `0`: Enable counting (`B2`).
-  - `0000`: No flags enabled (`B7:B6`).
-
-**Hex Value for MDR1**: `0x00`
-
-### 3. **Load the Counter (CNTR) or Clear It**:
-   - To **clear** the counter: Send the **CLR CNTR** command (`0x20`).
-   - To **load** the counter with a specific value, do the following:
-     1. Write the desired value to the **DTR** register using the **WRITE DTR** command (`0x98`), followed by the value bytes (up to 4 bytes depending on your configuration).
-     2. Send the **LOAD CNTR** command (`0xE0`) to transfer the value from **DTR** to **CNTR**.
-
-### Summary Commands:
-- **MDR0**: `0x03` (Disable index, x4 quadrature, free-running).
-- **MDR1**: `0x00` (4-byte counter, counting enabled, no flags).
-
-### rotary encoder
-The **A** and **B** signals from the rotary encoder are part of a **quadrature output**. 
-This means the encoder uses the two signals (A and B) that are 90 degrees out of phase to determine both the **position** and **direction** of movement. 
-
-Here's how it works:
-1. **A and B Signals**: 
-   - The encoder produces two square wave signals (A and B). 
-   - These signals are offset by 90 degrees (a quarter of a cycle). This phase difference is what allows the system to determine the direction of rotation.
-
-2. **Counting Pulses**:
-   - As the encoder rotates, these signals will alternate between HIGH (1) and LOW (0).
-   - If you count the transitions (rising or falling edges) on each channel, you can determine the movement's distance or angle.
-
-3. **Determining Direction**:
-   - By checking the sequence in which A and B change states, you can tell if the movement is clockwise or counterclockwise:
-     - If **A** leads **B** (A changes state before B), it indicates movement in one direction (e.g., clockwise).
-     - If **B** leads **A**, it indicates movement in the opposite direction (e.g., counterclockwise).
-
-When connected to the LS7366R:
-- The LS7366R uses these signals to increment or decrement the counter based on the direction and the number of pulses detected.
-- It supports different counting modes (e.g., 1X, 2X, 4X) to capture pulses for higher resolution, using both edges of A and B.
+#### rotary encoder
+- A and B from the rotary encoder are part of a quadrature output.
+- means the encoder uses the two signals (A and B) that are 90 degrees out of phase to determine position and direction of movement. 
+- we need to counting the pulses, signals alternate between HIGH (1) and LOW (0).
+- count the transitions (rising or falling edges) on each channel, we can determine the movement's distance or angle.
+- If A leads B eg clockwise
+- If B leads A eg counterclockwise
  
 
-## ATtiny84 Quadrature Encoder Implementation
+#### ATtiny84 Quadrature Encoder Implementation
 am already sick of the LS7366R, lets do it on the ATtiny84 better the attiny85 as i have some and are very cheap.
-
-
-////////////
-
 
 
 ### az with magnetic sensor
