@@ -461,6 +461,12 @@ Main()
   - level
   - calibrate with known celestial object
 
+
+### scope-1.mint
+its all messed up have to fix it!
+
+
+
  
 
 ![image](https://github.com/user-attachments/assets/2b6cd303-1f15-4b7e-a85e-055055a94236)
