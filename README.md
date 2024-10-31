@@ -70,8 +70,24 @@ Key features include:
 ![image](https://github.com/user-attachments/assets/e2a43ad6-063b-4000-9fa8-8a5cf43e280c)
 ![image](https://github.com/user-attachments/assets/3a871758-9b76-4510-877a-0d354a93b3db)
 
+#### LS7366R_9511_ SPI.mint
 
+	
+### Code Summary
 
+1. **SPI Configuration and Operation**:
+   - The code initializes the LS7366R using SPI communication, configures the counting mode (x4 quadrature, free-running), clears or loads the counter, and retrieves a 32-bit count value.
+
+2. **FPU (AM9511A) Configuration and Operation**:
+   - The FPU is set up with basic functions for initializing, storing arguments, performing addition, checking for errors, and retrieving results. This allows calculations within the MINT program, handling floating-point arithmetic where needed.
+
+3. **Main Program Flow**:
+   - The `:START` routine initializes the LS7366R, clears the counter, initializes FPU arguments, performs a simple operation (addition), checks for errors, and reads back the results. The program then enters an infinite loop awaiting further input or commands.
+
+4. **Testing and Validation**:  
+   - **Verify Port Addresses**: Ensure that all defined ports (e.g., `DATA_PORT`, `COMMAND_PORT`, `STATUS_PORT`, `SPI_CS_PORT`, etc.) align with the actual connections in your TEC-SCOPE hardware.
+   - **Timing**: Adjust delays if necessary for SPI reliability and FPU response.
+   - **Testing Routine**: Test each section independently before running the complete program to validate SPI communication, FPU operations, and data integrity.
 
 
 
