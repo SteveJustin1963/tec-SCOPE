@@ -38,17 +38,10 @@
  ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
 
 ### SPI
-1
+ 
 ![image](https://github.com/user-attachments/assets/c596d7a4-f89f-4522-9ba0-565d6488245d)
 
-2
-![Schematic_tec-Scope_2024-10-28](https://github.com/user-attachments/assets/85bd0e3b-1a09-4705-82ca-f70607eb217d)
-
-
- 
-
-
-
+see easyeda for schematic 
 
 
 ### counter chip LS7366R
@@ -65,30 +58,7 @@ Key features include:
 - expenisve chip! over $30
 - try a ATtiny85 with Quadrature Encoder Implementation for $1
 
-### rotary encoder
-The **A** and **B** signals from the rotary encoder are part of a **quadrature output**. 
-This means the encoder uses the two signals (A and B) that are 90 degrees out of phase to determine both the **position** and **direction** of movement. 
-
-Here's how it works:
-1. **A and B Signals**: 
-   - The encoder produces two square wave signals (A and B). 
-   - These signals are offset by 90 degrees (a quarter of a cycle). This phase difference is what allows the system to determine the direction of rotation.
-
-2. **Counting Pulses**:
-   - As the encoder rotates, these signals will alternate between HIGH (1) and LOW (0).
-   - If you count the transitions (rising or falling edges) on each channel, you can determine the movement's distance or angle.
-
-3. **Determining Direction**:
-   - By checking the sequence in which A and B change states, you can tell if the movement is clockwise or counterclockwise:
-     - If **A** leads **B** (A changes state before B), it indicates movement in one direction (e.g., clockwise).
-     - If **B** leads **A**, it indicates movement in the opposite direction (e.g., counterclockwise).
-
-When connected to the LS7366R:
-- The LS7366R uses these signals to increment or decrement the counter based on the direction and the number of pulses detected.
-- It supports different counting modes (e.g., 1X, 2X, 4X) to capture pulses for higher resolution, using both edges of A and B.
-
-### control the LS7366R 
-
+control
 - assumning we ignore the **INDEX/** pin 
 - and set up the counter for counting (either initializing it with a specific count or clearing it), 
 - we need to configure **MDR0** and **MDR1** accordingly.
@@ -104,7 +74,7 @@ This register sets up the counting mode, quadrature type, and index behavior.
   - **B3:B2**: Counting mode (e.g., `00` for free-running mode).  
   - **B1:B0**: Quadrature mode (e.g., `11` for x4 quadrature).
 
-Here’s an example configuration for **MDR0**:
+**configuration MDR0**
 - **MDR0** = `0x03`:
   - `00`: Disable index (`B5:B4`).
   - `00`: Free-running count mode (`B3:B2`).
@@ -139,10 +109,31 @@ Here’s an example configuration for **MDR1**:
 - **MDR0**: `0x03` (Disable index, x4 quadrature, free-running).
 - **MDR1**: `0x00` (4-byte counter, counting enabled, no flags).
 
+### rotary encoder
+The **A** and **B** signals from the rotary encoder are part of a **quadrature output**. 
+This means the encoder uses the two signals (A and B) that are 90 degrees out of phase to determine both the **position** and **direction** of movement. 
+
+Here's how it works:
+1. **A and B Signals**: 
+   - The encoder produces two square wave signals (A and B). 
+   - These signals are offset by 90 degrees (a quarter of a cycle). This phase difference is what allows the system to determine the direction of rotation.
+
+2. **Counting Pulses**:
+   - As the encoder rotates, these signals will alternate between HIGH (1) and LOW (0).
+   - If you count the transitions (rising or falling edges) on each channel, you can determine the movement's distance or angle.
+
+3. **Determining Direction**:
+   - By checking the sequence in which A and B change states, you can tell if the movement is clockwise or counterclockwise:
+     - If **A** leads **B** (A changes state before B), it indicates movement in one direction (e.g., clockwise).
+     - If **B** leads **A**, it indicates movement in the opposite direction (e.g., counterclockwise).
+
+When connected to the LS7366R:
+- The LS7366R uses these signals to increment or decrement the counter based on the direction and the number of pulses detected.
+- It supports different counting modes (e.g., 1X, 2X, 4X) to capture pulses for higher resolution, using both edges of A and B.
  
 
 ## ATtiny84 Quadrature Encoder Implementation
-am already sick of the LS7366R, lets do it on the ATtiny84 and 85
+am already sick of the LS7366R, lets do it on the ATtiny84 better the attiny85 as i have some and are very cheap.
 
 
 ////////////
