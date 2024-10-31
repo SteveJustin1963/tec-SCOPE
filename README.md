@@ -30,10 +30,18 @@
 
 
 
-### encoders
-  - HN3806-AB (around $15), has AB 2 phase rectangular orthogonal pulses 600 pulses/rev aka 2 wires, max 5000rpm we are not going that fast, response 0-20KHz 
-  - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
-  - do not connect AB directly VCC!! go to the chip 
+
+#### rotary encoder
+- HN3806-AB (around $15), has AB 2 phase rectangular orthogonal pulses 600 pulses/rev aka 2 wires, max 5000rpm we are not going that fast, response 0-20KHz 
+- green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
+- do not connect AB directly VCC!! go to the chip Use pull resistors
+- A and B from the rotary encoder are part of a quadrature output.
+- means the encoder uses the two signals (A and B) that are 90 degrees out of phase to determine position and direction of movement. 
+- we need to counting the pulses, signals alternate between HIGH (1) and LOW (0).
+- count the transitions (rising or falling edges) on each channel, we can determine the movement's distance or angle.
+- If A leads B eg clockwise
+- If B leads A eg counterclockwise
+    
 
  ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
 
@@ -68,13 +76,7 @@ Key features include:
 
 
 
-#### rotary encoder
-- A and B from the rotary encoder are part of a quadrature output.
-- means the encoder uses the two signals (A and B) that are 90 degrees out of phase to determine position and direction of movement. 
-- we need to counting the pulses, signals alternate between HIGH (1) and LOW (0).
-- count the transitions (rising or falling edges) on each channel, we can determine the movement's distance or angle.
-- If A leads B eg clockwise
-- If B leads A eg counterclockwise
+
  
 
 #### ATtiny84 Quadrature Encoder Implementation
