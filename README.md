@@ -1,15 +1,16 @@
-Make sure you join a club if you use a laser pointer >1mW for star aiming
+
+# warning  
+- messy, changing and unfinished 
+- make sure you join a club if you use a laser pointer >1mW for star aiming
 - https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
 
-Nothing works yet! its a work in progress, not finshed and tested
 
-
-## Let your SCC or Tec-1 control your telescope
-- get urself a cheap 8-inch F5 Dobson or make one, the pushed by hand truss frame type. 
-- next get ur old tec-1 out blow the dust off, add an extra 2k ram total 4k and as well as my expansion board
-- mod the mount with 2 motors and 2 encoders
-- get Stellarium put on a laptop with a serial port u can use usb to serial, ull meed 2 serial ports
-- play
+## Let your SCC or Tec1 control your telescope
+- get urself a cheap 8-inch F5 Dobson or make one, the pushed by hand truss frame type.
+- or make a mock up with cardboard and mount a dslr at the base, have x y or alt, az ability
+- the mount needs 2 rotary encoders
+- later stellarium can talk via a async serial port the scc/tec1
+- 
 
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
 ![image](https://github.com/user-attachments/assets/127c3469-9b72-4adf-8157-af4c271298e7)
