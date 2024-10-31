@@ -58,6 +58,16 @@ Key features include:
 - expenisve chip! over $30
 - try a ATtiny85 with Quadrature Encoder Implementation for $1
 
+![image](https://github.com/user-attachments/assets/b962b0fd-e9ed-4915-aeaa-81f22fcee402)
+![image](https://github.com/user-attachments/assets/e2a43ad6-063b-4000-9fa8-8a5cf43e280c)
+![image](https://github.com/user-attachments/assets/3a871758-9b76-4510-877a-0d354a93b3db)
+
+
+
+
+
+
+
 #### rotary encoder
 - A and B from the rotary encoder are part of a quadrature output.
 - means the encoder uses the two signals (A and B) that are 90 degrees out of phase to determine position and direction of movement. 
