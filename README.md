@@ -153,57 +153,28 @@ Main()
 
 
 
-### code loop ideas 
-- we will ise a simple  x y joystick slew it around with the dc motors
-- and also via via tec1 commands
-- or track a position using an optical gates or estimation 
-- will try starmap Stellarium interface via another bitbang port x.200 commands
-- what to do for long-exposure astrophotography ?
+#### code 
+- motor control /manual or code / / slew joystick- dc motors
+- track a position using an optical gates or estimation or stell 
+- starmap Stellarium interface via another bitbang port x.200 commands
+- long-exposure astrophotography
 
-#### work to be done 
-- read encoders x2 with interrupt start
-- motor control x2
-- display data
-  - read data from encoders, convert to angle, display on tec1s seven segment display of 6 digits xxxx xx
+- read encoders, convert to angle, display on  seven segment display of 6 digits xxxx xx
   - press A gives the azimuth and alt together to 1 degree accuracy, eg az= 0299 alt = 23 displayed as 0299 23
   - press B then only az is displayed deg-min eg 0299 44 meaning 299 degs 44 minutes
   - press C then only alt is displayed deg-min eg 0023 51 meaning 23 deg 51 min
   - no need for precision in seconds unless the machanicals of the telescope can justify it  
+
+
+
 - Stellarium integration
   - /www.instructables.com/Control-Your-Telescope-Using-Stellarium-Arduino/
 
 - calibration
-  - angle check using iphone for compass,
-    - it has a level guide in it as well with the little cross in the middle. adjust thumb screw in base
-    - true north in Sydney add 12.83°E in 2020 changes 0.04° annually
-  - a plastic protractor and plumb for angle
-  - once positioned right then calibrate with alignment to a known celestial object
+  - az check, true north in Sydney add 12.83°E in 2020 changes 0.04° annually
+  - level
+  - calibrate with known celestial object
 
  
 
 ### scope-1.mint 
-
-Code Summary
-
-1. **SPI Configuration and Operation**:
-   - The code initializes the LS7366R using SPI communication, configures the counting mode (x4 quadrature, free-running), clears or loads the counter, and retrieves a 32-bit count value.
-
-2. **FPU (AM9511A) Configuration and Operation**:
-   - The FPU is set up with basic functions for initializing, storing arguments, performing addition, checking for errors, and retrieving results. This allows calculations within the MINT program, handling floating-point arithmetic where needed.
-
-3. **Main Program Flow**:
-   - The `:START` routine initializes the LS7366R, clears the counter, initializes FPU arguments, performs a simple operation (addition), checks for errors, and reads back the results. The program then enters an infinite loop awaiting further input or commands.
-
-### Testing and Validation Tips
-
-- **Verify Port Addresses**: Ensure that all defined ports (e.g., `DATA_PORT`, `COMMAND_PORT`, `STATUS_PORT`, `SPI_CS_PORT`, etc.) align with the actual connections in your TEC-SCOPE hardware.
-- **Timing**: Adjust delays if necessary for SPI reliability and FPU response.
-- **Testing Routine**: Test each section independently before running the complete program to validate SPI communication, FPU operations, and data integrity.
- 
-
-
-
-
-
-
-
