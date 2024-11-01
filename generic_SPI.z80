@@ -1,0 +1,98 @@
+; generic SPI
+; -----------------------------------------------------------------------------------------------
+;
+; Generic SPI Code for Z80 SBC
+;
+; Supports communication with any SPI-compatible device
+;
+; Configure device-specific settings outside of this code
+;
+; -----------------------------------------------------------------------------------------------
+
+ioport  .equ 42h          ; IO port where SPI "controller" is located
+
+    .org 2000h            ; Start of code in RAM at address 2000h
+
+; Initialize the SPI bus to idle state: CS = 1, CLK = 0, MOSI = 0
+init_spi:
+    ld c, ioport
+    ld a, 0fch            ; CS high, CLK low, MOSI low
+    out (c), a
+    call ldelay           ; Allow bus to settle
+    ret
+
+; Generic SPI Write Routine
+; Parameters:
+; D = Register/Command to select in the SPI device
+; E = Data to write to the selected register/command
+spi_write:
+    push af
+    push bc
+    push de
+
+    ld c, ioport          ; SPI controller I/O port
+    ld b, 8               ; Number of bits to send
+
+nbit_reg:                 ; Transmit the register/command byte
+    ld a, 0f8h            ; Set CS low, prepare MOSI
+    rlc d                 ; Rotate left the D register to get next bit in CF
+    adc a, a              ; Load CF into bit 0 of A (MOSI)
+    out (c), a            ; Send the bit over SPI
+    set 1, a              ; Set CLK high
+    out (c), a
+    ld a, 00h             ; Set CLK low
+    out (c), a
+    dec b                 ; Loop until 8 bits are sent
+    jr nz, nbit_reg
+
+    ld b, 8               ; Repeat for data byte in E register
+
+nbit_data:                ; Transmit the data byte
+    ld a, 0f8h            ; Set CS low, prepare MOSI
+    rlc e                 ; Rotate left the E register to get next bit in CF
+    adc a, a              ; Load CF into bit 0 of A (MOSI)
+    out (c), a            ; Send the bit over SPI
+    set 1, a              ; Set CLK high
+    out (c), a
+    ld a, 00h             ; Set CLK low
+    out (c), a
+    dec b                 ; Loop until 8 bits are sent
+    jr nz, nbit_data
+
+    ld a, 0fch            ; Raise CS to end communication
+    out (c), a
+
+    pop de
+    pop bc
+    pop af
+    ret
+
+; Example Subroutine to Send Multiple Data Bytes
+; Parameters: HL = buffer pointer, D = number of bytes to send
+spi_send_data:
+    ld b, d               ; Set the number of bytes to send
+send_loop:
+    ld e, (hl)            ; Load data from buffer into E
+    call spi_write        ; Send data using spi_write routine
+    inc hl                ; Move to next byte in buffer
+    djnz send_loop        ; Repeat until all bytes are sent
+    ret
+
+; General purpose delay loop
+ldelay:
+    push af
+    push de
+    ld de, 0c000h
+
+delay_inner:
+    dec de
+    ld a, d
+    or e
+    jr nz, delay_inner
+
+    pop de
+    pop af
+    ret
+
+; End of code
+ 
