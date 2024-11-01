@@ -66,8 +66,7 @@ Key features include:
 - expenisve chip! over $30
 - try a ATtiny85 with Quadrature Encoder Implementation for $1
 
-![image](https://github.com/user-attachments/assets/6e4162ef-1fbc-4e06-bfb9-1121b368dac5)
-
+![Schematic_tec-Scope_2024-11-01](https://github.com/user-attachments/assets/401ab727-e7d8-4c5c-8ebc-1797c052c6d5)
 ![image](https://github.com/user-attachments/assets/8c867f95-dc67-4407-9ac7-c32558e86b5c)
 ![image](https://github.com/user-attachments/assets/d27cb63a-5d76-484f-8c67-332adc17a273)
 
