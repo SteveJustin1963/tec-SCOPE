@@ -66,9 +66,12 @@ Key features include:
 - expenisve chip! over $30
 - try a ATtiny85 with Quadrature Encoder Implementation for $1
 
-![Schematic_tec-Scope_2024-11-01](https://github.com/user-attachments/assets/401ab727-e7d8-4c5c-8ebc-1797c052c6d5)
-![image](https://github.com/user-attachments/assets/8c867f95-dc67-4407-9ac7-c32558e86b5c)
-![image](https://github.com/user-attachments/assets/d27cb63a-5d76-484f-8c67-332adc17a273)
+ 
+![Schematic_tec-Scope_2024-11-01 (1)](https://github.com/user-attachments/assets/54d99106-fb3e-41d8-b811-f4e2620b6e7e)
+![image](https://github.com/user-attachments/assets/466d03ed-0395-4116-8731-8d275b041857)
+![image](https://github.com/user-attachments/assets/0f5bb19e-24f4-4d7f-96f7-87e9281c3b14)
+
+
 
 
 #### LS7366R_9511_ SPI.mint
