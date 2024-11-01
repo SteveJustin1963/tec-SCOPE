@@ -1,0 +1,42 @@
+ioport  .equ 42h          ; Define the I/O port address
+
+; Initialize SPI bus
+init_spi:
+    ld a, 0fch            ; CS high, CLK low, MOSI low
+    out (ioport), a
+    ret
+
+; SPI Write: D = Command/Register, E = Data
+spi_write:
+    push bc
+
+    ; Send 8 bits from D (command/register)
+    ld b, 8
+reg_loop:
+    ld a, 0f8h            ; Lower CS
+    rlc d                 ; Rotate left to bring bit into CF
+    adc a, a              ; Set MOSI based on CF
+    out (ioport), a
+    set 1, a              ; CLK high
+    out (ioport), a
+    ld a, 0               ; CLK low
+    out (ioport), a
+    djnz reg_loop         ; Repeat for 8 bits
+
+    ; Send 8 bits from E (data)
+    ld b, 8
+data_loop:
+    ld a, 0f8h
+    rlc e                 ; Rotate left to bring bit into CF
+    adc a, a              ; Set MOSI based on CF
+    out (ioport), a
+    set 1, a              ; CLK high
+    out (ioport), a
+    ld a, 0               ; CLK low
+    out (ioport), a
+    djnz data_loop
+
+    ld a, 0fch            ; Raise CS to end communication
+    out (ioport), a
+    pop bc
+    ret
