@@ -266,6 +266,24 @@ its all messed up have to fix it!
 
 
 
+### generic SPI code
+
+generic_SPI.z80
+
+
+1. **Generic `spi_write` Routine**:
+   - This routine can be used to send any 8-bit command (register or operation) and 8-bit data to an SPI device by setting `D` and `E` with the required values.
+   
+2. **Buffer Send Routine (`spi_send_data`)**:
+   - This subroutine allows sending multiple bytes from a buffer, which is useful for devices needing continuous data transmission.
+   - By setting `HL` to point to the buffer and `D` to the number of bytes, we can send any arbitrary amount of data to the SPI device.
+
+3. **Device-Agnostic Initialization**:
+   - The initialization routine (`init_spi`) simply sets the SPI bus to an idle state, without device-specific configurations.
+   
+4. **Configuration Outside Code**:
+   - Device-specific configurations can be handled in calling code by setting registers (`D` and `E`) before calling `spi_write`, allowing reuse of this code across multiple SPI devices.
+
  
 
 
