@@ -6,10 +6,10 @@
 
 
 ## Let your SCC or Tec1 control your telescope
-- get urself a cheap 8-inch F5 Dobson or make one, the pushed by hand truss frame type.
+- get yourself a cheap 8-inch F5 Dobson or make one, the pushed by hand truss frame type.
 - or make a mock up with cardboard and mount a dslr at the base, have x y or alt, az ability
 - the mount needs 2 rotary encoders
-- later stellarium can talk via a async serial port the scc/tec1
+- Stellarium can talk via an async serial port to our code
 - 
 
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
@@ -21,8 +21,8 @@
 ### mount
 - alt (up down) and azimuth (side to side) lets say x and y, are friction coupled, convert this to gears and bearing support 
 - we need to add 2 motors and 2 encoders
-- where to get a free motor with a reduction gear? hack one out of a thrown out foot massager, its motor is 24v and has a worm drive shaft coming out each side
-- for the az motor need somthing else as we have no rooom under the mount
+- for an alt motor with a reduction worm drive with perpendicular shafts on each side can be got from a discarded foot massage machine, it has a 24v motor, need to be run at a lower voltage and pwm to slow it down as its powerful and fast, fast is not what we want. 
+- for the az motor need something else as we have no room under the mount
 - 
 
  
@@ -49,7 +49,7 @@
  
 ![image](https://github.com/user-attachments/assets/c596d7a4-f89f-4522-9ba0-565d6488245d)
 
-see easyeda for schematic 
+see http://easyeda.com for schematics, links coming 
 
 
 ### counter chip LS7366R
@@ -63,9 +63,8 @@ Key features include:
 - Quadrature decoding for up to four times the encoder resolution.
 - Support for various count modes (up, down, quadrature, and modulo).
 - A 32-bit counter register that allows for high-resolution tracking.
-- expenisve chip! over $30
-- try a ATtiny85 with Quadrature Encoder Implementation for $1
-
+- expensive chip! over $30
+- i want the 9511 mpu as i think we may have to do some hard computing on celestial computing
  
 ![Schematic_tec-Scope_2024-11-01 (1)](https://github.com/user-attachments/assets/54d99106-fb3e-41d8-b811-f4e2620b6e7e)
 ![image](https://github.com/user-attachments/assets/466d03ed-0395-4116-8731-8d275b041857)
@@ -80,13 +79,13 @@ Key features include:
 ### Code Summary
 
 1. **SPI Configuration and Operation**:
-   - The code initializes the LS7366R using SPI communication, configures the counting mode (x4 quadrature, free-running), clears or loads the counter, and retrieves a 32-bit count value.
+   - The code initialises the LS7366R using SPI communication, configures the counting mode (x4 quadrature, free-running), clears or loads the counter, and retrieves a 32-bit count value.
 
 2. **FPU (AM9511A) Configuration and Operation**:
-   - The FPU is set up with basic functions for initializing, storing arguments, performing addition, checking for errors, and retrieving results. This allows calculations within the MINT program, handling floating-point arithmetic where needed.
+   - The FPU is set up with basic functions for initialising, storing arguments, performing addition, checking for errors, and retrieving results. This allows calculations within the MINT program, handling floating-point arithmetic where needed.
 
 3. **Main Program Flow**:
-   - The `:START` routine initializes the LS7366R, clears the counter, initializes FPU arguments, performs a simple operation (addition), checks for errors, and reads back the results. The program then enters an infinite loop awaiting further input or commands.
+   - The `:START` routine initialises the LS7366R, clears the counter, initialises FPU arguments, performs a simple operation (addition), checks for errors, and reads back the results. The program then enters an infinite loop awaiting further input or commands.
 
 4. **Testing and Validation**:  
    - **Verify Port Addresses**: Ensure that all defined ports (e.g., `DATA_PORT`, `COMMAND_PORT`, `STATUS_PORT`, `SPI_CS_PORT`, etc.) align with the actual connections in your TEC-SCOPE hardware.
@@ -99,13 +98,11 @@ Key features include:
 
  
 
-#### ATtiny84 Quadrature Encoder Implementation
-am already sick of the LS7366R, lets do it on two attiny85's
+#### ATtiny84/85 Quadrature Encoder Implementation
+- lets try the ATtiny85 with Quadrature Encoder Implementation for $1, or the 84 if we need more gpios
+- am already sick of the LS7366R due to the complexity and the high cost and hard to find it, lets do it with two attiny85 or on 84.
+- we can just modify the exiting code and  setup using two ATtiny85s, where each chip handles one encoder and communicates as SPI slave.
 
-I'll modify the code for a setup using two ATtiny85s, where each chip handles one encoder and communicates via SPI. This configuration is much cleaner as it eliminates pin sharing issues.
-
-
- 
 
 Key features of this two-chip solution:
 
@@ -156,31 +153,23 @@ To use this system:
 
 
 
-adding more spi slaves i think will migrate to ardino uno !!
-get more gpio etc
+- if we add more spi slaves as we will I think ill migrate to ardino, stay tuned
+- 
 
+### KMA215 for az reading 
+- a magnetic sensor; the KMA215 for angle measurements
+- it has an resolution to 0.1 degrees, accuracy ±1 degree
+- effected by strength and stability of the magnetic field.
+- we can check it against our calibrated estimation
+- chosen because it has SPI 
+- to ReadAngle
+  - pull the chip select (CS) low to initiate communication.
+  - we sends a command (e.g., `0xA0`) to request the angle data.
+  - we reads two bytes (MSB and LSB) from the sensor.
+  - we combines the bytes into a 16-bit value and converts it into degrees
+  - we can use it, display it, etc 
 
-### az with magnetic sensor
-we shud add a KMA215 
-- accurate for angle measurement
-- Resolution to 0.1 degrees
-- angle accuracy ±1 degree
-- depends on:
-   - The strength and stability of the magnetic field.
-   - The environmental conditions, such as temperature variations.
-   - Proper alignment and calibration of the sensor with the magnet.
-- operate accurately across a wide temperature range
-
-### sudo KMA215 SPI 
-
-- Initialize SPI communication settings specific to the KMA215.
-- ReadAngle
-   - Pulls the chip select (CS) low to initiate communication.
-   - Sends a command (e.g., `0xA0`) to request the angle data.
-   - Reads two bytes (MSB and LSB) from the sensor.
-   - Combines the bytes into a 16-bit value and converts it into degrees.
-- Main Loop, continuously reads and prints the angle.
-
+we could do some pre processing on the attiny85 or do it from mint code
 
 ```
 // Pseudocode for reading angle data from KMA215 using SPI
@@ -242,17 +231,18 @@ Main()
 
 
 
-#### code 
+#### main code loop
+- build up simple features first
 - motor control /manual or code / / slew joystick- dc motors
-- track a position using an optical gates or estimation or stell 
-- starmap Stellarium interface via another bitbang port x.200 commands
-- long-exposure astrophotography
+- track a position using an optical gates or estimation on Stellarium
+- star map Stellarium interface via another bit bang port x.200 commands
+- long-exposure astro-photography
 
 - read encoders, convert to angle, display on  seven segment display of 6 digits xxxx xx
   - press A gives the azimuth and alt together to 1 degree accuracy, eg az= 0299 alt = 23 displayed as 0299 23
   - press B then only az is displayed deg-min eg 0299 44 meaning 299 degs 44 minutes
   - press C then only alt is displayed deg-min eg 0023 51 meaning 23 deg 51 min
-  - no need for precision in seconds unless the machanicals of the telescope can justify it  
+  - no need for precision in seconds unless the mechanical of the telescope can justify it  
 
 
 
@@ -276,14 +266,15 @@ generic_SPI.z80
 
 
 1. **Generic `spi_write` Routine**:
-   - This routine can be used to send any 8-bit command (register or operation) and 8-bit data to an SPI device by setting `D` and `E` with the required values.
+   - This routine can be used to send any 8-bit command (register or operation) and
+ 8-bit data to an SPI device by setting `D` and `E` with the required values.
    
 2. **Buffer Send Routine (`spi_send_data`)**:
    - This subroutine allows sending multiple bytes from a buffer, which is useful for devices needing continuous data transmission.
    - By setting `HL` to point to the buffer and `D` to the number of bytes, we can send any arbitrary amount of data to the SPI device.
 
-3. **Device-Agnostic Initialization**:
-   - The initialization routine (`init_spi`) simply sets the SPI bus to an idle state, without device-specific configurations.
+3. **Device-Agnostic Initialisation**:
+   - The initialisation routine (`init_spi`) simply sets the SPI bus to an idle state, without device-specific configurations.
    
 4. **Configuration Outside Code**:
    - Device-specific configurations can be handled in calling code by setting registers (`D` and `E`) before calling `spi_write`, allowing reuse of this code across multiple SPI devices.
