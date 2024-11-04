@@ -1,7 +1,7 @@
 
 # warning  
 - messy, changing and unfinished 
-- make sure you join a club if you use a laser pointer >1mW for star aiming
+- make sure you join an astronomy club if you use a laser pointer >1mW for star aiming
 - https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
 
 
