@@ -1,5 +1,5 @@
 
-// Complete MINT Code with AM9511 FPU and LS7366R SPI Setup
+// MINT3 Code with AM9511 FPU and LS7366R SPI Setup
 
 // Constants and Port Definitions
 
