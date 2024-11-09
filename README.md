@@ -100,7 +100,7 @@ Key features include:
 
 #### ATtiny84/85 Quadrature Encoder Implementation
 - lets try the ATtiny85 with Quadrature Encoder Implementation for $1, or the 84 if we need more gpios
-- am already sick of the LS7366R due to the complexity and the high cost and hard to find it, lets do it with two attiny85 or on 84.
+- am already sick of the LS7366R due to the complexity and the high cost and hard to find it, lets do it with two attiny85 or one attiny84.
 - we can just modify the exiting code and  setup using two ATtiny85s, where each chip handles one encoder and communicates as SPI slave.
 
 
