@@ -105,4 +105,206 @@ The `loop()` function continuously:
 
 ---
 
+## Here’s a **line-by-line explanation** of your program:
+
+---
+
+### **Header Section**
+
+```cpp
+#include "config.h"
+```
+- Includes configuration details like pin definitions, encoder pulse counts, latitude, and astronomical parameters from a separate header file.
+
+```cpp
+unsigned long seg_sideral = 1003;
+```
+- Defines the duration (in milliseconds) of one sidereal second, a unit based on Earth's rotation relative to the stars.
+
+```cpp
+const double pi = 3.14159265358979324;
+```
+- Defines a precise value of π for trigonometric calculations.
+
+```cpp
+volatile int lastEncoded1 = 0;
+volatile long encoderValue1 = 0;
+volatile int lastEncoded2 = 0;
+volatile long encoderValue2 = 0;
+```
+- Variables for tracking the last state and cumulative position of two rotary encoders. Declared `volatile` as they are updated within interrupt service routines (ISRs).
+
+```cpp
+char input[20];
+char txAR[10];
+char txDEC[11];
+```
+- Buffers for communication: `input` stores incoming data; `txAR` and `txDEC` store formatted right ascension (RA) and declination (DEC) strings.
+
+```cpp
+long TSL;
+unsigned long t_ciclo_acumulado = 0, t_ciclo;
+long Az_tel_s, Alt_tel_s;
+long AR_tel_s, DEC_tel_s;
+long AR_stell_s, DEC_stell_s;
+double cos_phi, sin_phi;
+double alt, azi;
+```
+- Variables for:
+  - `TSL`: Local sidereal time.
+  - `Az_tel_s`/`Alt_tel_s`: Azimuth and altitude in arcseconds.
+  - `AR_tel_s`/`DEC_tel_s`: Telescope's RA and DEC in arcseconds.
+  - Trigonometric values of latitude (`cos_phi`, `sin_phi`) for celestial calculations.
+
+---
+
+### **Setup Function**
+
+```cpp
+void setup()
+```
+- Configures hardware and initializes global variables.
+
+```cpp
+Serial.begin(9600);
+```
+- Starts serial communication at 9600 baud for interfacing with Stellarium.
+
+```cpp
+pinMode(enc_1A, INPUT_PULLUP);
+pinMode(enc_1B, INPUT_PULLUP);
+pinMode(enc_2A, INPUT_PULLUP);
+pinMode(enc_2B, INPUT_PULLUP);
+```
+- Configures encoder pins as inputs with pull-up resistors.
+
+```cpp
+attachInterrupt(digitalPinToInterrupt(enc_1A), Encoder1, CHANGE);
+attachInterrupt(digitalPinToInterrupt(enc_1B), Encoder1, CHANGE);
+attachInterrupt(digitalPinToInterrupt(enc_2A), Encoder2, CHANGE);
+attachInterrupt(digitalPinToInterrupt(enc_2B), Encoder2, CHANGE);
+```
+- Attaches interrupts to encoder pins. The `Encoder1` and `Encoder2` functions handle changes in the encoder signal states.
+
+```cpp
+cos_phi = cos((((latHH * 3600) + (latMM * 60) + latSS) / 3600.0) * pi / 180.0);
+sin_phi = sin((((latHH * 3600) + (latMM * 60) + latSS) / 3600.0) * pi / 180.0);
+```
+- Precomputes cosine and sine of the latitude for celestial calculations.
+
+```cpp
+TSL = poleAR_HH * 3600 + poleAR_MM * 60 + poleAR_SS + poleH_HH * 3600 + poleH_MM * 60 + poleH_SS;
+while (TSL >= 86400) TSL = TSL - 86400;
+```
+- Calculates the initial local sidereal time in seconds and ensures it wraps around a 24-hour cycle (86,400 seconds).
+
+---
+
+### **Main Loop**
+
+```cpp
+void loop()
+```
+- The main loop handles timing, sensor readings, and communication.
+
+```cpp
+t_ciclo = millis();
+if (t_ciclo_acumulado >= seg_sideral) {
+    TSL++;
+    t_ciclo_acumulado = t_ciclo_acumulado - seg_sideral;
+    if (TSL >= 86400) {
+        TSL = TSL - 86400;
+    }
+}
+```
+- Updates `TSL` every sidereal second. Sidereal seconds are shorter than regular seconds due to Earth’s rotation relative to the stars.
+
+```cpp
+read_sensors();
+AZ_to_EQ();
+```
+- Reads encoder values (`read_sensors`) and converts azimuth and altitude to celestial coordinates (`AZ_to_EQ`).
+
+```cpp
+if (Serial.available() > 0) communication();
+```
+- Checks for incoming serial data and processes it using the `communication()` function.
+
+```cpp
+t_ciclo = millis() - t_ciclo;
+t_ciclo_acumulado = t_ciclo_acumulado + t_ciclo;
+```
+- Accumulates elapsed time to ensure sidereal time remains accurate.
+
+---
+
+### **Communication Function**
+
+```cpp
+void communication()
+```
+- Handles serial communication with Stellarium or another client.
+
+```cpp
+input[i++] = Serial.read();
+delay(5);
+while ((input[i++] = Serial.read()) != '#') {
+    delay(5);
+}
+input[i] = '\0';
+```
+- Reads and parses incoming serial commands.
+
+```cpp
+if (input[1] == ':' && input[2] == 'G' && input[3] == 'R' && input[4] == '#') {
+    Serial.print(txAR);
+}
+if (input[1] == ':' && input[2] == 'G' && input[3] == 'D' && input[4] == '#') {
+    Serial.print(txDEC);
+}
+```
+- Responds to specific commands with RA (`txAR`) or DEC (`txDEC`) strings.
+
+---
+
+### **Sensor Reading**
+
+```cpp
+void read_sensors()
+```
+- Converts encoder values into azimuth and altitude.
+
+```cpp
+if (encoderValue2 >= pulses_enc2 || encoderValue2 <= -pulses_enc2) {
+    encoderValue2 = 0;
+}
+```
+- Wraps the encoder values to prevent overflow.
+
+```cpp
+Alt_tel_s = map1 + map (encoder1_temp, 0, pulses_enc1, 0, 324000);
+Az_tel_s  = map2 + map (encoder2_temp, 0, pulses_enc2, 0, 1296000);
+```
+- Maps encoder values to altitude and azimuth in arcseconds. 324,000 and 1,296,000 are total arcseconds in 90° and 360°, respectively.
+
+---
+
+### **Encoder ISR Functions**
+
+```cpp
+void Encoder1()
+void Encoder2()
+```
+- Tracks encoder rotation direction using quadrature decoding.
+
+---
+
+### **Coordinate Conversion**
+
+```cpp
+void AZ_to_EQ()
+```
+- Converts azimuth (`Az_tel_s`) and altitude (`Alt_tel_s`) to RA and DEC.
+
+---
 
