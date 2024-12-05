@@ -308,3 +308,123 @@ void AZ_to_EQ()
 
 ---
 
+
+## convert this telescope control code to MINT. 
+
+Key Assumptions Made:
+
+1. Hardware Limitations:
+- MINT is running on a system with access to 4 digital input pins (2,3,4,5)
+- The system has enough RAM to handle the variables (MINT only has 2K RAM)
+- The system clock can handle timing at millisecond level
+
+2. Encoder Interface:
+- Using quadrature encoders with 2 channels each
+- Encoders provide 36000 pulses per revolution
+- Interrupt handling is available through the Z function
+
+3. Mathematical Operations:
+- All calculations use fixed-point math since MINT only handles integers
+- Trigonometric functions are not implemented (would need lookup tables)
+- Angular calculations are simplified to work with integers
+
+4. Memory Usage:
+- Using single-letter variables (a-z) due to MINT's limitation
+- No arrays larger than available memory
+- Limited string handling capabilities
+
+5. Input/Output:
+- Serial communication at a lower level than original Arduino code
+- Basic digital I/O through ports is available
+- Limited interrupt handling compared to Arduino
+
+6. Features Not Implemented:
+- Complex floating-point calculations 
+- Full astronomical calculations
+- Serial command parsing
+- Trigonometric functions
+- Full error handling
+
+The code provided is a basic framework that would need:
+1. Additional error handling
+2. Proper calibration routines
+3. Lookup tables for trig functions
+4. More precise timing mechanisms
+5. Additional helper functions for astronomical calculations
+
+```
+// Global variables
+:V // Initialize variables
+  0 a! // encoderValue1
+  0 b! // encoderValue2 
+  0 c! // lastEncoded1
+  0 d! // lastEncoded2
+  0 e! // TSL (Time Sidereal Local)
+  1003 f! // seg_sideral
+  0 g! // t_ciclo_acumulado
+  0 h! // Alt_tel_s
+  0 i! // Az_tel_s
+  0 j! // AR_tel_s 
+  0 k! // DEC_tel_s
+;
+
+// Encoder1 interrupt handler
+:A // Encoder1 handler
+  2/I 1{ 3/I | n! // encoded = (enc_1A << 1) | enc_1B
+  c 2{ n | m! // sum = (lastEncoded << 2) | encoded
+  m #0D = m #04 = m #02 = m #0B = ||| (a 1+ a!) // increment
+  m #0E = m #07 = m #01 = m #08 = ||| (a 1- a!) // decrement
+  n c! // lastEncoded = encoded
+;
+
+// Encoder2 handler similar to Encoder1
+:B 
+  4/I 1{ 5/I | n!
+  d 2{ n | m!
+  m #0D = m #04 = m #02 = m #0B = ||| (b 1+ b!)
+  m #0E = m #07 = m #01 = m #08 = ||| (b 1- b!)
+  n d!
+;
+
+// Read sensors and convert encoder values
+:R
+  b 36000 >= b -36000 <= || (0 b!)
+  a 1500 / p! // enc1
+  a p 1500 * - q! // encoder1_temp
+  p 1500 0 36000 324000 */ r! // map1
+  b 1500 / s! // enc2
+  b s 1500 * - t! // encoder2_temp 
+  s 1500 0 36000 1296000 */ u! // map2
+  
+  r q 0 36000 324000 */ + h! // Alt_tel_s
+  u t 0 36000 1296000 */ + i! // Az_tel_s
+  
+  i 0 < (1296000 i + i!)
+  i 1296000 >= (i 1296000 - i!)
+;
+
+// Main loop for telescope control
+:M
+  V // Initialize variables
+  /U( // Infinite loop
+    g f >= ( // Check if accumulated time >= sideral second
+      e 1+ e! 
+      g f - g!
+      e 86400 >= (e 86400 - e!)
+    )
+    R // Read sensors
+    A // Handle encoder1
+    B // Handle encoder2
+    1000() // Delay ~1 second
+  )
+;
+
+// Setup and start
+:S
+  2 1 /O // Set pin 2 for input
+  3 1 /O
+  4 1 /O
+  5 1 /O
+  M // Start main loop
+;
+```
