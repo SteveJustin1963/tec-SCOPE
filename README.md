@@ -8,7 +8,7 @@
 ## Let your SCC or Tec1 control your telescope
 - get yourself a cheap 8-inch F5 Dobson or make one, the pushed by hand truss frame type.
 - or make a mock up with cardboard and mount a dslr at the base, have x-y or alt-az ability
-- the mount needs 2 rotary encoders
+- the mount needs 2 rotary encoders and geared down
 - Stellarium can talk via an async serial port to our code
 - 
 
