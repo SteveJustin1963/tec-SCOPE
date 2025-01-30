@@ -1,7 +1,8 @@
 
+
 # warning  
 - messy, changing and unfinished 
-- u need an astronomy permit to use a laser pointer >1mW for star aiming
+- u need an astronomy permit to use a laser pointer >1mW for star aiming, better to fit a red dot aiming device on ur telescope with a 90deg angle viewer
 - https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
 
 
