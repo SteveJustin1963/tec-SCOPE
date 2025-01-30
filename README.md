@@ -2,7 +2,7 @@ under development, not ready
 
 
 # aiming
-- get or make a cheap 8-inch F5 Dobson, truss or tube, pushed by hand
+- get or make a cheap 8-inch F5 Dobson, truss or tube, pushed by hand. i found an old truss for $35 on gumtree. any telescope will do so long as u can mod it.
 - red dot aiming device needs neck bending
 - to save ur neck use a Sky-Watcher 6x30mm Right Angled (90deg angle viewer) Erect Image (shows objects right-side up and not inverted or reversed) Finder Scope. Ideal for fast, intuitive location of target objects. 
 - laser pointer >1mW for star aiming u need an astronomy permit https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
