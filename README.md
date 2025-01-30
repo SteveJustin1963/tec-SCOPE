@@ -310,19 +310,25 @@ Count:0 Angle:0.000 deg
 ## mint test2
 step through 0 to 5 degrees, using our known resolution (0.015° per pulse).
 ```
-:M [0 1 3 2]p! 0 z!;
+ [0 1 3 2]p! 0 r! 0 e! 0 g!
+15 j!
 
-// For 5 degrees: 5/0.015 = ~333 pulses needed
-// Each state transition is 1 pulse, so we need 333 cycles
-:N z 333 < (p z 4% ? a! p z 4% ? b! a /I 2* b /I + n! z 1+ z! n) /E (0 z!);
+:Q k! k #0F & k 4} #0F & 2* + [0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0]$! $ k?.;
 
-:D k! k 15* 1000/;
+:A r p? " #02 & 2} a! r p? #01 & b! a /I 2* b /I + g 4* + " Q " 0=/F(e $+ e!) g!;
+
+:D k! k j* 1000/;
 
 :E k! k D " 1000/`.` k D 1000% " 100/.` deg`;
 
-:S M /T i! 0 e! /U(i /W N e 1+ e! 
-`Count:`e.` at `e E /N 
-500() /K 27=(/F i!));
+:S /T i! /U(i /W r 333<(
+    `Count:`e.` Angle:`e E/N 
+    500() 
+    A
+    r 1+ r!
+    ) /E (0 r!)
+    /K 27=(/F i!)
+);
 
 S
 ```
