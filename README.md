@@ -47,6 +47,94 @@ under development, not ready
 
  ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
 
+```
+// Port assignments for encoders
+2 a! // Encoder 1 - A pulse
+3 b! // Encoder 1 - B pulse
+4 c! // Encoder 2 - A pulse
+5 d! // Encoder 2 - B pulse
+
+// Variables for counting
+0 e! // Encoder 1 count
+0 f! // Encoder 2 count
+0 g! // Previous state encoder 1
+0 h! // Previous state encoder 2
+
+// Constants for angle calculation
+// 600 pulses per rev × 10:1 gear = 6000 pulses per full mechanical revolution
+// Therefore: 360 degrees / 6000 pulses = 0.06 degrees per pulse
+// Since MINT uses integers, we'll multiply by 100 for 2 decimal places
+6 j! // Degrees per 100 pulses (0.06 × 100 = 6)
+
+// Function to calculate degrees (with 2 decimal places)
+:D k! // Input: count in k
+  k j *  // Multiply count by degrees/100 pulses
+  100 /  // Divide by 100 to get actual degrees
+;
+
+// Function to read encoder 1
+:A 
+  a /I 2 * b /I + // Combine A and B inputs into state
+  " g = /F (      // Compare with previous state
+    " g > (       // If state > previous, clockwise
+      e 1 + e!    // Increment count
+    ) /E (        // Else
+      e 1 - e!    // Decrement count
+    )
+  )
+  g!             // Store current state as previous
+;
+
+// Function to read encoder 2
+:B
+  c /I 2 * d /I + // Combine A and B inputs into state
+  " h = /F (      // Compare with previous state
+    " h > (       // If state > previous, clockwise
+      f 1 + f!    // Increment count
+    ) /E (        // Else
+      f 1 - f!    // Decrement count
+    )
+  )
+  h!             // Store current state as previous
+;
+
+// Function to display angle with decimal point
+:E k!           // Input: count in k
+  k D " 100 /   // Get whole degrees
+  `.`           // Decimal point
+  k D 100 %     // Get decimal part
+  . ` degrees`  // Print decimal and units
+;
+
+// Main loop to read both encoders and show angles
+:C
+  /T i!          // Set loop control flag
+  /U (           // Start unlimited loop
+    i /W         // Continue while flag is true
+    A B          // Read both encoders
+    `Encoder 1: Count:` e . 
+    ` Angle:` e E /N
+    `Encoder 2: Count:` f . 
+    ` Angle:` f E /N
+    100()        // Small delay
+    /K 27 = (    // Check for ESC key
+      /F i!      // Set flag false to exit
+    )
+  )
+;
+
+// Function to reset counters to zero
+:F 
+  0 e! 0 f!     // Reset both counts to zero
+  `Counters reset to zero` /N
+;
+```
+
+
+
+
+
+
 ### SPI
  
 ![image](https://github.com/user-attachments/assets/c596d7a4-f89f-4522-9ba0-565d6488245d)
