@@ -270,6 +270,44 @@ under development, not ready
 ;
 ```
 
+# mimi encoder test
+This minimal version:
+1. Has one test pattern array
+2. Only reads one encoder
+3. Still shows states, count and angle
+4. Can exit with ESC
+
+To use:
+1. Copy and paste the code
+2. Hit enter
+3. Watch simulated encoder results
+```
+[0 1 3 2 0 1 3 2 0 2 3 1 0]p!
+0 r! 0 e! 0 f! 0 g! 0 h!
+15 j!
+
+:Q k! k #0F & k 4} #0F & 2* + [0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0]$! $ k?.;
+
+:A r p? " #02 & 2} a! r p? #01 & b! a /I 2* b /I + g 4* + " Q " 0=/F(e $+ e!) g!;
+
+:D k! k j* 1000/;
+
+:E k! k D " 1000/`.` k D 1000% " 100/.` deg`;
+
+:S /T i! /U(i /W `States A=`a.` B=`b./N `Count:`e.` Angle:`e E/N 500() r 1+" p/S% r! A 
+/K 27=(/F i!));
+
+S
+```
+
+
+
+
+The output will look like:
+```
+States A=0 B=0
+Count:0 Angle:0.000 deg
+```
 
 
 
