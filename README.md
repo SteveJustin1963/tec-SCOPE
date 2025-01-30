@@ -139,7 +139,136 @@ under development, not ready
 ;
 ```
 
+## test with dummy data loop
+```
+// Test data arrays for AB signals simulation
+// States: [A,B]: 00→01→11→10 (CW) and reverse for CCW
+[0 1 3 2 0 1 3 2 0 2 3 1 0 2 3 1] p! // Encoder 1 test pattern (CW then CCW)
+[0 1 3 2 0 2 3 1 0 1 3 2 0 2 3 1] q! // Encoder 2 test pattern (different pattern)
+0 r! // Test data index
 
+// Function to get simulated port data
+:T // Returns simulated port readings
+  r p ? " #02 & 2 } a! // Get A1 bit
+  r p ? #01 & b!       // Get B1 bit
+  r q ? " #02 & 2 } c! // Get A2 bit
+  r q ? #01 & d!       // Get B2 bit
+  r 1 + " p /S % r!    // Increment index with wraparound
+;
+
+// Variables for counting
+0 e! // Encoder 1 count
+0 f! // Encoder 2 count
+
+// Previous quadrature states
+0 g! // Previous A1,B1 state
+0 h! // Previous A2,B2 state
+
+// Constants for angle calculation
+// 600 pulses × 4 (quadrature) × 10 (gear) = 24000 pulses per mechanical revolution
+// 360 degrees / 24000 = 0.015 degrees per pulse
+// Multiply by 1000 for 3 decimal places: 0.015 × 1000 = 15
+15 j! // Degrees per 1000 pulses
+
+// Quadrature state lookup table for clockwise rotation
+// [00->01->11->10->00]
+// Returns 1 for clockwise, -1 for counter-clockwise, 0 for invalid
+:Q k! // Input: old state in high nibble, new state in low nibble
+  k #0F &    // Mask new state
+  k 4 } #0F & // Shift and mask old state
+  2 * +      // Combine states to use as index
+  [0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0] $! // Store lookup table
+  $ k ? .    // Return direction from lookup
+;
+
+// Function to read encoder 1
+:A 
+  a /I 2 * b /I +  // Get current state (combine A and B)
+  g 4 * +         // Combine with previous state
+  " Q             // Get direction from lookup
+  " 0 = /F (      // If valid transition
+    e $ + e!      // Update count
+  )
+  g!              // Store current state
+;
+
+// Function to read encoder 2
+:B
+  c /I 2 * d /I +  // Get current state (combine A and B)
+  h 4 * +         // Combine with previous state
+  " Q             // Get direction from lookup
+  " 0 = /F (      // If valid transition
+    f $ + f!      // Update count
+  )
+  h!              // Store current state
+;
+
+// Function to calculate degrees (with 3 decimal places)
+:D k! // Input: count in k
+  k j *  // Multiply count by degrees/1000
+  1000 / // Divide by 1000 to get actual degrees
+;
+
+// Function to display angle with decimal point
+:E k!           // Input: count in k
+  k D " 1000 /  // Get whole degrees
+  `.`           // Decimal point
+  k D 1000 % " 100 / . // Show 3 decimal places
+  ` degrees`    // Print units
+;
+
+// Main loop with real inputs
+:C
+  /T i!          // Set loop control flag
+  /U (           // Start unlimited loop
+    i /W         // Continue while flag is true
+    A B          // Read both encoders
+    `Encoder 1: Count:` e . 
+    ` Angle:` e E /N
+    `Encoder 2: Count:` f . 
+    ` Angle:` f E /N
+    50()         // Small delay
+    /K 27 = (    // Check for ESC key
+      /F i!      // Set flag false to exit
+    )
+  )
+;
+
+// Test loop with simulated data
+:S
+  /T i!          // Set loop control flag
+  0 e! 0 f!      // Reset counts
+  /U (           // Start unlimited loop
+    i /W         // Continue while flag is true
+    
+    // Show current AB states
+    `Current States:` /N
+    `E1: A=` a . ` B=` b . 
+    ` E2: A=` c . ` B=` d . /N
+    
+    T            // Get next test data
+    A B          // Process encoders
+    
+    // Show results
+    `Encoder 1: Count:` e . 
+    ` Angle:` e E /N
+    `Encoder 2: Count:` f . 
+    ` Angle:` f E /N
+    `-------------------` /N
+    
+    500()        // Longer delay to see changes
+    /K 27 = (    // Check for ESC key
+      /F i!      // Set flag false to exit
+    )
+  )
+;
+
+// Function to reset counters to zero
+:F 
+  0 e! 0 f!     // Reset both counts to zero
+  `Counters reset to zero` /N
+;
+```
 
 
 
