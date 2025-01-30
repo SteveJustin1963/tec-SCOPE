@@ -60,7 +60,7 @@ under development, not ready
 
 ## Geared 10:1 Quadrature Encoder Test with Bi-directional Motion Simulation
 
-QETBMS1.mint
+[QETBMS1.mint](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/QETBMS1.mint)
 
 1. Simulates a geared encoder (10:1 ratio)
 2. Shows quadrature decoding
@@ -72,14 +72,10 @@ QETBMS1.mint
 
 
 
-### SPI
- 
-![image](https://github.com/user-attachments/assets/c596d7a4-f89f-4522-9ba0-565d6488245d)
-
-see http://easyeda.com for schematics, links coming 
 
 
-### counter chip LS7366R
+
+# counter chip LS7366R
 LS7366R runs on SPI and is a quadrature encoder counter IC designed to interface with rotary or linear encoders. 
 It can track position, direction, and speed by counting the pulses from the encoder. 
 The LS7366R can operate in various modes, including 1X, 2X, or 4X decoding, to count the pulses per encoder cycle, 
@@ -97,13 +93,8 @@ Key features include:
 ![image](https://github.com/user-attachments/assets/466d03ed-0395-4116-8731-8d275b041857)
 ![image](https://github.com/user-attachments/assets/0f5bb19e-24f4-4d7f-96f7-87e9281c3b14)
 
-
-
-
-#### LS7366R_9511_ SPI.mint
-
+[LS7366R_9511_ SPI.mint](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/LS7366R_9511_%20SPI.mint)
 	
-### Code Summary
 
 1. **SPI Configuration and Operation**:
    - The code initialises the LS7366R using SPI communication, configures the counting mode (x4 quadrature, free-running), clears or loads the counter, and retrieves a 32-bit count value.
@@ -121,8 +112,6 @@ Key features include:
 
 
 
-
-
  
 
 #### ATtiny84/85 Quadrature Encoder Implementation
@@ -130,6 +119,8 @@ Key features include:
 - am already sick of the LS7366R due to the complexity and the high cost and hard to find it, lets do it with two attiny85 or one attiny84.
 - we can just modify the exiting code and  setup using two ATtiny85s, where each chip handles one encoder and communicates as SPI slave.
 
+[ATtiny84-QEI.ino](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/ATtiny84-QEI.ino)
+[ATtiny85-QEI.ino](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/ATtiny85-QEI.ino)
 
 Key features of this two-chip solution:
 
@@ -194,103 +185,25 @@ To use this system:
   - we sends a command (e.g., `0xA0`) to request the angle data.
   - we reads two bytes (MSB and LSB) from the sensor.
   - we combines the bytes into a 16-bit value and converts it into degrees
-  - we can use it, display it, etc 
+  - we can use it, display it, etc
+  - we could do some pre processing on the attiny85 or do it from mint code
 
-we could do some pre processing on the attiny85 or do it from mint code
-
-```
-// Pseudocode for reading angle data from KMA215 using SPI
-
-// Initialize SPI communication
-InitializeSPI()
-{
-    Set SPI mode to Mode 0 (CPOL = 0, CPHA = 0)
-    Set SPI clock speed (e.g., 1 MHz)
-    Set data order to MSB first
-}
-
-// Function to read angle data
-ReadAngle()
-{
-    // Select the KMA215 (pull CS pin low)
-    SetChipSelectLow()
-    
-    // Send command to read angle data (example command: 0xA0)
-    SendSPIByte(0xA0)
-    
-    // Read the first byte (most significant byte)
-    MSB = ReadSPIByte()
-    
-    // Read the second byte (least significant byte)
-    LSB = ReadSPIByte()
-    
-    // Deselect the KMA215 (pull CS pin high)
-    SetChipSelectHigh()
-    
-    // Combine the MSB and LSB into a 16-bit value
-    RawAngle = (MSB << 8) | LSB
-    
-    // Convert raw angle value to degrees (example conversion)
-    AngleInDegrees = (RawAngle / 65536.0) * 360.0
-    
-    // Return the calculated angle
-    Return AngleInDegrees
-}
-
-// Main routine
-Main()
-{
-    // Initialize SPI
-    InitializeSPI()
-    
-    // Continuously read and display the angle
-    While (true)
-    {
-        Angle = ReadAngle()
-        Print("Angle: ", Angle, " degrees")
-        
-        // Add delay or other processing as needed
-        Delay(100 ms)
-    }
-}
-```
+[KMA215_SPI.sudo](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/KMA215_SPI.sudo)
 
 
-
-
-#### main code loop
-- build up simple features first
-- motor control /manual or code / / slew joystick- dc motors
-- track a position using an optical gates or estimation on Stellarium
-- star map Stellarium interface via another bit bang port x.200 commands
-- long-exposure astro-photography
-
-- read encoders, convert to angle, display on  seven segment display of 6 digits xxxx xx
-  - press A gives the azimuth and alt together to 1 degree accuracy, eg az= 0299 alt = 23 displayed as 0299 23
-  - press B then only az is displayed deg-min eg 0299 44 meaning 299 degs 44 minutes
-  - press C then only alt is displayed deg-min eg 0023 51 meaning 23 deg 51 min
-  - no need for precision in seconds unless the mechanical of the telescope can justify it  
-
-
-
-- Stellarium integration
-  - /www.instructables.com/Control-Your-Telescope-Using-Stellarium-Arduino/
-
-- calibration
-  - az check, true north in Sydney add 12.83°E in 2020 changes 0.04° annually
-  - level
-  - calibrate with known celestial object
 
 
  
 
 
+### SPI
+see http://easyeda.com for schematics, links coming 
 
-### generic SPI code
-
-generic_SPI.z80
+![image](https://github.com/user-attachments/assets/c596d7a4-f89f-4522-9ba0-565d6488245d)
 
 
+#### generic_spi
+[generic_SPI.z80](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/generic_SPI.z80)
 1. **Generic `spi_write` Routine**:
    - This routine can be used to send any 8-bit command (register or operation) and
  8-bit data to an SPI device by setting `D` and `E` with the required values.
@@ -305,225 +218,40 @@ generic_SPI.z80
 4. **Configuration Outside Code**:
    - Device-specific configurations can be handled in calling code by setting registers (`D` and `E`) before calling `spi_write`, allowing reuse of this code across multiple SPI devices.
 
+#### compact_SPI
+[compact_SPI.z80](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/compact_SPI.z80)
+ 
 
+
+
+
+#### main code loop ideas
+- build up simple features first
+- motor control /manual or code / / slew joystick- dc motors
+- track a position using an optical gates or estimation on Stellarium
+- star map Stellarium interface via another bit bang port x.200 commands
+- long-exposure astro-photography
+- read encoders, convert to angle, display on  seven segment display of 6 digits xxxx xx
+  - press A gives the azimuth and alt together to 1 degree accuracy, eg az= 0299 alt = 23 displayed as 0299 23
+  - press B then only az is displayed deg-min eg 0299 44 meaning 299 degs 44 minutes
+  - press C then only alt is displayed deg-min eg 0023 51 meaning 23 deg 51 min
+  - no need for precision in seconds unless the mechanical of the telescope can justify it  
+- Stellarium integration
+  - /www.instructables.com/Control-Your-Telescope-Using-Stellarium-Arduino/
+- calibration
+  - az check, true north in Sydney add 12.83°E in 2020 changes 0.04° annually
+  - level
+  - calibrate with known celestial object
+
+ 
 
  # playing with code
 
 ![image](https://github.com/user-attachments/assets/48cf9d0e-ecba-4236-a271-55e19285d0e3)
 
-
- ```
-// Port Constants
-10 p!   // MISO/DATA port
-11 q!   // MOSI/CMD port
-12 r!   // CLK/STATUS port
-13 s!   // CS port
-
-// LS7366R Command Constants
-#88 t!  // Write MDR0 command
-#90 u!  // Write MDR1 command
-#20 v!  // Clear counter command
-#98 w!  // Write DTR command
-#E0 x!  // Load counter command
-#60 y!  // Read counter command
-
-// FPU Command Constants
-#6C z!  // Add command
-#80 a!  // Busy flag
-#1E b!  // Error mask
-
-// Basic SPI Control Functions
-:A 1 r! ;  // Clock high
-:B 0 r! ;  // Clock low
-:C 0 s! ;  // CS enable
-:D 1 s! ;  // CS disable
-
-// SPI Data Transfer Functions
-:E i!      // Send byte via SPI
-  C        // Enable CS
-  8(       // 8-bit loop
-    i #80 & ( 1 q! ) /E ( 0 q! )  // Set MOSI based on MSB
-    A B    // Clock pulse
-    i { i! // Shift left
-  )
-  D        // Disable CS
-;
-
-:F          // Read byte via SPI
-  0 j!      // Clear result
-  C         // Enable CS
-  8(        // 8-bit loop
-    A B     // Clock pulse
-    p /I 1 & ( j { 1 + j! ) /E ( j { j! )  // Read MISO
-  )
-  D         // Disable CS
-  j         // Return result
-;
-
-// LS7366R Functions
-:G          // Initialize LS7366R
-  t #03 E   // Configure MDR0
-  u 0 E     // Configure MDR1
-;
-
-:H v E ;    // Clear counter
-
-:I k!       // Load counter value
-  w k #FF000000 & #18 } E  // Load highest byte
-  w k #FF0000 & #10 } E    // Load high byte
-  w k #FF00 & #8 } E       // Load low byte
-  w k #FF & E              // Load lowest byte
-  x E                      // Send load command
-;
-
-:J          // Read counter
-  y E       // Send read command
-  0 l!      // Clear result
-  F #18 { l +!  // Read highest byte
-  F #10 { l +!  // Read high byte
-  F #8 { l +!   // Read low byte
-  F l +!        // Read lowest byte
-  l             // Return result
-;
-
-// FPU Functions
-:K 1 m! 1 n! ;  // Initialize arguments
-
-:L              // Store in FPU
-  m p /O        // Store first argument high byte
-  m } q /O      // Store first argument low byte
-  n p /O        // Store second argument high byte
-  n } q /O      // Store second argument low byte
-;
-
-:M z q /O ;     // Send add command
-
-:N              // Wait for FPU to complete
-  /U ( r /I a & /W )
-;
-
-:O              // Check for errors
-  r /I b & { o!
-;
-
-:P              // Pop result from FPU
-  p /I h!
-  p /I i!
-  i #8 { h + j!
-;
-
-// Main Program
-:S
-  G            // Initialize LS7366R
-  H            // Clear counter
-  K            // Initialize FPU
-  /T t!        // Set initial loop condition to true
-  /U (         // Start unlimited loop
-    t /W       // Continue while t is true
-    J          // Read counter
-    L          // Store in FPU
-    M          // Add
-    N          // Wait for completion
-    O          // Check for errors
-    P          // Get result
-    /K 27 = (  // Check if ESC key (27) was pressed
-      /F t!    // If ESC, set t to false to break loop
-    )
-  )
-;
+[main_loop1.mint](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/main_loop1.mint)
 
 ```
-
-
-
-```
-// Stage 1: Test Port Setup
-// Test if we can set ports correctly
-:A
-10 p! // MISO/DATA port
-11 q! // MOSI/CMD port
-12 r! // CLK/STATUS port
-13 s! // CS port
-p . /N q . /N r . /N s .  // Should print 10 11 12 13
-;
-
-// Stage 2: Test Basic SPI Control
-// Test if SPI control signals work
-:B
-1 r! // Clock high
-0 r! // Clock low
-0 s! // CS enable
-1 s! // CS disable
-;
-
-// Stage 3: Test SPI Byte Transfer
-// Test sending a single byte via SPI
-:C i! // Send byte via SPI
-0 s! // CS enable
-8(   // 8-bit loop
-  i #80 & ( 1 q! ) /E ( 0 q! )
-  1 r! 0 r!   // Clock pulse
-  i { i!  // Shift left
-)
-1 s! // CS disable
-;
-
-// Stage 4: Test SPI Byte Read
-// Test reading a single byte via SPI
-:D 
-0 j! // Clear result
-0 s! // CS enable
-8(   // 8-bit loop
-  1 r! 0 r!   // Clock pulse
-  p /I 1 & ( j { 1 + j! ) /E ( j { j! )
-)
-1 s! // CS disable
-j .  // Print result
-;
-
-// Stage 5: Test LS7366R Basic Commands
-// Test if we can send commands to counter
-:E 
-#88 t! // Write MDR0 command
-#90 u! // Write MDR1 command
-t C    // Send MDR0 command
-#03 C  // Send config
-u C    // Send MDR1 command
-0 C    // Send config
-;
-
-// Stage 6: Test Counter Operations
-// Test reading/writing counter
-:F
-#20 C    // Clear counter command
-#60 C    // Read counter command
-D        // Read byte
-;
-
-// Stage 7: Test FPU Basic Operations
-// Test FPU communication
-:G
-1 m! 1 n!     // Set test values
-m p /O        // Send to FPU
-m } q /O
-n p /O
-n } q /O
-#6C q /O      // Add command
-;
-
-// Stage 8: Test Complete Loop
-// Test main loop with proper exit
-:H
-/T t!        // Set loop control
-/U (         // Start unlimited loop
-  t /W       // Continue while t is true
-  `Press ESC to exit` /N
-  /K 27 = (  // Check if ESC key pressed
-    /F t!    // Set false to break loop
-  )
-)
-;
-
 // Usage instructions for testing:
 // 1. First test port setup:
 //    > A
@@ -556,11 +284,6 @@ n } q /O
 // 8. Test loop control:
 //    > H
 //    Should loop until ESC pressed
-
 ```
-
-
-
-
 
 
