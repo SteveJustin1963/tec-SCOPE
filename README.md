@@ -245,7 +245,7 @@ see http://easyeda.com for schematics, links coming
 
  
 
- # playing with code
+ # main_loop test1
 
 ![image](https://github.com/user-attachments/assets/48cf9d0e-ecba-4236-a271-55e19285d0e3)
 
