@@ -1,16 +1,19 @@
 
 
-# warning  
-- messy, changing and unfinished 
-- u need an astronomy permit to use a laser pointer >1mW for star aiming, better to fit a red dot aiming device on ur telescope with a 90deg angle viewer
-- https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
+# warning  unfinished
+
+# aiming
+- get or make a cheap 8-inch F5 Dobson, truss or tube, pushed by hand
+- laser pointer >1mW for star aiming u need an astronomy permit https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
+- red dot aiming device needs neck bending
+- to save ur neck use a Sky-Watcher 6x30mm Right Angled (90deg angle viewer) Erect Image (shows objects right-side up and not inverted or reversed) Finder Scope.
+Ideal for fast, intuitive location of target objects. 
 
 
-## Let your SCC or Tec1 control your telescope
-- get yourself a cheap 8-inch F5 Dobson or make one, the pushed by hand truss frame type.
-- or make a mock up with cardboard and mount a dslr at the base, have x-y or alt-az ability
-- the mount needs 2 rotary encoders and geared down
-- Stellarium can talk via an async serial port to our code
+## control your telescope
+- tec1 or scc using MINT
+- add to the mount geared down 2 rotary encoders and dc motors 
+- later we get code to send via 4800 serial async to Stellarium so it can correlate with star map 
 - 
 
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
