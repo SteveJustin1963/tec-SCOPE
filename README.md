@@ -284,6 +284,9 @@ generic_SPI.z80
 
  # playing with code
 
+![image](https://github.com/user-attachments/assets/48cf9d0e-ecba-4236-a271-55e19285d0e3)
+
+
  ```
 // Port Constants
 10 p!   // MISO/DATA port
