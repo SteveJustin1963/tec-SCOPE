@@ -71,7 +71,8 @@ under development, not ready
 // Quadrature state lookup table for clockwise rotation
 // [00->01->11->10->00]
 // Returns 1 for clockwise, -1 for counter-clockwise, 0 for invalid
-:Q k! // Input: old state in high nibble, new state in low nibble
+:Q k!
+// Input: old state in high nibble, new state in low nibble
   k #0F &    // Mask new state
   k 4 } #0F & // Shift and mask old state
   2 * +      // Combine states to use as index
@@ -300,13 +301,52 @@ To use:
 S
 ```
 
-
-
-
 The output will look like:
 ```
 States A=0 B=0
 Count:0 Angle:0.000 deg
+```
+
+## mint test2
+step through 0 to 5 degrees, using our known resolution (0.015° per pulse).
+```
+:M [0 1 3 2]p! 0 z!;
+
+// For 5 degrees: 5/0.015 = ~333 pulses needed
+// Each state transition is 1 pulse, so we need 333 cycles
+:N z 333 < (p z 4% ? a! p z 4% ? b! a /I 2* b /I + n! z 1+ z! n) /E (0 z!);
+
+:D k! k 15* 1000/;
+
+:E k! k D " 1000/`.` k D 1000% " 100/.` deg`;
+
+:S M /T i! 0 e! /U(i /W N e 1+ e! 
+`Count:`e.` at `e E /N 
+500() /K 27=(/F i!));
+
+S
+```
+
+
+This version:
+1. Creates a basic quadrature pattern [0,1,3,2] 
+2. Cycles through pattern 333 times to reach ~5 degrees
+   - Each pulse = 0.015 degrees
+   - 333 pulses × 0.015 = 5 degrees
+3. Shows count and angle as it goes
+4. Resets back to 0 after reaching 5 degrees
+
+To test:
+1. Copy and paste the code
+2. Hit enter
+3. Watch as it steps through angles from 0 to 5 degrees
+
+The output will look like:
+```
+Count:1 at 0.015 deg
+Count:2 at 0.030 deg
+...
+Count:333 at 4.995 deg
 ```
 
 
