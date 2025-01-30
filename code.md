@@ -1,6 +1,8 @@
-// Stage 1: Test Port Setup
-// Test if we can set ports correctly
 ```
+// 1. First test port setup:
+//    > A
+//    Should see: 10 11 12 13
+
 :A
 10 p! // MISO/DATA port
 11 q! // MOSI/CMD port
@@ -10,9 +12,12 @@ p . /N q . /N r . /N s .  // Should print 10 11 12 13
 ;
 ```
 
-// Stage 2: Test Basic SPI Control
-// Test if SPI control signals work
 ```
+// Stage 2: Test Basic SPI control signals work
+// 2. Test SPI control:
+//    > B
+//    Use oscilloscope/logic analyzer to verify signals
+
 :B
 1 r! // Clock high
 0 r! // Clock low
@@ -21,9 +26,13 @@ p . /N q . /N r . /N s .  // Should print 10 11 12 13
 ;
 ```
 
+```
 // Stage 3: Test SPI Byte Transfer
 // Test sending a single byte via SPI
-```
+//    > #AA C
+//    Verify on scope/analyzer
+
+
 :C i! // Send byte via SPI
 0 s! // CS enable
 8(   // 8-bit loop
@@ -35,9 +44,12 @@ p . /N q . /N r . /N s .  // Should print 10 11 12 13
 ;
 ```
 
+```
 // Stage 4: Test SPI Byte Read
 // Test reading a single byte via SPI
-```
+// > D
+// Should read and display a byte
+
 :D 
 0 j! // Clear result
 0 s! // CS enable
@@ -50,9 +62,12 @@ j .  // Print result
 ;
 ```
 
+```
 // Stage 5: Test LS7366R Basic Commands
 // Test if we can send commands to counter
-```
+// > E
+// Verify commands on scope/analyzer
+
 :E 
 #88 t! // Write MDR0 command
 #90 u! // Write MDR1 command
@@ -63,9 +78,12 @@ u C    // Send MDR1 command
 ;
 ```
 
+```
 // Stage 6: Test Counter Operations
 // Test reading/writing counter
-```
+// > F
+// Should show counter value
+
 :F
 #20 C    // Clear counter command
 #60 C    // Read counter command
@@ -73,9 +91,12 @@ D        // Read byte
 ;
 ```
 
+```
 // Stage 7: Test FPU Basic Operations
 // Test FPU communication
-```
+//   > G
+//    Verify communication on scope/analyzer
+
 :G
 1 m! 1 n!     // Set test values
 m p /O        // Send to FPU
@@ -86,9 +107,12 @@ n } q /O
 ;
 ```
 
+```
 // Stage 8: Test Complete Loop
 // Test main loop with proper exit
-```
+// > H
+// Should loop until ESC pressed
+
 :H
 /T t!        // Set loop control
 /U (         // Start unlimited loop
@@ -100,37 +124,4 @@ n } q /O
 )
 ;
 ```
-```
-// Usage instructions for testing:
-// 1. First test port setup:
-//    > A
-//    Should see: 10 11 12 13
-//
-// 2. Test SPI control:
-//    > B
-//    Use oscilloscope/logic analyzer to verify signals
-//
-// 3. Test byte send:
-//    > #AA C
-//    Verify on scope/analyzer
-//
-// 4. Test byte read:
-//    > D
-//    Should read and display a byte
-//
-// 5. Test LS7366R setup:
-//    > E
-//    Verify commands on scope/analyzer
-//
-// 6. Test counter:
-//    > F
-//    Should show counter value
-//
-// 7. Test FPU:
-//    > G
-//    Verify communication on scope/analyzer
-//
-// 8. Test loop control:
-//    > H
-//    Should loop until ESC pressed
-```
+ 
