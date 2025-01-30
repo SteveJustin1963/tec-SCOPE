@@ -257,8 +257,7 @@ Main()
   - calibrate with known celestial object
 
 
-### scope-1.mint
-its all messed up have to fix it!
+ 
 
 
 
@@ -281,7 +280,259 @@ generic_SPI.z80
 4. **Configuration Outside Code**:
    - Device-specific configurations can be handled in calling code by setting registers (`D` and `E`) before calling `spi_write`, allowing reuse of this code across multiple SPI devices.
 
- 
+
+
+ # playing with code
+
+ ```
+// Port Constants
+10 p!   // MISO/DATA port
+11 q!   // MOSI/CMD port
+12 r!   // CLK/STATUS port
+13 s!   // CS port
+
+// LS7366R Command Constants
+#88 t!  // Write MDR0 command
+#90 u!  // Write MDR1 command
+#20 v!  // Clear counter command
+#98 w!  // Write DTR command
+#E0 x!  // Load counter command
+#60 y!  // Read counter command
+
+// FPU Command Constants
+#6C z!  // Add command
+#80 a!  // Busy flag
+#1E b!  // Error mask
+
+// Basic SPI Control Functions
+:A 1 r! ;  // Clock high
+:B 0 r! ;  // Clock low
+:C 0 s! ;  // CS enable
+:D 1 s! ;  // CS disable
+
+// SPI Data Transfer Functions
+:E i!      // Send byte via SPI
+  C        // Enable CS
+  8(       // 8-bit loop
+    i #80 & ( 1 q! ) /E ( 0 q! )  // Set MOSI based on MSB
+    A B    // Clock pulse
+    i { i! // Shift left
+  )
+  D        // Disable CS
+;
+
+:F          // Read byte via SPI
+  0 j!      // Clear result
+  C         // Enable CS
+  8(        // 8-bit loop
+    A B     // Clock pulse
+    p /I 1 & ( j { 1 + j! ) /E ( j { j! )  // Read MISO
+  )
+  D         // Disable CS
+  j         // Return result
+;
+
+// LS7366R Functions
+:G          // Initialize LS7366R
+  t #03 E   // Configure MDR0
+  u 0 E     // Configure MDR1
+;
+
+:H v E ;    // Clear counter
+
+:I k!       // Load counter value
+  w k #FF000000 & #18 } E  // Load highest byte
+  w k #FF0000 & #10 } E    // Load high byte
+  w k #FF00 & #8 } E       // Load low byte
+  w k #FF & E              // Load lowest byte
+  x E                      // Send load command
+;
+
+:J          // Read counter
+  y E       // Send read command
+  0 l!      // Clear result
+  F #18 { l +!  // Read highest byte
+  F #10 { l +!  // Read high byte
+  F #8 { l +!   // Read low byte
+  F l +!        // Read lowest byte
+  l             // Return result
+;
+
+// FPU Functions
+:K 1 m! 1 n! ;  // Initialize arguments
+
+:L              // Store in FPU
+  m p /O        // Store first argument high byte
+  m } q /O      // Store first argument low byte
+  n p /O        // Store second argument high byte
+  n } q /O      // Store second argument low byte
+;
+
+:M z q /O ;     // Send add command
+
+:N              // Wait for FPU to complete
+  /U ( r /I a & /W )
+;
+
+:O              // Check for errors
+  r /I b & { o!
+;
+
+:P              // Pop result from FPU
+  p /I h!
+  p /I i!
+  i #8 { h + j!
+;
+
+// Main Program
+:S
+  G            // Initialize LS7366R
+  H            // Clear counter
+  K            // Initialize FPU
+  /T t!        // Set initial loop condition to true
+  /U (         // Start unlimited loop
+    t /W       // Continue while t is true
+    J          // Read counter
+    L          // Store in FPU
+    M          // Add
+    N          // Wait for completion
+    O          // Check for errors
+    P          // Get result
+    /K 27 = (  // Check if ESC key (27) was pressed
+      /F t!    // If ESC, set t to false to break loop
+    )
+  )
+;
+
+```
+
+
+
+```
+// Stage 1: Test Port Setup
+// Test if we can set ports correctly
+:A
+10 p! // MISO/DATA port
+11 q! // MOSI/CMD port
+12 r! // CLK/STATUS port
+13 s! // CS port
+p . /N q . /N r . /N s .  // Should print 10 11 12 13
+;
+
+// Stage 2: Test Basic SPI Control
+// Test if SPI control signals work
+:B
+1 r! // Clock high
+0 r! // Clock low
+0 s! // CS enable
+1 s! // CS disable
+;
+
+// Stage 3: Test SPI Byte Transfer
+// Test sending a single byte via SPI
+:C i! // Send byte via SPI
+0 s! // CS enable
+8(   // 8-bit loop
+  i #80 & ( 1 q! ) /E ( 0 q! )
+  1 r! 0 r!   // Clock pulse
+  i { i!  // Shift left
+)
+1 s! // CS disable
+;
+
+// Stage 4: Test SPI Byte Read
+// Test reading a single byte via SPI
+:D 
+0 j! // Clear result
+0 s! // CS enable
+8(   // 8-bit loop
+  1 r! 0 r!   // Clock pulse
+  p /I 1 & ( j { 1 + j! ) /E ( j { j! )
+)
+1 s! // CS disable
+j .  // Print result
+;
+
+// Stage 5: Test LS7366R Basic Commands
+// Test if we can send commands to counter
+:E 
+#88 t! // Write MDR0 command
+#90 u! // Write MDR1 command
+t C    // Send MDR0 command
+#03 C  // Send config
+u C    // Send MDR1 command
+0 C    // Send config
+;
+
+// Stage 6: Test Counter Operations
+// Test reading/writing counter
+:F
+#20 C    // Clear counter command
+#60 C    // Read counter command
+D        // Read byte
+;
+
+// Stage 7: Test FPU Basic Operations
+// Test FPU communication
+:G
+1 m! 1 n!     // Set test values
+m p /O        // Send to FPU
+m } q /O
+n p /O
+n } q /O
+#6C q /O      // Add command
+;
+
+// Stage 8: Test Complete Loop
+// Test main loop with proper exit
+:H
+/T t!        // Set loop control
+/U (         // Start unlimited loop
+  t /W       // Continue while t is true
+  `Press ESC to exit` /N
+  /K 27 = (  // Check if ESC key pressed
+    /F t!    // Set false to break loop
+  )
+)
+;
+
+// Usage instructions for testing:
+// 1. First test port setup:
+//    > A
+//    Should see: 10 11 12 13
+//
+// 2. Test SPI control:
+//    > B
+//    Use oscilloscope/logic analyzer to verify signals
+//
+// 3. Test byte send:
+//    > #AA C
+//    Verify on scope/analyzer
+//
+// 4. Test byte read:
+//    > D
+//    Should read and display a byte
+//
+// 5. Test LS7366R setup:
+//    > E
+//    Verify commands on scope/analyzer
+//
+// 6. Test counter:
+//    > F
+//    Should show counter value
+//
+// 7. Test FPU:
+//    > G
+//    Verify communication on scope/analyzer
+//
+// 8. Test loop control:
+//    > H
+//    Should loop until ESC pressed
+
+```
+
+
+
 
 
 
