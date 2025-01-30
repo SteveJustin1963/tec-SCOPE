@@ -140,140 +140,17 @@ under development, not ready
 ;
 ```
 
-## test with dummy data loop
-```
-// Initialize quadrature state array
-// States: 00,01,11,10 representing AB bits
-// 0 = 00 (A=0,B=0)
-// 1 = 01 (A=0,B=1)
-// 3 = 11 (A=1,B=1)
-// 2 = 10 (A=1,B=0)
-[0 1 3 2]p!    
+## Geared 10:1 Quadrature Encoder Test with Bi-directional Motion Simulation
 
-// Initialize variables:
-// r = array index for pattern lookup
-// e = encoder count value
-// g = previous state storage
-0 r! 0 e! 0 g!  
+QETBMS1.mint
 
-// Function T: Get and process current state
-:T           
-   // Handle array index wraparound
-   r 3 > ( 0 r! )     
+1. Simulates a geared encoder (10:1 ratio)
+2. Shows quadrature decoding
+3. Tests bi-directional motion
+4. Provides angle readout
+5. Demonstrates state transitions
 
-   // Get pattern value at current index
-   p r ? a!           
-   `Raw value:` a . /N
 
-   // Extract B bit using AND with 1
-   // This keeps only LSB
-   a 1 & b!           
-
-   // Extract A bit by first shifting right (/2)
-   // then AND with 1 to get clean bit
-   a 2 / 1 & c!       
-
-   // Display current AB bits
-   `AB:` c . b . /N   
-
-   // Combine A,B into state number
-   // State = A*2 + B
-   c 2 * b + d!       
-
-   // Show current and previous states
-   `State:` d . ` Prev:` g . /N  
-;
-
-// Function U: Update counter based on state transitions
-:U              
-   // Calculate state transition difference
-   // This tells us direction of movement
-   d g - " n!   
-
-   // Check for clockwise transitions
-   // +1 difference indicates CW movement (except at wrap)
-   n 1 = (      
-      e 1 + e!  // Increment counter
-   )
-
-   // Handle clockwise wraparound from state 2->0
-   // Appears as -3 difference
-   n -3 = (     
-      e 1 + e!  // Increment counter
-   )
-
-   // Check for counter-clockwise transitions
-   // -1 difference indicates CCW movement (except at wrap)
-   n -1 = (     
-      e 1 - e!  // Decrement counter
-   )
-
-   // Handle counter-clockwise wraparound from state 0->2
-   // Appears as +3 difference
-   n 3 = (      
-      e 1 - e!  // Decrement counter
-   )
-
-   // Store current state for next comparison
-   d g!         
-
-   // Display current count
-   `Count:` e . /N  
-;
-
-// Function V: Calculate and display angle
-:V              
-   // Scale factor: 0.015 degrees per count
-   // (based on 600 pulses/rev × 4 quad × 10:1 gear)
-   e 15 *       
-
-   // Display whole degrees
-   " 100 / .    
-
-   // Decimal point
-   `.`          
-
-   // Calculate and display fraction
-   100 % 10 / . 
-
-   // Add units and newline
-   ` deg` /N    
-;
-
-// Function S: Main test loop
-:S              
-   // Initialize loop control flag
-   /T i!        
-
-   // Start unlimited loop
-   /U (         
-      // Continue while flag is true
-      i /W      
-
-      // Visual separator
-      `---` /N  
-
-      // Process one complete cycle:
-      // Get state, update count, show angle
-      T U V     
-
-      // Move to next pattern value
-      r 1 + r!  
-
-      // Delay for visibility
-      500()     
-
-      // Check for ESC key to exit
-      /K 27 = ( 
-         /F i!  
-      )
-   )
-;
-
-// Start the test by typing S
-
-S
-```
 
 
 
