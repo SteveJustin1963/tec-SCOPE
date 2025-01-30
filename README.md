@@ -142,217 +142,137 @@ under development, not ready
 
 ## test with dummy data loop
 ```
-// Test data arrays for AB signals simulation
-// States: [A,B]: 00→01→11→10 (CW) and reverse for CCW
-[0 1 3 2 0 1 3 2 0 2 3 1 0 2 3 1] p! // Encoder 1 test pattern (CW then CCW)
-[0 1 3 2 0 2 3 1 0 1 3 2 0 2 3 1] q! // Encoder 2 test pattern (different pattern)
-0 r! // Test data index
+// Initialize quadrature state array
+// States: 00,01,11,10 representing AB bits
+// 0 = 00 (A=0,B=0)
+// 1 = 01 (A=0,B=1)
+// 3 = 11 (A=1,B=1)
+// 2 = 10 (A=1,B=0)
+[0 1 3 2]p!    
 
-// Function to get simulated port data
-:T // Returns simulated port readings
-  r p ? " #02 & 2 } a! // Get A1 bit
-  r p ? #01 & b!       // Get B1 bit
-  r q ? " #02 & 2 } c! // Get A2 bit
-  r q ? #01 & d!       // Get B2 bit
-  r 1 + " p /S % r!    // Increment index with wraparound
+// Initialize variables:
+// r = array index for pattern lookup
+// e = encoder count value
+// g = previous state storage
+0 r! 0 e! 0 g!  
+
+// Function T: Get and process current state
+:T           
+   // Handle array index wraparound
+   r 3 > ( 0 r! )     
+
+   // Get pattern value at current index
+   p r ? a!           
+   `Raw value:` a . /N
+
+   // Extract B bit using AND with 1
+   // This keeps only LSB
+   a 1 & b!           
+
+   // Extract A bit by first shifting right (/2)
+   // then AND with 1 to get clean bit
+   a 2 / 1 & c!       
+
+   // Display current AB bits
+   `AB:` c . b . /N   
+
+   // Combine A,B into state number
+   // State = A*2 + B
+   c 2 * b + d!       
+
+   // Show current and previous states
+   `State:` d . ` Prev:` g . /N  
 ;
 
-// Variables for counting
-0 e! // Encoder 1 count
-0 f! // Encoder 2 count
+// Function U: Update counter based on state transitions
+:U              
+   // Calculate state transition difference
+   // This tells us direction of movement
+   d g - " n!   
 
-// Previous quadrature states
-0 g! // Previous A1,B1 state
-0 h! // Previous A2,B2 state
+   // Check for clockwise transitions
+   // +1 difference indicates CW movement (except at wrap)
+   n 1 = (      
+      e 1 + e!  // Increment counter
+   )
 
-// Constants for angle calculation
-// 600 pulses × 4 (quadrature) × 10 (gear) = 24000 pulses per mechanical revolution
-// 360 degrees / 24000 = 0.015 degrees per pulse
-// Multiply by 1000 for 3 decimal places: 0.015 × 1000 = 15
-15 j! // Degrees per 1000 pulses
+   // Handle clockwise wraparound from state 2->0
+   // Appears as -3 difference
+   n -3 = (     
+      e 1 + e!  // Increment counter
+   )
 
-// Quadrature state lookup table for clockwise rotation
-// [00->01->11->10->00]
-// Returns 1 for clockwise, -1 for counter-clockwise, 0 for invalid
-:Q k! // Input: old state in high nibble, new state in low nibble
-  k #0F &    // Mask new state
-  k 4 } #0F & // Shift and mask old state
-  2 * +      // Combine states to use as index
-  [0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0] $! // Store lookup table
-  $ k ? .    // Return direction from lookup
+   // Check for counter-clockwise transitions
+   // -1 difference indicates CCW movement (except at wrap)
+   n -1 = (     
+      e 1 - e!  // Decrement counter
+   )
+
+   // Handle counter-clockwise wraparound from state 0->2
+   // Appears as +3 difference
+   n 3 = (      
+      e 1 - e!  // Decrement counter
+   )
+
+   // Store current state for next comparison
+   d g!         
+
+   // Display current count
+   `Count:` e . /N  
 ;
 
-// Function to read encoder 1
-:A 
-  a /I 2 * b /I +  // Get current state (combine A and B)
-  g 4 * +         // Combine with previous state
-  " Q             // Get direction from lookup
-  " 0 = /F (      // If valid transition
-    e $ + e!      // Update count
-  )
-  g!              // Store current state
+// Function V: Calculate and display angle
+:V              
+   // Scale factor: 0.015 degrees per count
+   // (based on 600 pulses/rev × 4 quad × 10:1 gear)
+   e 15 *       
+
+   // Display whole degrees
+   " 100 / .    
+
+   // Decimal point
+   `.`          
+
+   // Calculate and display fraction
+   100 % 10 / . 
+
+   // Add units and newline
+   ` deg` /N    
 ;
 
-// Function to read encoder 2
-:B
-  c /I 2 * d /I +  // Get current state (combine A and B)
-  h 4 * +         // Combine with previous state
-  " Q             // Get direction from lookup
-  " 0 = /F (      // If valid transition
-    f $ + f!      // Update count
-  )
-  h!              // Store current state
+// Function S: Main test loop
+:S              
+   // Initialize loop control flag
+   /T i!        
+
+   // Start unlimited loop
+   /U (         
+      // Continue while flag is true
+      i /W      
+
+      // Visual separator
+      `---` /N  
+
+      // Process one complete cycle:
+      // Get state, update count, show angle
+      T U V     
+
+      // Move to next pattern value
+      r 1 + r!  
+
+      // Delay for visibility
+      500()     
+
+      // Check for ESC key to exit
+      /K 27 = ( 
+         /F i!  
+      )
+   )
 ;
 
-// Function to calculate degrees (with 3 decimal places)
-:D k! // Input: count in k
-  k j *  // Multiply count by degrees/1000
-  1000 / // Divide by 1000 to get actual degrees
-;
-
-// Function to display angle with decimal point
-:E k!           // Input: count in k
-  k D " 1000 /  // Get whole degrees
-  `.`           // Decimal point
-  k D 1000 % " 100 / . // Show 3 decimal places
-  ` degrees`    // Print units
-;
-
-// Main loop with real inputs
-:C
-  /T i!          // Set loop control flag
-  /U (           // Start unlimited loop
-    i /W         // Continue while flag is true
-    A B          // Read both encoders
-    `Encoder 1: Count:` e . 
-    ` Angle:` e E /N
-    `Encoder 2: Count:` f . 
-    ` Angle:` f E /N
-    50()         // Small delay
-    /K 27 = (    // Check for ESC key
-      /F i!      // Set flag false to exit
-    )
-  )
-;
-
-// Test loop with simulated data
-:S
-  /T i!          // Set loop control flag
-  0 e! 0 f!      // Reset counts
-  /U (           // Start unlimited loop
-    i /W         // Continue while flag is true
-    
-    // Show current AB states
-    `Current States:` /N
-    `E1: A=` a . ` B=` b . 
-    ` E2: A=` c . ` B=` d . /N
-    
-    T            // Get next test data
-    A B          // Process encoders
-    
-    // Show results
-    `Encoder 1: Count:` e . 
-    ` Angle:` e E /N
-    `Encoder 2: Count:` f . 
-    ` Angle:` f E /N
-    `-------------------` /N
-    
-    500()        // Longer delay to see changes
-    /K 27 = (    // Check for ESC key
-      /F i!      // Set flag false to exit
-    )
-  )
-;
-
-// Function to reset counters to zero
-:F 
-  0 e! 0 f!     // Reset both counts to zero
-  `Counters reset to zero` /N
-;
-```
-
-# mimi encoder test
-This minimal version:
-1. Has one test pattern array
-2. Only reads one encoder
-3. Still shows states, count and angle
-4. Can exit with ESC
-
-To use:
-1. Copy and paste the code
-2. Hit enter
-3. Watch simulated encoder results
-```
-[0 1 3 2 0 1 3 2 0 2 3 1 0]p!
-0 r! 0 e! 0 f! 0 g! 0 h!
-15 j!
-
-:Q k! k #0F & k 4} #0F & 2* + [0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0]$! $ k?.;
-
-:A r p? " #02 & 2} a! r p? #01 & b! a /I 2* b /I + g 4* + " Q " 0=/F(e $+ e!) g!;
-
-:D k! k j* 1000/;
-
-:E k! k D " 1000/`.` k D 1000% " 100/.` deg`;
-
-:S /T i! /U(i /W `States A=`a.` B=`b./N `Count:`e.` Angle:`e E/N 500() r 1+" p/S% r! A 
-/K 27=(/F i!));
+// Start the test by typing S
 
 S
-```
-
-The output will look like:
-```
-States A=0 B=0
-Count:0 Angle:0.000 deg
-```
-
-## mint test2
-step through 0 to 5 degrees, using our known resolution (0.015° per pulse).
-```
- [0 1 3 2]p! 0 r! 0 e! 0 g!
-15 j!
-
-:Q k! k #0F & k 4} #0F & 2* + [0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0]$! $ k?.;
-
-:A r p? " #02 & 2} a! r p? #01 & b! a /I 2* b /I + g 4* + " Q " 0=/F(e $+ e!) g!;
-
-:D k! k j* 1000/;
-
-:E k! k D " 1000/`.` k D 1000% " 100/.` deg`;
-
-:S /T i! /U(i /W r 333<(
-    `Count:`e.` Angle:`e E/N 
-    500() 
-    A
-    r 1+ r!
-    ) /E (0 r!)
-    /K 27=(/F i!)
-);
-
-S
-```
-
-
-This version:
-1. Creates a basic quadrature pattern [0,1,3,2] 
-2. Cycles through pattern 333 times to reach ~5 degrees
-   - Each pulse = 0.015 degrees
-   - 333 pulses × 0.015 = 5 degrees
-3. Shows count and angle as it goes
-4. Resets back to 0 after reaching 5 degrees
-
-To test:
-1. Copy and paste the code
-2. Hit enter
-3. Watch as it steps through angles from 0 to 5 degrees
-
-The output will look like:
-```
-Count:1 at 0.015 deg
-Count:2 at 0.030 deg
-...
-Count:333 at 4.995 deg
 ```
 
 
