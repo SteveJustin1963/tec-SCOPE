@@ -1,16 +1,14 @@
+under development, not ready
 
-
-# warning  unfinished
 
 # aiming
 - get or make a cheap 8-inch F5 Dobson, truss or tube, pushed by hand
-- laser pointer >1mW for star aiming u need an astronomy permit https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
 - red dot aiming device needs neck bending
-- to save ur neck use a Sky-Watcher 6x30mm Right Angled (90deg angle viewer) Erect Image (shows objects right-side up and not inverted or reversed) Finder Scope.
-Ideal for fast, intuitive location of target objects. 
+- to save ur neck use a Sky-Watcher 6x30mm Right Angled (90deg angle viewer) Erect Image (shows objects right-side up and not inverted or reversed) Finder Scope. Ideal for fast, intuitive location of target objects. 
+- laser pointer >1mW for star aiming u need an astronomy permit https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
 
 
-## control your telescope
+# control your telescope
 - tec1 or scc using MINT
 - add to the mount geared down 2 rotary encoders and dc motors 
 - later we get code to send via 4800 serial async to Stellarium so it can correlate with star map 
@@ -22,7 +20,7 @@ Ideal for fast, intuitive location of target objects.
 
  
 
-### mount
+# mount
 - alt (up down) and azimuth (side to side) lets say x and y, are friction coupled, convert this to gears and bearing support 
 - we need to add 2 motors and 2 encoders
 - for an alt motor with a reduction worm drive with perpendicular shafts on each side can be got from a discarded foot massage machine, it has a 24v motor, need to be run at a lower voltage and pwm to slow it down as its powerful and fast, fast is not what we want. 
@@ -38,7 +36,7 @@ Ideal for fast, intuitive location of target objects.
 #### rotary encoder
 - HN3806-AB (around $15), has AB 2 phase rectangular orthogonal pulses 600 pulses/rev aka 2 wires, max 5000rpm we are not going that fast, response 0-20KHz 
 - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
-- do not connect AB directly VCC!! go to the chip Use pull resistors
+- do not connect AB directly VCC!! go to the chip **Use pull resistors**
 - A and B from the rotary encoder are part of a quadrature output.
 - means the encoder uses the two signals (A and B) that are 90 degrees out of phase to determine position and direction of movement. 
 - we need to counting the pulses, signals alternate between HIGH (1) and LOW (0).
