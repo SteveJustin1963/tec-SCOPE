@@ -1,0 +1,55 @@
+// Pseudocode for reading angle data from KMA215 using SPI
+
+// Initialize SPI communication
+InitializeSPI()
+{
+    Set SPI mode to Mode 0 (CPOL = 0, CPHA = 0)
+    Set SPI clock speed (e.g., 1 MHz)
+    Set data order to MSB first
+}
+
+// Function to read angle data
+ReadAngle()
+{
+    // Select the KMA215 (pull CS pin low)
+    SetChipSelectLow()
+    
+    // Send command to read angle data (example command: 0xA0)
+    SendSPIByte(0xA0)
+    
+    // Read the first byte (most significant byte)
+    MSB = ReadSPIByte()
+    
+    // Read the second byte (least significant byte)
+    LSB = ReadSPIByte()
+    
+    // Deselect the KMA215 (pull CS pin high)
+    SetChipSelectHigh()
+    
+    // Combine the MSB and LSB into a 16-bit value
+    RawAngle = (MSB << 8) | LSB
+    
+    // Convert raw angle value to degrees (example conversion)
+    AngleInDegrees = (RawAngle / 65536.0) * 360.0
+    
+    // Return the calculated angle
+    Return AngleInDegrees
+}
+
+// Main routine
+Main()
+{
+    // Initialize SPI
+    InitializeSPI()
+    
+    // Continuously read and display the angle
+    While (true)
+    {
+        Angle = ReadAngle()
+        Print("Angle: ", Angle, " degrees")
+        
+        // Add delay or other processing as needed
+        Delay(100 ms)
+    }
+}
+ 
