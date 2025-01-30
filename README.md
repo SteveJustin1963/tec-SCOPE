@@ -49,7 +49,7 @@ under development, not ready
 
 ## Dual Geared Encoder Position System
 
-[DGEPS1.mint] (https://github.com/SteveJustin1963/tec-SCOPE/blob/master/DGEPS1.mint)
+[DGEPS1.mint](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/DGEPS1.mint)
 
 1. Quadrature decoding for two encoders
 2. Direction detection using state lookup table
