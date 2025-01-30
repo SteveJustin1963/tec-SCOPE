@@ -3,7 +3,7 @@
 // Resolution: 0.015° per count (24000 counts/rev)
 // Inputs: Ports 2,3 (Encoder1 A,B), Ports 4,5 (Encoder2 A,B)
 // Controls: ESC to exit, F to reset counters
-// Author: Your Name
+ 
 // Date: Jan 2025
 
 // Port assignments for quadrature inputs
