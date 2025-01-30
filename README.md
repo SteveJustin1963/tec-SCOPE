@@ -57,53 +57,62 @@ under development, not ready
 // Variables for counting
 0 e! // Encoder 1 count
 0 f! // Encoder 2 count
-0 g! // Previous state encoder 1
-0 h! // Previous state encoder 2
+
+// Previous quadrature states
+0 g! // Previous A1,B1 state
+0 h! // Previous A2,B2 state
 
 // Constants for angle calculation
-// 600 pulses per rev × 10:1 gear = 6000 pulses per full mechanical revolution
-// Therefore: 360 degrees / 6000 pulses = 0.06 degrees per pulse
-// Since MINT uses integers, we'll multiply by 100 for 2 decimal places
-6 j! // Degrees per 100 pulses (0.06 × 100 = 6)
+// 600 pulses × 4 (quadrature) × 10 (gear) = 24000 pulses per mechanical revolution
+// 360 degrees / 24000 = 0.015 degrees per pulse
+// Multiply by 1000 for 3 decimal places: 0.015 × 1000 = 15
+15 j! // Degrees per 1000 pulses
 
-// Function to calculate degrees (with 2 decimal places)
-:D k! // Input: count in k
-  k j *  // Multiply count by degrees/100 pulses
-  100 /  // Divide by 100 to get actual degrees
+// Quadrature state lookup table for clockwise rotation
+// [00->01->11->10->00]
+// Returns 1 for clockwise, -1 for counter-clockwise, 0 for invalid
+:Q k! // Input: old state in high nibble, new state in low nibble
+  k #0F &    // Mask new state
+  k 4 } #0F & // Shift and mask old state
+  2 * +      // Combine states to use as index
+  [0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0] $! // Store lookup table
+  $ k ? .    // Return direction from lookup
 ;
 
 // Function to read encoder 1
 :A 
-  a /I 2 * b /I + // Combine A and B inputs into state
-  " g = /F (      // Compare with previous state
-    " g > (       // If state > previous, clockwise
-      e 1 + e!    // Increment count
-    ) /E (        // Else
-      e 1 - e!    // Decrement count
-    )
+  a /I 2 * b /I +  // Get current state (combine A and B)
+  g 4 * +         // Combine with previous state
+  " Q             // Get direction from lookup
+  " 0 = /F (      // If valid transition
+    e $ + e!      // Update count
   )
-  g!             // Store current state as previous
+  g!              // Store current state
 ;
 
 // Function to read encoder 2
 :B
-  c /I 2 * d /I + // Combine A and B inputs into state
-  " h = /F (      // Compare with previous state
-    " h > (       // If state > previous, clockwise
-      f 1 + f!    // Increment count
-    ) /E (        // Else
-      f 1 - f!    // Decrement count
-    )
+  c /I 2 * d /I +  // Get current state (combine A and B)
+  h 4 * +         // Combine with previous state
+  " Q             // Get direction from lookup
+  " 0 = /F (      // If valid transition
+    f $ + f!      // Update count
   )
-  h!             // Store current state as previous
+  h!              // Store current state
+;
+
+// Function to calculate degrees (with 3 decimal places)
+:D k! // Input: count in k
+  k j *  // Multiply count by degrees/1000
+  1000 / // Divide by 1000 to get actual degrees
 ;
 
 // Function to display angle with decimal point
 :E k!           // Input: count in k
-  k D " 100 /   // Get whole degrees
+  k D " 1000 /  // Get whole degrees
   `.`           // Decimal point
-  k D 100 %     // Get decimal part
-  . ` degrees`  // Print decimal and units
+  k D 1000 % " 100 / . // Show 3 decimal places
+  ` degrees`    // Print units
 ;
 
 // Main loop to read both encoders and show angles
@@ -116,7 +125,7 @@ under development, not ready
     ` Angle:` e E /N
     `Encoder 2: Count:` f . 
     ` Angle:` f E /N
-    100()        // Small delay
+    50()         // Small delay (reduced for better response)
     /K 27 = (    // Check for ESC key
       /F i!      // Set flag false to exit
     )
