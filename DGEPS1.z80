@@ -1,0 +1,148 @@
+; TEC-1 Dual Encoder Position System with AM9511 APU
+; Calculates angular position using APU and displays on 7-segment display
+
+; Hardware Port Definitions
+APU_DATA    EQU 80h         ; Port 80h: AM9511 APU data port for reading/writing operands
+APU_CMD     EQU 81h         ; Port 81h: AM9511 APU command port for operation control
+SCAN_PORT   EQU 01h         ; Port 01h: TEC-1 display scan - selects which digit to light
+DIGIT_PORT  EQU 02h         ; Port 02h: TEC-1 segment data - controls which segments light up
+
+; APU Command Constants
+CMD_FADD    EQU 10h         ; APU command: Floating point addition
+CMD_FMUL    EQU 0Ch         ; APU command: Floating point multiplication
+CMD_FDIV    EQU 0Dh         ; APU command: Floating point division
+CMD_PTOF    EQU 02h         ; APU command: Convert fixed point to floating point
+CMD_FTOP    EQU 03h         ; APU command: Convert floating point to fixed point
+
+; RAM Variable Allocation
+            ORG 2000h       ; Start RAM variables at address 2000h
+ENC1_POS:   DS 2            ; 16-bit counter for encoder 1 position
+ENC2_POS:   DS 2            ; 16-bit counter for encoder 2 position
+ENC1_STATE: DS 1            ; Previous state of encoder 1 for quadrature decode
+ENC2_STATE: DS 1            ; Previous state of encoder 2 for quadrature decode
+ANGLE_BUF:  DS 4            ; 32-bit buffer to store APU floating point result
+DISP_BUF:   DS 6            ; 6-byte buffer for display digits
+
+; Seven Segment Display Patterns
+; Bit pattern for each segment: MSB gfedcba LSB
+PATTERNS:   DB 3Fh          ; 0: 0011 1111 - All segments except g
+           DB 06h          ; 1: 0000 0110 - Right segments b,c
+           DB 5Bh          ; 2: 0101 1011 - All except c,f
+           DB 4Fh          ; 3: 0100 1111 - All except f
+           DB 66h          ; 4: 0110 0110 - Top line and right side
+           DB 6Dh          ; 5: 0110 1101 - All except b
+           DB 7Dh          ; 6: 0111 1101 - All except b
+           DB 07h          ; 7: 0000 0111 - Top and right segments
+           DB 7Fh          ; 8: 0111 1111 - All segments lit
+           DB 6Fh          ; 9: 0110 1111 - All except bottom-left
+
+; Program Start
+            ORG 0800h       ; Begin code at TEC-1 standard start address
+
+START:      
+            CALL INIT_APU   ; Initialize the AM9511 APU chip
+            CALL INIT_VARS  ; Initialize program variables
+            
+MAIN_LOOP:  
+            CALL READ_ENC1  ; Read position from encoder 1
+            CALL CALC_ANGLE ; Calculate angle using APU
+            CALL SAVE_RESULT; Store APU result in buffer
+            CALL UPDATE_DISPLAY ; Update seven segment display
+            JR MAIN_LOOP    ; Repeat main loop indefinitely
+
+; Initialize APU Subroutine
+INIT_APU:   
+            XOR A           ; Clear accumulator
+            OUT (APU_CMD),A ; Send reset command to APU
+            LD B,10         ; Setup delay counter
+INIT_WAIT:  DJNZ INIT_WAIT ; Delay loop for APU reset
+            RET            ; Return from subroutine
+
+; Calculate Angle Using APU
+CALC_ANGLE: 
+            LD HL,(ENC1_POS) ; Load encoder position into HL
+            CALL PUSH_HL    ; Push position value to APU stack
+            LD A,CMD_PTOF   ; Load convert to float command
+            OUT (APU_CMD),A ; Send command to APU
+            CALL APU_WAIT   ; Wait for conversion to complete
+            
+            LD HL,CONST_015 ; Load address of 0.015 constant
+            CALL PUSH_FLOAT ; Push float constant to APU
+            
+            LD A,CMD_FMUL   ; Load multiply command
+            OUT (APU_CMD),A ; Multiply position by 0.015
+            CALL APU_WAIT   ; Wait for multiplication to complete
+            RET            ; Return from subroutine
+
+; Save APU Result to Buffer
+SAVE_RESULT:
+            LD HL,ANGLE_BUF ; Point to result buffer
+            LD B,4          ; Set counter for 4 bytes
+SAVE_LOOP:  
+            IN A,(APU_DATA) ; Read byte from APU
+            LD (HL),A       ; Store in buffer
+            INC HL          ; Point to next buffer position
+            DJNZ SAVE_LOOP  ; Repeat for all 4 bytes
+            RET            ; Return from subroutine
+
+; Push Float to APU
+PUSH_FLOAT: 
+            LD B,4          ; Set counter for 4 bytes
+PUSH_LOOP:  
+            LD A,(HL)       ; Get byte from memory
+            OUT (APU_DATA),A ; Send to APU
+            INC HL          ; Point to next byte
+            DJNZ PUSH_LOOP  ; Repeat for all 4 bytes
+            RET            ; Return from subroutine
+
+; Push 16-bit Value to APU
+PUSH_HL:    
+            LD A,H          ; Get high byte
+            OUT (APU_DATA),A ; Send high byte to APU
+            LD A,L          ; Get low byte
+            OUT (APU_DATA),A ; Send low byte to APU
+            XOR A           ; Clear A
+            OUT (APU_DATA),A ; Send two zero bytes
+            OUT (APU_DATA),A ; for 32-bit value
+            RET            ; Return from subroutine
+
+; Wait for APU Operation Complete
+APU_WAIT:   
+            IN A,(APU_CMD)  ; Read APU status
+            BIT 7,A         ; Test busy flag
+            JR NZ,APU_WAIT  ; Loop if still busy
+            RET            ; Return when complete
+
+; Update Seven Segment Display
+UPDATE_DISPLAY:
+            LD HL,DISP_BUF  ; Point to display buffer
+            LD B,6          ; Set counter for 6 digits
+            LD C,0          ; Start with digit 0
+DISP_LOOP:  
+            LD A,C          ; Get current digit position
+            OUT (SCAN_PORT),A ; Select digit position
+            
+            LD A,(HL)       ; Get digit value from buffer
+            PUSH HL         ; Save buffer pointer
+            LD HL,PATTERNS  ; Point to segment patterns
+            LD E,A          ; Setup for pattern lookup
+            LD D,0          ; Clear D for 16-bit add
+            ADD HL,DE       ; Point to correct pattern
+            LD A,(HL)       ; Get segment pattern
+            OUT (DIGIT_PORT),A ; Output to display
+            POP HL          ; Restore buffer pointer
+            
+            PUSH BC         ; Save counters
+            LD B,50         ; Setup display delay
+DELAY:      DJNZ DELAY      ; Delay for visibility
+            POP BC          ; Restore counters
+            
+            INC HL          ; Point to next digit
+            INC C           ; Increment position
+            DJNZ DISP_LOOP  ; Repeat for all digits
+            RET            ; Return from subroutine
+
+; Floating Point Constant
+CONST_015:  DB 3Ch,75h,0C2h,8Fh  ; IEEE-754 encoding of 0.015
+
+            END             ; End of assembly
