@@ -6,6 +6,10 @@ APU_DATA    EQU 80h         ; Port 80h: AM9511 APU data port for reading/writing
 APU_CMD     EQU 81h         ; Port 81h: AM9511 APU command port for operation control
 SCAN_PORT   EQU 01h         ; Port 01h: TEC-1 display scan - selects which digit to light
 DIGIT_PORT  EQU 02h         ; Port 02h: TEC-1 segment data - controls which segments light up
+ENC1_A_PORT EQU 03h         ; Port 03h: Encoder 1 A phase input
+ENC1_B_PORT EQU 04h         ; Port 04h: Encoder 1 B phase input
+ENC2_A_PORT EQU 05h         ; Port 05h: Encoder 2 A phase input
+ENC2_B_PORT EQU 06h         ; Port 06h: Encoder 2 B phase input
 
 ; APU Command Constants
 CMD_FADD    EQU 10h         ; APU command: Floating point addition
@@ -36,8 +40,29 @@ PATTERNS:   DB 3Fh          ; 0: 0011 1111 - All segments except g
            DB 7Fh          ; 8: 0111 1111 - All segments lit
            DB 6Fh          ; 9: 0110 1111 - All except bottom-left
 
+; Quadrature State Table
+; Index = prev_state:curr_state
+; Values: 1=CW, -1=CCW, 0=invalid
+QUAD_TABLE: DB 0,1,-1,0,-1,0,0,1,1,0,0,-1,0,-1,1,0
+
 ; Program Start
             ORG 0800h       ; Begin code at TEC-1 standard start address
+
+; Initialize Variables Subroutine
+INIT_VARS:  
+            LD HL,0         ; Load 0 into HL
+            LD (ENC1_POS),HL ; Clear encoder 1 position
+            LD (ENC2_POS),HL ; Clear encoder 2 position
+            XOR A           ; Clear accumulator
+            LD (ENC1_STATE),A ; Clear encoder 1 state
+            LD (ENC2_STATE),A ; Clear encoder 2 state
+            ; Clear display buffer
+            LD HL,DISP_BUF  ; Point to display buffer
+            LD B,6          ; 6 bytes to clear
+CLEAR_DISP: LD (HL),0       ; Clear byte
+            INC HL          ; Next byte
+            DJNZ CLEAR_DISP ; Repeat until done
+            RET            ; Return from subroutine
 
 START:      
             CALL INIT_APU   ; Initialize the AM9511 APU chip
@@ -57,6 +82,43 @@ INIT_APU:
             LD B,10         ; Setup delay counter
 INIT_WAIT:  DJNZ INIT_WAIT ; Delay loop for APU reset
             RET            ; Return from subroutine
+
+; Read Encoder 1 Position
+READ_ENC1:  
+            IN A,(ENC1_A_PORT) ; Read encoder A phase
+            AND 1           ; Mask to bit 0
+            RLCA           ; Shift to bit 1
+            LD B,A         ; Save A phase
+            IN A,(ENC1_B_PORT) ; Read encoder B phase
+            AND 1           ; Mask to bit 0
+            OR B           ; Combine with A phase
+            LD B,A         ; Save current state
+            
+            ; Combine with previous state
+            LD A,(ENC1_STATE) ; Get previous state
+            RLCA           ; Shift to upper nibble
+            RLCA           ; Shift again
+            OR B           ; Combine with current state
+            LD C,A         ; Save combined state
+            
+            ; Lookup direction
+            LD HL,QUAD_TABLE ; Point to decoder table
+            LD B,0         ; Clear B for 16-bit add
+            LD C,A         ; BC = table offset
+            ADD HL,BC      ; Point to table entry
+            LD A,(HL)      ; Get direction
+            
+            ; Update position if valid
+            OR A           ; Test for valid transition
+            RET Z          ; Return if invalid
+            LD HL,(ENC1_POS) ; Get current position
+            CP 1           ; Test direction
+            JR Z,ENC1_CW   ; Jump if clockwise
+            DEC HL         ; Counter-clockwise
+            JR ENC1_SAVE
+ENC1_CW:    INC HL         ; Clockwise
+ENC1_SAVE:  LD (ENC1_POS),HL ; Save new position
+            RET
 
 ; Calculate Angle Using APU
 CALC_ANGLE: 
