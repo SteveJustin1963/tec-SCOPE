@@ -6,11 +6,10 @@ under development, not ready
 - red dot aiming device needs neck bending
 - to save ur neck use a Sky-Watcher 6x30mm Right Angled (90deg angle viewer) Erect Image (shows objects right-side up and not inverted or reversed) Finder Scope. Ideal for fast, intuitive location of target objects. 
 - laser pointer >1mW for star aiming u need an astronomy permit https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
-- slewing with tec-1
-- slewing with starmap
+ 
 
 # control your telescope
-- tec1 or scc using MINT
+- tec1 or scc using MINT to slew
 - add to the mount geared down 2 rotary encoders and dc motors 
 - later we get code to send via 4800 serial async to Stellarium so it can correlate with star map 
 - 
