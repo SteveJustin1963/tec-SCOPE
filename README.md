@@ -1,14 +1,14 @@
 under development, not ready
 
 
-# aiming
+# Aiming by eye
 - get or make a cheap 8-inch F5 Dobson, truss or tube, pushed by hand. i found an old truss for $35 on gumtree. any telescope will do so long as u can mod it.
 - red dot aiming device needs neck bending
 - to save ur neck use a Sky-Watcher 6x30mm Right Angled (90deg angle viewer) Erect Image (shows objects right-side up and not inverted or reversed) Finder Scope. Ideal for fast, intuitive location of target objects. 
 - laser pointer >1mW for star aiming u need an astronomy permit https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
  
 
-# control your telescope
+# Control your telescope
 - tec1 or scc using MINT to slew
 - add to the mount geared down 2 rotary encoders and dc motors 
 - later we get code to send via 4800 serial async to Stellarium so it can correlate with star map 
@@ -20,7 +20,7 @@ under development, not ready
 
  
 
-# mount
+# Mount
 - alt (up down) and azimuth (side to side) lets say x and y, are friction coupled, convert this to gears and bearing support 
 - we need to add 2 motors and 2 encoders
 - for an alt motor with a reduction worm drive with perpendicular shafts on each side can be got from a discarded foot massage machine, it has a 24v motor, need to be run at a lower voltage and pwm to slow it down as its powerful and fast, fast is not what we want. 
@@ -33,7 +33,7 @@ under development, not ready
 
 
 
-# rotary encoder
+# Rotary encoder
 - HN3806-AB (around $15), has AB 2 phase rectangular orthogonal pulses 600 pulses/rev aka 2 wires, max 5000rpm we are not going that fast, response 0-20KHz 
 - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
 - do not connect AB directly VCC!! go to the chip **Use pull resistors**
@@ -70,12 +70,7 @@ under development, not ready
 
 
 
-
-
-
-
-
-# counter chip LS7366R
+# Counter chip LS7366R
 LS7366R runs on SPI and is a quadrature encoder counter IC designed to interface with rotary or linear encoders. 
 It can track position, direction, and speed by counting the pulses from the encoder. 
 The LS7366R can operate in various modes, including 1X, 2X, or 4X decoding, to count the pulses per encoder cycle, 
@@ -202,7 +197,7 @@ see http://easyeda.com for schematics, links coming
 ![image](https://github.com/user-attachments/assets/c596d7a4-f89f-4522-9ba0-565d6488245d)
 
 
-# generic_spi
+# Generic_spi
 [generic_SPI.z80](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/generic_SPI.z80)
 1. **Generic `spi_write` Routine**:
    - This routine can be used to send any 8-bit command (register or operation) and
@@ -358,7 +353,7 @@ Modify your code to send a fixed sequence of bytes like `0xAA` (10101010b) and `
 
 
 
-# compact_SPI
+# Compact_SPI
 [compact_SPI.z80](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/compact_SPI.z80)
  
 # To test this SPI bit-banging implementation with a **CRO (Cathode Ray Oscilloscope)**, you need to probe the correct signals and verify the expected SPI behavior.
@@ -528,7 +523,7 @@ CS    → ______----------------______   (low during transfer)
 
  
 
- # main_loop test1
+ # Main_loop test1
 
 ![image](https://github.com/user-attachments/assets/48cf9d0e-ecba-4236-a271-55e19285d0e3)
 
