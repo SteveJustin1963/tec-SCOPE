@@ -1,5 +1,7 @@
 under development, not ready
 
+# Reading
+- https://www.cloudynights.com/
 
 # Aiming by eye
 - get or make a cheap 8-inch F5 Dobson, truss or tube, pushed by hand. i found an old truss for $35 on gumtree. any telescope will do so long as u can mod it.
