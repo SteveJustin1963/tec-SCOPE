@@ -218,6 +218,145 @@ see http://easyeda.com for schematics, links coming
 4. **Configuration Outside Code**:
    - Device-specific configurations can be handled in calling code by setting registers (`D` and `E`) before calling `spi_write`, allowing reuse of this code across multiple SPI devices.
 
+To test this SPI code with a **CRO (Cathode Ray Oscilloscope)**, you will need to probe the SPI signals while the program is running. Here’s how to go about it:
+
+---
+
+### **1. Identify SPI Signal Pins**
+Since SPI consists of **four** main signals, you need to probe the following:
+- **CS (Chip Select)**
+- **SCK (Clock)**
+- **MOSI (Master Out Slave In)**
+- **MISO (Master In Slave Out) – Optional** (Your code does not read MISO)
+
+---
+
+### **2. Connect CRO Probes**
+Attach the CRO probes to the corresponding lines at the output of the Z80 SBC:
+- **CH1** → **SCK (Clock)**
+- **CH2** → **MOSI (Data Out)**
+- **CH3** (if available) → **CS (Chip Select)**
+- **GND** → **System Ground**
+
+---
+
+### **3. What to Look for on the CRO**
+#### **A. Chip Select (CS) Behavior**
+- Should be **HIGH (1)** when idle.
+- Should go **LOW (0)** at the beginning of an SPI transaction.
+- Should return **HIGH (1)** after the transmission completes.
+- Use **single-shot mode** on the CRO to capture the CS pulse.
+
+#### **B. Clock Signal (SCK)**
+- Should toggle between **LOW (0) and HIGH (1)** during SPI communication.
+- The number of clock pulses should match the **bits sent (8 per byte).**
+- Check the frequency and duty cycle to confirm timing consistency.
+
+#### **C. MOSI (Master Data Out)**
+- Should shift out **one bit per clock pulse.**
+- Should align with the rising or falling edge of **SCK**, depending on the SPI mode.
+- Check if the data sent matches the expected bit pattern for given inputs.
+
+#### **D. SPI Bit Timing**
+Use **Cursor Measurements** to check:
+- **Clock Period (Tclk) = 1 / Frequency**
+- **Bit duration (Tb) = One full clock cycle**
+- **CS timing** in relation to **SCK** and **MOSI**
+
+---
+
+### **4. Verifying Data Transmission**
+To verify that the data is correctly sent:
+- Send a known **byte pattern** (e.g., `0xAA = 10101010b` or `0x55 = 01010101b`).
+- Observe if the MOSI waveform matches the expected bit sequence.
+
+---
+
+### **5. Expected Waveforms**
+- **CS should start HIGH, drop LOW during transfer, then go HIGH again.**
+- **Clock (SCK) should be a clean square wave, stable and consistent.**
+- **MOSI should change state in sync with SCK edges** (depending on SPI mode).
+- **If using an SPI device**, you may also probe **MISO** to check the response.
+
+---
+
+### **6. Debugging with CRO**
+| Issue  | Possible Cause |
+|--------|---------------|
+| **CS remains high** | SPI is not enabled or SPI routine is not executing |
+| **SCK is missing** | Code not reaching SPI write function or clock line issue |
+| **MOSI not changing** | Register values incorrect or data not rotating properly |
+| **Glitches in signals** | Poor grounding, noise interference, or incorrect timing |
+
+---
+
+##  **generating a test sequence** to validate the output with a known pattern
+
+Here’s a simple **test sequence** to verify SPI communication using your **Z80 SBC** and a **CRO**.
+
+---
+
+### **Test Procedure**
+1. **Modify the Code** to send a known data pattern.
+2. **Probe SPI lines** (CS, SCK, MOSI) on your **CRO**.
+3. **Compare the expected waveforms** with actual signals.
+
+---
+
+### **Test Code: Send a Known SPI Pattern**
+Modify your code to send a fixed sequence of bytes like `0xAA` (10101010b) and `0x55` (01010101b). This will create an alternating pattern on the MOSI line, making it easy to recognize on the CRO.
+
+```assembly
+    ld d, 0AAh   ; Register/command byte (Pattern: 10101010)
+    ld e, 055h   ; Data byte (Pattern: 01010101)
+    call spi_write
+    halt
+```
+
+- **CS (Chip Select)** should drop LOW at the start and go HIGH after transmission.
+- **SCK (Clock)** should have 8 pulses per byte.
+- **MOSI (Data Out)** should output `10101010` for `0xAA`, followed by `01010101` for `0x55`.
+
+---
+
+### **What to Expect on the CRO**
+#### **1. CS (Chip Select) Behavior**
+- Should **start HIGH**, drop LOW during transmission, then return HIGH.
+
+#### **2. SCK (Clock)**
+- Should show **8 clean pulses per byte**.
+- Frequency should match SPI timing.
+
+#### **3. MOSI (Data Out)**
+- **For `0xAA` (10101010)**, the MOSI line should alternate HIGH and LOW.
+- **For `0x55` (01010101)**, the MOSI line should alternate in reverse.
+
+---
+
+### **How to Analyze the CRO Output**
+1. **Use Single-Shot Mode** on the CRO to capture the SPI waveform.
+2. **Set Cursor Measurements**:
+   - Measure **CS pulse width** to confirm SPI transaction timing.
+   - Measure **SCK frequency** to verify clock timing.
+   - Compare **MOSI data** with expected bit pattern.
+
+---
+
+### **Debugging Checklist**
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| **No CS pulse** | SPI function not executing | Check code execution flow |
+| **No SCK pulses** | Clock not being toggled | Check SPI write loop |
+| **Incorrect MOSI pattern** | Data shifting incorrectly | Verify `rlc` and `adc a, a` logic |
+| **Glitches or noise** | Poor grounding | Ensure short, solid ground connections |
+
+---
+
+
+
+
+
+
 #### compact_SPI
 [compact_SPI.z80](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/compact_SPI.z80)
  
