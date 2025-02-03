@@ -33,7 +33,7 @@ under development, not ready
 
 
 
-#### rotary encoder
+# rotary encoder
 - HN3806-AB (around $15), has AB 2 phase rectangular orthogonal pulses 600 pulses/rev aka 2 wires, max 5000rpm we are not going that fast, response 0-20KHz 
 - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
 - do not connect AB directly VCC!! go to the chip **Use pull resistors**
@@ -47,7 +47,7 @@ under development, not ready
  ![image](https://github.com/user-attachments/assets/1062caac-b01f-4fa3-8646-d8f7d01f09d9)
 
 
-## Dual Geared Encoder Position System
+# Dual Geared Encoder Position System
 
 [DGEPS1.mint](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/DGEPS1.mint)
 
@@ -58,7 +58,7 @@ under development, not ready
 5. ESC key monitoring for exit
  
 
-## Geared 10:1 Quadrature Encoder Test with Bi-directional Motion Simulation
+# Geared 10:1 Quadrature Encoder Test with Bi-directional Motion Simulation
 
 [QETBMS1.mint](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/QETBMS1.mint)
 
@@ -114,7 +114,7 @@ Key features include:
 
  
 
-#### ATtiny84/85 Quadrature Encoder Implementation
+# ATtiny84/85 Quadrature Encoder Implementation
 - lets try the ATtiny85 with Quadrature Encoder Implementation for $1, or the 84 if we need more gpios
 - am already sick of the LS7366R due to the complexity and the high cost and hard to find it, lets do it with two attiny85 or one attiny84.
 - we can just modify the exiting code and  setup using two ATtiny85s, where each chip handles one encoder and communicates as SPI slave.
@@ -174,7 +174,7 @@ To use this system:
 - if we add more spi slaves as we will I think ill migrate to ardino, stay tuned
 - 
 
-### KMA215 for az reading 
+# KMA215 for az reading 
 - a magnetic sensor; the KMA215 for angle measurements
 - it has an resolution to 0.1 degrees, accuracy ±1 degree
 - effected by strength and stability of the magnetic field.
@@ -196,13 +196,13 @@ To use this system:
  
 
 
-### SPI
+# SPI
 see http://easyeda.com for schematics, links coming 
 
 ![image](https://github.com/user-attachments/assets/c596d7a4-f89f-4522-9ba0-565d6488245d)
 
 
-#### generic_spi
+# generic_spi
 [generic_SPI.z80](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/generic_SPI.z80)
 1. **Generic `spi_write` Routine**:
    - This routine can be used to send any 8-bit command (register or operation) and
@@ -218,7 +218,8 @@ see http://easyeda.com for schematics, links coming
 4. **Configuration Outside Code**:
    - Device-specific configurations can be handled in calling code by setting registers (`D` and `E`) before calling `spi_write`, allowing reuse of this code across multiple SPI devices.
 
-To test this SPI code with a **CRO (Cathode Ray Oscilloscope)**, you will need to probe the SPI signals while the program is running. Here’s how to go about it:
+# test this SPI code with a CRO
+using a **(Cathode Ray Oscilloscope)**, you will need to probe the SPI signals while the program is running. Here’s how to go about it:
 
 ---
 
@@ -357,14 +358,14 @@ Modify your code to send a fixed sequence of bytes like `0xAA` (10101010b) and `
 
 
 
-#### compact_SPI
+# compact_SPI
 [compact_SPI.z80](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/compact_SPI.z80)
  
 
 
 
 
-#### main code loop ideas
+# main code loop ideas
 - build up simple features first
 - motor control /manual or code / / slew joystick- dc motors
 - track a position using an optical gates or estimation on Stellarium
