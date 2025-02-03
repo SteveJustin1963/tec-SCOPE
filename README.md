@@ -361,7 +361,150 @@ Modify your code to send a fixed sequence of bytes like `0xAA` (10101010b) and `
 # compact_SPI
 [compact_SPI.z80](https://github.com/SteveJustin1963/tec-SCOPE/blob/master/compact_SPI.z80)
  
+# To test this SPI bit-banging implementation with a **CRO (Cathode Ray Oscilloscope)**, you need to probe the correct signals and verify the expected SPI behavior.
 
+---
+
+### **1. Identify the SPI Signals**
+The code controls SPI using the I/O port (`IOPORT = 42h`). The relevant signals are:
+- **CS (Chip Select)** → Bit 2 (0F8h = `1111 1000`, 0FCh = `1111 1100`)
+- **CLK (Clock Signal)** → Bit 1 (`SET 1, a` and `RES 1, a`)
+- **MOSI (Master Out Slave In)** → Bit 0 (`ADC a, a` sets MOSI based on Carry Flag)
+- **MISO (Master In Slave Out)** → Not used in this code (for SPI read)
+
+### **2. Connect the CRO Probes**
+- **CS Probe** → Connect to the **CS pin** of the SPI device.
+- **CLK Probe** → Connect to the **Clock (CLK) pin**.
+- **MOSI Probe** → Connect to the **MOSI pin**.
+- **GND Probe** → Connect to **circuit ground**.
+
+### **3. Expected Waveform Observations**
+| **Signal**  | **Expected Behavior on CRO** |
+|------------|----------------------------|
+| **CS**    | Goes **low** (`0`) at the start of transmission and **high** (`1`) at the end. |
+| **CLK**   | Generates **8 pulses** per byte during transmission (should be a square wave). |
+| **MOSI**  | Transmits **1 bit per clock pulse**, shifting left from `D` and `E` registers. |
+
+### **4. Step-by-Step Testing**
+1. **Test `INIT_SPI` Routine**
+   - Run `INIT_SPI` alone.
+   - CRO should show **CS = HIGH**, **CLK = LOW**, and **MOSI = LOW**.
+
+2. **Test `SPI_WRITE` Routine**
+   - Load a test value into `D` (command) and `E` (data).
+   - Call `SPI_WRITE`.
+   - Observe:
+     - **CS goes LOW** at the start.
+     - **CLK produces 8 pulses** per byte.
+     - **MOSI changes per bit being shifted out**.
+     - **CS goes HIGH** at the end.
+
+3. **Verify Clock Timing**
+   - Use the **time/div** function on the CRO to check if the clock pulses are equally spaced.
+
+4. **Check Data Transfer**
+   - Use the **"Single Shot" mode** on the CRO to capture the **exact** MOSI waveform and compare it to the expected bit sequence.
+
+---
+
+### **5. Debugging with CRO**
+| **Issue**  | **Possible Cause** | **Fix** |
+|------------|--------------------|---------|
+| No signals at all | `IOPORT` not outputting | Check Z80 I/O configuration |
+| CS never goes LOW | Wrong `OUT (IOPORT), A` operation | Verify `LD A, 0F8h` before output |
+| No CLK pulses | `SET 1, a` and `RES 1, a` missing or incorrect | Check loop timing |
+| Wrong data on MOSI | `RLC d` or `RLC e` not shifting correctly | Verify `D` and `E` values before sending |
+
+# test **program example** to load values into `D` and `E` before calling `SPI_WRITE`
+Here’s a **test program** to verify your SPI bit-banging implementation on a Z80 system. It will send a test command (`D = 0xA5`) and data (`E = 0x3C`) via SPI and allow you to observe the signals using a CRO.
+
+---
+
+### **Z80 Assembly Test Program**
+```assembly
+IOPORT:   EQU   42h   ; Define the I/O port address
+
+            ; Initialize SPI bus
+INIT_SPI:      
+            LD   a, 0fch   ; CS high, CLK low, MOSI low
+            OUT  (IOPORT), a   
+            RET      
+                        
+            ; SPI Write: D = Command/Register, E = Data
+SPI_WRITE:      
+            PUSH   bc   
+                        
+            ; Send 8 bits from D (command/register)
+            LD   b, 8   
+REG_LOOP:      
+            LD   a, 0f8h   ; Lower CS
+            RLC  d        ; Rotate left to bring bit into CF
+            ADC  a, a      ; Set MOSI based on CF
+            OUT  (IOPORT), a   
+            SET  1, a      ; CLK high
+            OUT  (IOPORT), a   
+            RES  1, a      ; CLK low
+            OUT  (IOPORT), a   
+            DJNZ REG_LOOP  ; Repeat for 8 bits
+                        
+            ; Send 8 bits from E (data)
+            LD   b, 8   
+DATA_LOOP:      
+            LD   a, 0f8h   
+            RLC  e        ; Rotate left to bring bit into CF
+            ADC  a, a      ; Set MOSI based on CF
+            OUT  (IOPORT), a   
+            SET  1, a      ; CLK high
+            OUT  (IOPORT), a   
+            RES  1, a      ; CLK low
+            OUT  (IOPORT), a   
+            DJNZ DATA_LOOP   
+                        
+            LD   a, 0fch   ; Raise CS to end communication
+            OUT  (IOPORT), a   
+            POP  bc   
+            RET 
+
+            ; MAIN TEST ROUTINE
+START:
+            CALL INIT_SPI    ; Initialize SPI
+            LD   D, 0A5h     ; Load test command (10100101)
+            LD   E, 03Ch     ; Load test data (00111100)
+            CALL SPI_WRITE   ; Transmit via SPI
+            HALT            ; Stop execution (for testing)
+```
+
+---
+
+### **How to Test with a CRO**
+1. **Load and run the program** on your Z80 system.
+2. **Connect CRO probes** to the SPI lines:
+   - **CS** → Should go **LOW** at start and **HIGH** after transmission.
+   - **CLK** → Should generate **8 pulses per byte**.
+   - **MOSI** → Should transmit **`D = 0xA5` (10100101)** followed by **`E = 0x3C` (00111100)**.
+3. **Observe waveforms**:
+   - Verify **CS timing** (active during transfer).
+   - Ensure **8 clock pulses per byte**.
+   - Compare **MOSI data** to the expected bit pattern.
+
+---
+
+### **Expected CRO Readings**
+#### **Command (D = `0xA5` → `10100101`)**
+```
+MOSI  → 1  0  1  0  0  1  0  1
+CLK   → _|-|_|-|_|-|_|-|_|-|_|-|_|-|_|-|
+CS    → ______----------------______   (low during transfer)
+```
+
+#### **Data (E = `0x3C` → `00111100`)**
+```
+MOSI  → 0  0  1  1  1  1  0  0
+CLK   → _|-|_|-|_|-|_|-|_|-|_|-|_|-|_|-|
+CS    → ______----------------______   (low during transfer)
+```
+
+ 
 
 
 
