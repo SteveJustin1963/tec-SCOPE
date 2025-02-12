@@ -1,3 +1,4 @@
+# basic
 ```
 ' Constants for encoder setup
 Const SERIAL_PORT = 1      ' Serial port for output
@@ -207,6 +208,8 @@ End
 
 ```
 
+
+# asm 
 ```
 ; Compiled with: Z80 Simulator IDE v14.67
 ; Microprocessor model: Z80
@@ -2549,6 +2552,53 @@ SG11:
 	.END
 
 ```
+# mint
+
+  MINT code limitations 
+
+1. Integer Size Limitations:
+- Only 16-bit integers (-32,768 to +32,767)
+- At 600 pulses/rev × 4 (quadrature) × 10 (gear ratio) = 24,000 pulses/rev
+- This means we'll overflow after:
+  * Alt (90°): 24,000/4 = 6,000 pulses
+  * Az (180°): 24,000/2 = 12,000 pulses
+
+2. Math Limitations:
+- No floating point capability
+- No direct degree/minute/second calculations
+- Cannot handle precision needed for arc seconds
+- No automatic carry handling for overflows
+
+3. Memory Limitations:
+- Single-character variables (a-z only)
+- Limited to 26 functions (A-Z)
+- 256 byte line length limit
+
+4. No Error Handling:
+- No stack underflow protection
+- No error checking for invalid encoder states
+- No detection of missed pulses
+
+5. Performance Issues:
+- Every loop reads ports separately
+- No debouncing for encoder inputs
+- Simple delay with empty loop (100())
+
+6. Display Limitations:
+- Can only output raw counts
+- No formatted degree display
+- No decimal point display
+- No degree symbol support
+
+To improve this, we would need to:
+1. Add overflow detection using /c and /r variables
+2. Scale numbers differently to avoid overflow
+3. Add error checking for quadrature states
+4. Add proper debouncing
+5. Implement degree conversion math
+6. Add proper display formatting
+
+
 
 ```
 // Variables used:
