@@ -38,7 +38,9 @@ under development, not ready
 # Rotary encoder
 - HN3806-AB (around $15), has AB 2 phase rectangular orthogonal pulses 600 pulses/rev aka 2 wires, max 5000rpm we are not going that fast, response 0-20KHz 
 - green A phase, white B phase, red Vcc power +, and black V0. DC5-24V power source 
-- do not connect AB directly VCC!! go to the chip **Use pull resistors**
+- do not connect AB directly VCC!! go to the chip **Use pull resistors** must limit current
+- Open collector output: The output is "open collector" meaning you need to add a pull-up resistor on the microcontroller side to read the signal properly.
+
 - A and B from the rotary encoder are part of a quadrature output.
 - means the encoder uses the two signals (A and B) that are 90 degrees out of phase to determine position and direction of movement. 
 - we need to counting the pulses, signals alternate between HIGH (1) and LOW (0).
