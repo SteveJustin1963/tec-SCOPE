@@ -2549,3 +2549,62 @@ SG11:
 	.END
 
 ```
+
+```
+// Variables used:
+// a - alt encoder A channel state
+// b - alt encoder B channel state
+// c - az encoder A channel state 
+// d - az encoder B channel state
+// e - alt count
+// f - az count
+// p - port temp storage
+// t - temp calculations
+
+:A              // Init variables
+0 e! 0 f!      // zero counters
+;
+
+:B              // Read alt encoder
+2 /I p!        // read port 2
+0 p & a!       // get bit 0
+3 /I p!        // read port 3
+0 p & b!       // get bit 0
+;
+
+:C              // Read az encoder
+4 /I p!        // read port 4
+0 p & c!       // get bit 0
+5 /I p!        // read port 5
+0 p & d!       // get bit 0
+;
+
+:D              // Process alt change
+a 1 = b 0 = & (e 1 + e!) // if a=1 and b=0, increment
+a 0 = b 1 = & (e 1 - e!) // if a=0 and b=1, decrement
+e 15000 > (15000 e!)     // limit to 90 degrees worth
+e 0 < (0 e!)             // prevent negative
+;
+
+:E              // Process az change  
+c 1 = d 0 = & (f 1 + f!) // if c=1 and d=0, increment
+c 0 = d 1 = & (f 1 - f!) // if c=0 and d=1, decrement
+f 30000 > (30000 f!)     // limit to 180 degrees worth
+f 0 < (0 f!)             // prevent negative
+;
+
+:F              // Output values
+`Alt:` e . /N   // print alt count
+`Az:` f . /N    // print az count
+;
+
+:M              // Main loop
+A               // init
+/U(             // infinite loop
+  B C           // read encoders
+  D E           // process changes
+  F             // output values
+  100()         // delay
+)
+;
+```
