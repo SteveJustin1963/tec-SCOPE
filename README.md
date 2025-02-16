@@ -1,20 +1,24 @@
 under development, not ready
 
-# Reading
-- https://www.cloudynights.com/
 
-# Aiming by eye
-- get or make a cheap 8-inch F5 Dobson, truss or tube, pushed by hand. i found an old truss for $35 on gumtree. any telescope will do so long as u can mod it.
-- red dot aiming device needs neck bending, save ur neck use [9x50 Angled Finder Scope Multi-Film with Upright and Non-Reversed Image](https://www.testar.com.au/products/sky-watcher-9-x-50-right-angle-finderscope?variant=43670176432353&utm_source=google&utm_medium=organic&utm_campaign=Google%20Shopping%20feed%20app%20Australia&utm_content=SKY-WATCHER%209%20x%2050%20RIGHT%20ANGLE%20FINDERSCOPE&utm_campaign=gs-2019-12-27&utm_source=google&utm_medium=smart_campaign&gad_source=1&gclid=CjwKCAiAzPy8BhBoEiwAbnM9OzjLTUabQD3bjbE1TkDAqTKBWwvbebhQD3lGjDbNC68sNm59WremxxoClnUQAvD_BwE)
-- 6x30mm is a **waste of money** due to too narrow view [pros and cons](https://github.com/SteveJustin1963/tec-SCOPE/wiki#red-dot-finder)
-- laser pointer >1mW for star aiming u need an astronomy permit https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
+# Start
+- read https://www.cloudynights.com/ and any online stiff on astronomy.
+- get or make a cheap 8-inch F5 Dobson stle, truss or tube, pushed by handtype. I found an old truss type on gumtree for $35, but was missing an eyepiece but got an extra mirror..
+- any telescope will do so long as u can mod it. 
+
+# Aiming
+- use your eyes, line up two points on the side
+- use a red dot aiming device, but your neck needs bending,
+- save your neck use a 9x50,, best choice.. [9x50 Angled Finder Scope Multi-Film with Upright and Non-Reversed Image](https://www.testar.com.au/products/sky-watcher-9-x-50-right-angle-finderscope?variant=43670176432353&utm_source=google&utm_medium=organic&utm_campaign=Google%20Shopping%20feed%20app%20Australia&utm_content=SKY-WATCHER%209%20x%2050%20RIGHT%20ANGLE%20FINDERSCOPE&utm_campaign=gs-2019-12-27&utm_source=google&utm_medium=smart_campaign&gad_source=1&gclid=CjwKCAiAzPy8BhBoEiwAbnM9OzjLTUabQD3bjbE1TkDAqTKBWwvbebhQD3lGjDbNC68sNm59WremxxoClnUQAvD_BwE)
+- the 6x30mm is a **waste of money** due to too narrow a view [pros and cons](https://github.com/SteveJustin1963/tec-SCOPE/wiki#red-dot-finder)
+- laser pointer >1mW for star aiming, but you need an astronomy permit, https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
  
 
 # Control your telescope
-- tec1 or scc using MINT to slew
-- add to the mount geared down 2 rotary encoders and dc motors 
-- later we get code to send via 4800 serial async to Stellarium so it can correlate with star map 
-- 
+- tec1 or scc using code slew, track etc
+- you need to mod the mount, gear it down, say 10-1 with motors add 2 rotary encoders for position sensing 
+- send position data via 4800 serial to Stellarium to project onto star map 
+- plenty more...
 
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
 ![image](https://github.com/user-attachments/assets/127c3469-9b72-4adf-8157-af4c271298e7)
