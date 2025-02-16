@@ -26,7 +26,7 @@ under development, not ready
 
  
 
-# Mount
+# Mod the Mount
 - alt (up down) and azimuth (side to side) lets say x and y, are friction coupled, convert this to gears and bearing support 
 - we need to add 2 motors and 2 encoders
 - for an alt motor with a reduction worm drive with perpendicular shafts on each side can be got from a discarded foot massage machine, it has a 24v motor, need to be run at a lower voltage and pwm to slow it down as its powerful and fast, fast is not what we want. 
