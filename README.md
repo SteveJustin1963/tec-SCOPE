@@ -8,7 +8,7 @@ under development, not ready
 
 # Aiming
 - use your eyes, line up two points on the side
-- use a red dot aiming device, but your neck needs bending,
+- use a red dot aiming device, your neck needs bending,
 - save your neck use a 9x50,, best choice.. [9x50 Angled Finder Scope Multi-Film with Upright and Non-Reversed Image](https://www.testar.com.au/products/sky-watcher-9-x-50-right-angle-finderscope?variant=43670176432353&utm_source=google&utm_medium=organic&utm_campaign=Google%20Shopping%20feed%20app%20Australia&utm_content=SKY-WATCHER%209%20x%2050%20RIGHT%20ANGLE%20FINDERSCOPE&utm_campaign=gs-2019-12-27&utm_source=google&utm_medium=smart_campaign&gad_source=1&gclid=CjwKCAiAzPy8BhBoEiwAbnM9OzjLTUabQD3bjbE1TkDAqTKBWwvbebhQD3lGjDbNC68sNm59WremxxoClnUQAvD_BwE)
 - the 6x30mm is a **waste of money** due to too narrow a view [pros and cons](https://github.com/SteveJustin1963/tec-SCOPE/wiki#red-dot-finder)
 - laser pointer >1mW for star aiming, but you need an astronomy permit, https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
