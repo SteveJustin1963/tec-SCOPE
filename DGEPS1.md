@@ -617,4 +617,223 @@ M
 G
 ```
 
+# add debugging
+
+I'll add comprehensive debugging output to help you track what's happening in the code. This will output values to the terminal at key points so you can see the encoder states, calculations, and decisions:
+
+I've added comprehensive debugging output throughout the encoder system code. This will help you understand exactly what's happening during execution. Here's what the debugging will show you:
+
+### Function-by-Function Debugging:
+
+1. **Function A (Initialization)**:
+   - Shows all port assignments and initial values
+   - Marks completion of initialization
+
+2. **Functions B and C (Encoder Processing)**:
+   - Shows raw input values from encoder pins
+   - Displays current and previous encoder states
+   - Reports the calculated direction (1 for CW, -1 for CCW, 0 for no change)
+   - Indicates when overflow handling occurs
+   - Shows counter values before and after updates
+
+3. **Function D (Counts to Degrees)**:
+   - Shows the input count and its conversion to scaled degrees
+
+4. **Function E (Angle Formatting)**:
+   - Shows the scaling process for the angle display
+   - Reports whole and decimal parts of the angle
+   - Indicates when negative decimal fixing occurs
+
+5. **Function F (Counter Reset)**:
+   - Shows confirmation of all counters being reset to zero
+
+6. **Function M (Main Monitor Loop)**:
+   - Marks the start and end of each iteration
+   - Shows when it processes each encoder
+   - Reports when keys are pressed and their ASCII values
+   - Shows loop continuation status
+
+7. **Function G (Program Entry)**:
+   - Displays system information
+   - Shows program initialization and termination
+
+### How to Read the Debug Output:
+
+The debug messages use a consistent format:
+- `[DEBUG-X]` prefix identifies which function the message is from
+- Each significant value is labeled (e.g., `e=5`)
+- Process steps are described in clear language
+- Section markers help you follow the program flow
+
+This will make it much easier to:
+1. Verify encoder inputs are being read correctly
+2. See how the quadrature decoding is working
+3. Track position counter values and overflow handling
+4. Monitor angle calculations
+5. Debug any issues with keyboard input
+
+When testing with actual hardware, you'll be able to see exactly what's happening at each step and identify any issues quickly.
+
+```
+:A 
+`[DEBUG-A] Initializing constants and variables...` /N
+2 a! 3 b! 4 c! 5 d!  
+`[DEBUG-A] Encoder ports: 1A=` a . ` 1B=` b . ` 2A=` c . ` 2B=` d . /N
+0 e! 0 f! 0 g! 0 h!  
+0 i! 0 j!
+`[DEBUG-A] Initialized counters and states` /N
+`[DEBUG-A] Initialization complete` /N
+/N
+;
+
+:B 
+`[DEBUG-B] Reading Encoder 1...` /N
+a /I 2 * b /I + p!
+`[DEBUG-B] Raw inputs: A=` a /I . ` B=` b /I . /N
+`[DEBUG-B] Combined state: p=` p . /N
+g 4 * p + q!
+`[DEBUG-B] With prev: g=` g . ` q=` q . /N
+q \[ 0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0 ] r!
+r q? s!
+`[DEBUG-B] Direction: s=` s . /N
+s 0 = (
+  `[DEBUG-B] No change detected` /N
+) /E (
+  `[DEBUG-B] Valid change detected` /N
+  `[DEBUG-B] Current count: e=` e . /N
+  s 1 = e #7FFF = & (
+    `[DEBUG-B] CW at MAX! Wrapping to MIN` /N
+    #8000 e!
+  ) /E (
+    s -1 = e #8000 = & (
+      `[DEBUG-B] CCW at MIN! Wrapping to MAX` /N
+      #7FFF e!
+    ) /E (
+      `[DEBUG-B] Normal update by ` s . /N
+      e s + e!
+    )
+  )
+  `[DEBUG-B] New count: e=` e . /N
+)
+p g!
+`[DEBUG-B] Updated prev state: g=` g . /N
+/N
+;
+
+:C 
+`[DEBUG-C] Reading Encoder 2...` /N
+c /I 2 * d /I + p!
+`[DEBUG-C] Raw inputs: A=` c /I . ` B=` d /I . /N
+`[DEBUG-C] Combined state: p=` p . /N
+h 4 * p + q!
+`[DEBUG-C] With prev: h=` h . ` q=` q . /N
+q \[ 0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0 ] r!
+r q? s!
+`[DEBUG-C] Direction: s=` s . /N
+s 0 = (
+  `[DEBUG-C] No change detected` /N
+) /E (
+  `[DEBUG-C] Valid change detected` /N
+  `[DEBUG-C] Current count: f=` f . /N
+  s 1 = f #7FFF = & (
+    `[DEBUG-C] CW at MAX! Wrapping to MIN` /N
+    #8000 f!
+  ) /E (
+    s -1 = f #8000 = & (
+      `[DEBUG-C] CCW at MIN! Wrapping to MAX` /N
+      #7FFF f!
+    ) /E (
+      `[DEBUG-C] Normal update by ` s . /N
+      f s + f!
+    )
+  )
+  `[DEBUG-C] New count: f=` f . /N
+)
+p h!
+`[DEBUG-C] Updated prev state: h=` h . /N
+/N
+;
+
+:D
+`[DEBUG-D] Converting count=` m . ` to degrees` /N
+m 15 * t!
+`[DEBUG-D] Scaled value: t=` t . /N
+t
+;
+
+:E
+`[DEBUG-E] Formatting angle for display...` /N
+m D u!
+`[DEBUG-E] Scaled value: u=` u . /N
+u 1000 / v!
+u 1000 % w!
+`[DEBUG-E] Whole part: v=` v . ` Decimal part: w=` w . /N
+w 0 < (
+  `[DEBUG-E] Fixing negative decimal` /N
+  w -1 * w!
+  `[DEBUG-E] Fixed to: w=` w . /N
+) 
+v . `.` w . ` degrees`
+/N
+;
+
+:F
+`[DEBUG-F] Resetting counters...` /N
+0 e! 0 f! 0 g! 0 h! 0 i! 0 j!
+`[DEBUG-F] Counters reset: e=` e . ` f=` f . ` g=` g . ` h=` h . /N
+`Counters reset to zero` /N
+/N
+;
+
+:M
+`[DEBUG-M] Starting monitor loop...` /N
+/T y!
+/U (
+  `[DEBUG-M] === LOOP ITERATION START ===` /N
+  `[DEBUG-M] Process encoder 1` /N
+  B
+  `[DEBUG-M] Process encoder 2` /N
+  C
+  `[DEBUG-M] Display values` /N
+  `Encoder 1: Count: ` e . /N
+  ` Angle: ` e E
+  `Encoder 2: Count: ` f . /N
+  ` Angle: ` f E
+  `[DEBUG-M] Wait for input (delay)` /N
+  50 ( ) 
+  `[DEBUG-M] Check for keypresses` /N
+  /K z!
+  z 0 > (
+    `[DEBUG-M] Key pressed: ` z . ` (ASCII)` /N
+    z 27 = (
+      `[DEBUG-M] ESC pressed - exit` /N
+      /F y!
+    )
+    z 70 = (
+      `[DEBUG-M] F pressed - reset` /N
+      F
+    )
+  )
+  `[DEBUG-M] Continue loop: y=` y . /N
+  y /W
+)
+`[DEBUG-M] Monitor loop ended` /N
+;
+
+:G
+`=== TEC-1 DUAL ENCODER MONITOR ===` /N
+`Debug version with verbose output` /N
+`Encoder 1: Ports ` a . `,` b . /N
+`Encoder 2: Ports ` c . `,` d . /N
+`ESC to exit, F to reset counters` /N
+`Resolution: 0.015 degrees per count` /N
+`[DEBUG-G] Starting system...` /N
+A
+`[DEBUG-G] Starting monitor...` /N
+M
+`[DEBUG-G] Program terminated` /N
+;
+
+G
+```
 
