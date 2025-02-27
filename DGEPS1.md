@@ -103,7 +103,7 @@
 ```
 
 
-# sudo form above
+# sudo the above
 ```
 // TEC-1 Dual Geared Encoder Position System
 // For 600ppr encoders with 10:1 reduction gearboxes
