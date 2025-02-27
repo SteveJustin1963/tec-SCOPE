@@ -521,3 +521,100 @@ M
 G
 ```
 
+# 27.2.2025 new version
+- fixed issue with a b = /F()()  // this is wrong
+```
+:A 
+2 a! 3 b! 4 c! 5 d!  
+0 e! 0 f! 0 g! 0 h!  
+0 i! 0 j!
+;
+
+:B 
+a /I 2 * b /I + p!
+g 4 * p + q!
+q \[ 0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0 ] r!
+r q? s!
+s 0 = (
+) /E (
+  s 1 = e #7FFF = & (
+    #8000 e!
+  ) /E (
+    s -1 = e #8000 = & (
+      #7FFF e!
+    ) /E (
+      e s + e!
+    )
+  )
+)
+p g!
+;
+
+:C 
+c /I 2 * d /I + p!
+h 4 * p + q!
+q \[ 0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0 ] r!
+r q? s!
+s 0 = (
+) /E (
+  s 1 = f #7FFF = & (
+    #8000 f!
+  ) /E (
+    s -1 = f #8000 = & (
+      #7FFF f!
+    ) /E (
+      f s + f!
+    )
+  )
+)
+p h!
+;
+
+:D
+m 15 * t!
+;
+
+:E
+m D u!
+u 1000 / v!
+u 1000 % w!
+w 0 < (w -1 * w!) 
+v . `.` w . ` degrees`
+;
+
+:F
+0 e! 0 f! 0 g! 0 h! 0 i! 0 j!
+`Counters reset to zero` /N
+;
+
+:M
+/T y!
+/U (
+  B
+  C
+  `Encoder 1: Count: ` e . /N
+  ` Angle: ` e E /N
+  `Encoder 2: Count: ` f . /N
+  ` Angle: ` f E /N
+  50 ( ) 
+  /K z!
+  z 27 = (
+    /F y!
+  )
+  z 70 = (
+    F
+  )
+  y /W
+)
+;
+
+:G
+`Dual Encoder Monitor` /N
+`ESC to exit, F to reset` /N
+M
+;
+
+G
+```
+
+
