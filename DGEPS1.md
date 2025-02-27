@@ -837,3 +837,25 @@ M
 G
 ```
 
+ran it for real and got 
+
+```
+> G                                                                             
+=== TEC-1 DUAL ENCODER MONITOR ===                                              
+Debug version with verbose output                                               
+Encoder 1: Ports 0 ,0                                                           
+Encoder 2: Ports 0 ,0                                                           
+ESC to exit, F to reset counters                                                
+Resolution: 0.015 degrees per count                                             
+[DEBUG-G] Starting system...                                                    
+[DEBUG-A] Initializing constants and var=bles...                                
+[DEBUG-A] Encoder ports: 1A=2  1B=3  2A=4  2B=5                                 
+[DEBUG-A] Initialized counters and states                                       
+[DEBUG-A] Initialization complete                                               
+                                                                                
+[DEBUG-G] Starting monitor...                                                   
+[DEBUG-G] Program terminated                                                    
+                                                                                
+>
+```
+excellent!
