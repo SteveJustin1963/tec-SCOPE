@@ -387,3 +387,137 @@ monitor()    // Start monitoring when program runs
    - **Precision**: Integer division in `counts_to_degrees` discards remainders unless scaled properly; current scaling avoids this but assumes 32-bit intermediates.
 
 This version ensures 16-bit signed integer compliance with proper overflow handling, but the limited range might necessitate adjustments depending on the application’s requirements.
+
+///
+
+# convert the above to mint
+- code implements a dual geared encoder position system for the TEC-1 computer.
+
+### Key Elements of the Implementation:
+
+1. **Variables**: MINT uses single lowercase letters (a-z) for variables:
+   - a-d: Input ports for encoders (2,3,4,5)
+   - e-f: Position counters for encoders 1 and 2
+   - g-h: Previous states for encoders 1 and 2
+   - p-w: Temporary variables for calculations
+   - y-z: Control flow variables
+
+2. **Functions**: MINT uses uppercase letters (A-Z) for functions:
+   - A: Initializes constants and variables
+   - B: Processes encoder 1 inputs and updates position
+   - C: Processes encoder 2 inputs and updates position
+   - D: Converts counts to degrees (scaled by 15 for precision)
+   - E: Displays formatted angle with decimal places
+   - F: Resets counters to zero
+   - M: Main monitoring loop
+   - G: Entry point that runs the program
+
+3. **Quadrature Decoding**:
+   - I've implemented the lookup table for decoding using a byte array
+   - The table determines direction (1 for clockwise, -1 for counterclockwise)
+
+4. **Overflow Handling**:
+   - Code handles 16-bit signed integer overflow by rolling over from 32767 to -32768 and vice versa
+   - Uses hexadecimal constants #7FFF (32767) and #8000 (-32768)
+
+5. **Input/Output**:
+   - Uses `/I` to read input ports
+   - Displays values with `.` for decimal and formatted text with backticks
+
+6. **User Interface**:
+   - Checks for ESC key (27) to exit and 'F' key (70) to reset counters
+   - Includes delay loop for display readability
+
+- To use this code, simply upload it to your MINT interpreter on the TEC-1 system.
+- The program will continuously monitor both encoders, display their positions in counts and degrees,
+- and respond to keyboard controls for resetting or exiting.
+- punch!
+
+```
+:A 
+2 a! 3 b! 4 c! 5 d!  
+0 e! 0 f! 0 g! 0 h!  
+0 i! 0 j!
+;
+
+:B 
+a /I 2 * b /I + p!
+g 4 * p + q!
+q \[ 0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0 ] r!
+0 r q? s!
+s 0 > (
+  s 1 = e #7FFF = & (
+    #8000 e!
+  ) /E (
+    s -1 = e #8000 = & (
+      #7FFF e!
+    ) /E (
+      e s + e!
+    )
+  )
+)
+p g!
+;
+
+:C 
+c /I 2 * d /I + p!
+h 4 * p + q!
+q \[ 0 1 -1 0 -1 0 0 1 1 0 0 -1 0 -1 1 0 ] r!
+0 r q? s!
+s 0 > (
+  s 1 = f #7FFF = & (
+    #8000 f!
+  ) /E (
+    s -1 = f #8000 = & (
+      #7FFF f!
+    ) /E (
+      f s + f!
+    )
+  )
+)
+p h!
+;
+
+:D
+m 15 * t!
+;
+
+:E
+m D u!
+u 1000 / v!
+u 1000 % w!
+w 0 < ( w -1 * w! ) 
+v . `.` w . ` degrees`
+;
+
+:F
+0 e! 0 f! 0 g! 0 h! 0 i! 0 j!
+`Counters reset to zero` /N
+;
+
+:M
+/T y!
+/U (
+  B
+  C
+  `Encoder 1: Count: ` e . /N
+  ` Angle: ` e E /N
+  `Encoder 2: Count: ` f . /N
+  ` Angle: ` f E /N
+  50 ( ) 
+  /K z!
+  z 27 = ( /F y! )
+  z 70 = ( F )
+  y /W
+)
+;
+
+:G
+`Dual Encoder Monitor` /N
+`ESC to exit, F to reset` /N
+M
+;
+
+G
+```
+
