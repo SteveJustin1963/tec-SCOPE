@@ -531,7 +531,7 @@ CS    → ______----------------______   (low during transfer)
 
  
 
- # Main_loop test1
+ # Main_loop ideas test1
 
 ![image](https://github.com/user-attachments/assets/48cf9d0e-ecba-4236-a271-55e19285d0e3)
 
@@ -571,5 +571,9 @@ CS    → ______----------------______   (low during transfer)
 //    > H
 //    Should loop until ESC pressed
 ```
+
+
+# 27.2.2025
+working on DGEPS1.md
 
 
