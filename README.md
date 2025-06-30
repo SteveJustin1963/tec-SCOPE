@@ -1,6 +1,10 @@
 under development, not ready
 
 
+ what is https://github.com/hjd1964/OnStep  ?
+
+
+
 # Start
 - read https://www.cloudynights.com/ and any online stuff on astronomy.
 - get or make a cheap 8-inch F5 Dobson stle, truss or tube, pushed by handtype. I found an old truss type on gumtree for $35, but was missing an eyepiece but got an extra mirror..
