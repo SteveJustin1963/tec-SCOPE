@@ -10,6 +10,7 @@ under development, not ready
 - read online stuff on astronomy
 - https://www.cloudynights.com/
 - https://nsas.org.au/
+- https://www.wsaag.org/
 - get a cheap telescope, example 8-inch reflector F5 Dobson stle, truss or tube, pushed by handtype. I found such on gumtree for $35
 - any telescope will do so long as u can mod it. 
 
