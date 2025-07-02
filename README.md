@@ -1,7 +1,8 @@
 under development, not ready
 
+- https://github.com/hjd1964/OnStep
+- makes a good read on background developmets
 
- what is https://github.com/hjd1964/OnStep  ?
 
 
 
