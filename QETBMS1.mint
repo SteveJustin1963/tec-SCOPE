@@ -63,9 +63,79 @@ t 100 % 10 / .            // Show second decimal place
 // Start simulation by typing: S
 
 //////////////////////////
+notes for above code
 
+Looking at this MINT code for a quadrature encoder simulator, I can identify several syntax issues that need to be corrected according to the MINT manual:## Issues Found and Corrections Made:
+
+### 1. **Function V - Angle Calculation**
+**Original problematic line:**
+```mint
+` Angle=` e 15 * " 1000 / . `.`  // Show angle whole part
+e 15 * 1000 % dup 100 / .       // Show angle decimal part
+```
+
+**Issues:**
+- `"` (duplicate) followed by space and `1000` creates syntax confusion
+- `dup` is not a MINT operator (MINT uses `"` for duplication)
+- Logic for decimal display was overly complex
+
+**Corrected approach:**
+```mint
+` Angle=` e 15 * t!       // Calculate angle in 0.001 degree units
+t 1000 / .                // Show whole degrees
+`.`                       // Decimal point
+t 1000 % " 100 / .        // Show first decimal place
+t 100 % 10 / .            // Show second decimal place
+```
+
+### 2. **Function S - Loop Structure**
+**Original problematic code:**
+```mint
+/T i!                     // Initialize loop control
+/U(i /W                   // Start unlimited loop
+    // ...
+    r 20 = (/F i!)       // Stop after 20 steps
+)
+```
+
+**Issues:**
+- Incorrect loop syntax - `/U(i /W` doesn't follow MINT patterns
+- Complex condition handling with `i` variable unnecessary
+- `r 20 = (/F i!)` syntax is not standard MINT
+
+**Corrected approach:**
+```mint
+/U(                       // Start unlimited loop
+    T                     // Get current state
+    U                     // Update counter  
+    V                     // Display results
+    r 1 + r!              // Next pattern index
+    r 20 < /W             // Continue while r < 20
+    500()                 // Delay for readability
+)
+```
+
+### 3. **General Improvements:**
+- **Cleaner variable usage**: Eliminated unnecessary `i` variable
+- **Proper MINT syntax**: Used correct loop termination with `/W`
+- **Better readability**: Separated operations for clarity
+- **Maintained functionality**: All original features preserved
+
+### 4. **Key MINT Rules Applied:**
+- Comments on separate lines (good practice)
+- No space between `:` and function letter
+- Proper use of `/U( ... /W )` for unlimited loops
+- Correct use of `/E` for if-then-else
+- Stack-based operations in correct order
+
+The corrected code should run properly in MINT and simulate the quadrature encoder as intended, showing step-by-step state changes, encoder counts, and calculated angles.
 
 //////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// last version of code
+
 
 
 // 10:1 Geared Quadrature Encoder Simulator
