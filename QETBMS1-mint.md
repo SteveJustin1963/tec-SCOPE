@@ -128,7 +128,8 @@ t 100 % 10 / .            // Show second decimal place
 - Correct use of `/E` for if-then-else
 - Stack-based operations in correct order
 
-The corrected code should run properly in MINT and simulate the quadrature encoder as intended, showing step-by-step state changes, encoder counts, and calculated angles.
+The corrected code should run properly in MINT and simulate the quadrature encoder as intended, 
+showing step-by-step state changes, encoder counts, and calculated angles.
 
 //////////////////////////////////////////////////////////////////////////////////////
 
