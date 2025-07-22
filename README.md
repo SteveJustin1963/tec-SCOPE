@@ -16,8 +16,11 @@ under development, not ready
 
 # Aiming
 random pointing, anything is game, when u look u can always see something, though no idea what it is unless can take an image and look it up on the web say using https://nova.astrometry.net/upload , when u upload image it tries to identify what it is. it processes it then goto to results page then select extraction then its allocated to a que, eeventualy u get a result . 
-
-i upload say 
+others plate solvers are;
+- https://welcome.astrobin.com/
+- https://telescopius.com/plate-solver
+- https://aladin.u-strasbg.fr/
+- https://www.hnsky.org/astap.htm
 
 ![a-starry-night-sky-with-a-long-line-of-stars-photo](https://github.com/user-attachments/assets/efbf65af-9dba-4287-b694-b1489a39179b)  
 
