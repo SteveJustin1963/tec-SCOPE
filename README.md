@@ -12,20 +12,20 @@ under development, not ready
 - https://nsas.org.au/
 - https://www.wsaag.org/
 - get a cheap telescope, example 8-inch reflector F5 Dobson stle, truss or tube, pushed by handtype. I found such on gumtree for $35
-- any telescope will do so long as u can mod it. 
+- any telescope will do so long as u dont mind hacking it. 
 
 # Aiming
-- random pointing, anything is game, when u look u can always see something, though no idea what it is unless can take an image and look it up on the web say using https://nova.astrometry.net/upload , when u upload image it tries to identify what it is. it processes it then goto to results page then select extraction then its allocated to a que, eeventualy u get a result . i upload say ![a-starry-night-sky-with-a-long-line-of-stars-photo](https://github.com/user-attachments/assets/efbf65af-9dba-4287-b694-b1489a39179b)  then get <img width="336" height="200" alt="image" src="https://github.com/user-attachments/assets/ccf7249b-90c6-45e8-8051-ec60b408737c" />  eventualy u get an answer
+random pointing, anything is game, when u look u can always see something, though no idea what it is unless can take an image and look it up on the web say using https://nova.astrometry.net/upload , when u upload image it tries to identify what it is. it processes it then goto to results page then select extraction then its allocated to a que, eeventualy u get a result . i upload say ![a-starry-night-sky-with-a-long-line-of-stars-photo](https://github.com/user-attachments/assets/efbf65af-9dba-4287-b694-b1489a39179b)  then get <img width="336" height="200" alt="image" src="https://github.com/user-attachments/assets/ccf7249b-90c6-45e8-8051-ec60b408737c" />  eventualy u get an answer
 
+u can use stellerium on ur mobile phone then as u move it around in the same direction it will update the star map and roughly identify what ur seeing. that may correlate with ur observations. 
 
-  
+a cheap red dot aiming device can work, it iluminates a red dot, u may need to bend ur neck hard 
 
+to save your neck use a cheap say $150 [9x50 Angled Finder Scope Multi-Film with Upright and Non-Reversed Image](https://www.testar.com.au/products/sky-watcher-9-x-50-right-angle-finderscope?variant=43670176432353&utm_source=google&utm_medium=organic&utm_campaign=Google%20Shopping%20feed%20app%20Australia&utm_content=SKY-WATCHER%209%20x%2050%20RIGHT%20ANGLE%20FINDERSCOPE&utm_campaign=gs-2019-12-27&utm_source=google&utm_medium=smart_campaign&gad_source=1&gclid=CjwKCAiAzPy8BhBoEiwAbnM9OzjLTUabQD3bjbE1TkDAqTKBWwvbebhQD3lGjDbNC68sNm59WremxxoClnUQAvD_BwE)
 
-- try line up with your eyes, use two points on the side of tube
-- use a red dot aiming device, your neck will need bending ouch, annoying
-- save your neck use a cheap say $150 [9x50 Angled Finder Scope Multi-Film with Upright and Non-Reversed Image](https://www.testar.com.au/products/sky-watcher-9-x-50-right-angle-finderscope?variant=43670176432353&utm_source=google&utm_medium=organic&utm_campaign=Google%20Shopping%20feed%20app%20Australia&utm_content=SKY-WATCHER%209%20x%2050%20RIGHT%20ANGLE%20FINDERSCOPE&utm_campaign=gs-2019-12-27&utm_source=google&utm_medium=smart_campaign&gad_source=1&gclid=CjwKCAiAzPy8BhBoEiwAbnM9OzjLTUabQD3bjbE1TkDAqTKBWwvbebhQD3lGjDbNC68sNm59WremxxoClnUQAvD_BwE)
-- the smaller 6x30mm is a **waste of money** due to too narrow a view [pros and cons](https://github.com/SteveJustin1963/tec-SCOPE/wiki#red-dot-finder)
-- laser pointer >1mW for star aiming, but you need an astronomy permit, or be a member of a club https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
+the smaller 6x30mm is a **waste of money** due to too narrow a view [pros and cons](https://github.com/SteveJustin1963/tec-SCOPE/wiki#red-dot-finder)
+
+laser pointer >1mW for star aiming, but you need an astronomy permit, or be a member of a club https://www.police.nsw.gov.au/__data/assets/pdf_file/0008/139895/List_of_Astronomical_Societies.pdf
  
 
 # Control your telescope
