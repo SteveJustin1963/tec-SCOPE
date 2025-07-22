@@ -15,9 +15,13 @@ under development, not ready
 - any telescope will do so long as u dont mind hacking it. 
 
 # Aiming
-random pointing, anything is game, when u look u can always see something, though no idea what it is unless can take an image and look it up on the web say using https://nova.astrometry.net/upload , when u upload image it tries to identify what it is. it processes it then goto to results page then select extraction then its allocated to a que, eeventualy u get a result . i upload say 
-![a-starry-night-sky-with-a-long-line-of-stars-photo](https://github.com/user-attachments/assets/efbf65af-9dba-4287-b694-b1489a39179b)  then get <img width="336" height="200" alt="image" src="https://github.com/user-attachments/assets/ccf7249b-90c6-45e8-8051-ec60b408737c" />  
-eventualy u get an answer
+random pointing, anything is game, when u look u can always see something, though no idea what it is unless can take an image and look it up on the web say using https://nova.astrometry.net/upload , when u upload image it tries to identify what it is. it processes it then goto to results page then select extraction then its allocated to a que, eeventualy u get a result . 
+
+i upload say 
+
+![a-starry-night-sky-with-a-long-line-of-stars-photo](https://github.com/user-attachments/assets/efbf65af-9dba-4287-b694-b1489a39179b)  
+
+<img width="336" height="200" alt="image" src="https://github.com/user-attachments/assets/ccf7249b-90c6-45e8-8051-ec60b408737c" />  
 
 u can use stellerium on ur mobile phone then as u move it around in the same direction it will update the star map and roughly identify what ur seeing. that may correlate with ur observations. 
 
