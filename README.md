@@ -583,7 +583,4 @@ CS    → ______----------------______   (low during transfer)
 ```
 
 
-# 27.2.2025
-working on DGEPS1.md
-
 
