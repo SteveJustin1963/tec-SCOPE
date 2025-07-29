@@ -32,7 +32,7 @@ others plate solvers are;
 - these use a controller board or chip say avr, pic, arduino, raspi, bluepill, esp32, etc
 - but we love our old tech so use a talking electronics computer (tec-1 1985) or Southern Cross Computer (scc ver of tec1) then code in z80 asm to slew, track, etc, but still have manual slewing
 - cheap scopes need gears added to the mount, gear it down, say 10-1 with motors, add 2 rotary encoders for position sensing 
-- more advanced code woiuld be to send position data via 4800 serial to Stellarium to project positionof scope on the star map 
+- more advanced code would be to send position data via 4800 serial to Stellarium to project positionof scope on the star map 
 - there is many more things to do...
 
 ![image](https://github.com/user-attachments/assets/94e1a293-ea97-4a59-8d1b-e965b11411c8)
