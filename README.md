@@ -105,7 +105,7 @@ Key features include:
 - Support for various count modes (up, down, quadrature, and modulo).
 - A 32-bit counter register that allows for high-resolution tracking.
 - expensive chip! over $30
-- i want the 9511 mpu as i think we may have to do some hard computing on celestial computing
+- i suggest using the 9511 mpu with the tec1 as celestial computing is hard maths work
  
 ![Schematic_tec-Scope_2024-11-01 (1)](https://github.com/user-attachments/assets/54d99106-fb3e-41d8-b811-f4e2620b6e7e)
 ![image](https://github.com/user-attachments/assets/466d03ed-0395-4116-8731-8d275b041857)
