@@ -588,4 +588,10 @@ CS    → ______----------------______   (low during transfer)
 ```
 
 
+# peripheral-coprocessor
+use an arduino uno via mint to control more ports etc
+
+- https://github.com/SteveJustin1963/tec-IO/wiki/peripheral-coprocessor.
+
+
 
