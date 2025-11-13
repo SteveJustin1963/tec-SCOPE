@@ -14,6 +14,7 @@ under development, not ready
 - https://www.meteoblue.com/en/weather/outdoorsports/seeing/sydney_australia_2147714
 - https://www.asnsw.com/i2ao4
 - https://siril.org/
+- https://spaceaustralia.com/news/want-astronomical-data-you-got-it
 - get a cheap telescope, example 8-inch reflector F5 Dobson, truss or tube, pushed by handtype. I found such on gumtree for $35
 - any telescope will do so long as u dont mind hacking it. 
 
