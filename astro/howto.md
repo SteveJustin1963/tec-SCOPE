@@ -161,54 +161,54 @@ Transfer RAW images directly from your M100 camera via WiFi to the 3TB drive, by
 
    **Recommended models:**
    - Canon RS-60E3 (basic wired remote, no interval)
+   - but The Canon EOS M100 does not have a physical port for wired remote shutter releases like the RS-60E3 (which uses a 2.5mm E3-type connector).
 
-The Canon EOS M100 does not have a physical port for wired remote shutter releases like the RS-60E3 (which uses a 2.5mm E3-type connector). This is a known limitation of the entry-level EOS M100 model—unlike higher models in the M series (e.g., M5, M6, M6 Mark II), it lacks the remote control terminal.
+This is a known limitation of the entry-level EOS M100 model—unlike higher models in the M series (e.g., M5, M6, M6 Mark II), it lacks the remote control terminal.
+
 Reliable sources, including B&H Photo's official compatibility list for the genuine Canon RS-60E3, explicitly include the EOS M100 in some listings, but this appears to be an error, as user reports and forum discussions (e.g., on Digital Photography Review) confirm that the M100 does not support wired remotes.
+
 Third-party RS-60E3 replacements (like JJC, Kiwifotos, or Foto&Tech) typically list compatibility with cameras that have the E3 port, such as Rebels, 60D–90D, EOS R series, M5/M6, and PowerShot G series—but not the M100.
+
 For the M100, alternatives include:
+
 Wireless control via the Canon Camera Connect app on your phone (Bluetooth/Wi-Fi), but limited features, such as No, not directly with the official Canon Camera Connect app. It lacks a built-in intervalometer or timer sequence feature—you can't program it to automatically take a series of shots (e.g., 100 exposures at 30 seconds each with delays between). The self-timer and continuous modes are basic: Self-timer only delays a single shot (or short burst). Continuous shooting takes rapid-fire photos (not spaced out for long exposures like astro/timelapse).
 
 But Third-Party Apps: Try "Shutter - Canon Camera Remote" (iOS/Android, ~$5–10) or "Intervalometer for Canon" (~$5). These add interval timing over Wi-Fi/Bluetooth, letting you set 100 shots at 30-sec exposures with customizable intervals (e.g., 1-sec delay between). They support the M100 and work alongside transfers. Users report great results for astrophotography.
 
-//
+## USB Tethered Control with gphoto2 on Linux for Canon EOS M100
 
-USB Tethered Control with gphoto2 on Linux for Canon EOS M100
 Yes, you can fully achieve this on Linux using gphoto2 (a free, open-source command-line tool) over USB—no Wi-Fi needed. The EOS M100 is well-supported by gphoto2 for tethered shooting, including remote shutter release, setting adjustments, live view (limited), and long bulb exposures (perfect for your 30-second shots). Users have successfully used it for astrophotography with exposures up to 1200 seconds+.
 This gives you precise, scripted control—exactly what you need for taking 100 images at 30-second exposures (e.g., for timelapse or astro stacking).
+
 Step 1: Setup
-
-Connect your M100 via USB cable.
-On the camera: Set to Manual (M) mode and Bulb shutter speed (dial to beyond 30" → Bulb).
-Install gphoto2 (if not already):
-Ubuntu/Debian: `sudo apt update && sudo apt install gphoto2`
-Fedora: `sudo dnf install gphoto2`
-Arch: `sudo pacman -S gphoto2`
-
-Test detection: `gphoto2 --auto-detect`
-Should show: Canon EOS M100
-
-List available settings: `gphoto2 --list-config`
-Key ones:  ` /main/settings/iso, /main/capturesettings/aperture, /main/status/battery`, and importantly 
+- Connect your M100 via USB cable.
+- On the camera: Set to Manual (M) mode and Bulb shutter speed (dial to beyond 30" → Bulb).
+- Install gphoto2 (if not already):
+- Ubuntu/Debian: `sudo apt update && sudo apt install gphoto2`
+- Fedora: `sudo dnf install gphoto2`
+- Arch: `sudo pacman -S gphoto2`
+- Test detection: `gphoto2 --auto-detect`
+- Should show: Canon EOS M100
+- List available settings: `gphoto2 --list-config`
+- Key ones:  ` /main/settings/iso, /main/capturesettings/aperture, /main/status/battery`, and importantly 
 `/main/actions/eosremoterelease` (for bulb control).
 
 
 Step 2: Basic Tethered Shooting
+- Single photo (with download to PC): `gphoto2 --capture-image-and-download`
+- Preview live view: `gphoto2 --capture-preview` (or loop it for monitoring).
+- For GUI: Install Entangle (`sudo apt install entangle` on Ubuntu). It uses gphoto2 backend and provides:
+- Live view preview (lower resolution on M100).
+- Remote shutter button.
+- Basic setting tweaks.
+- Session monitoring.
+- Users confirm it works with the M100 for tethered shooting.
 
-Single photo (with download to PC): `gphoto2 --capture-image-and-download`
-Preview live view: `gphoto2 --capture-preview` (or loop it for monitoring).
-
-For GUI: Install Entangle (`sudo apt install entangle` on Ubuntu). It uses gphoto2 backend and provides:
-
-Live view preview (lower resolution on M100).
-Remote shutter button.
-Basic setting tweaks.
-Session monitoring.
-Users confirm it works with the M100 for tethered shooting.
-
-Step 3: Automated Sequence – 100 × 30-Second Bulb Exposures
-gphoto2 controls bulb via the eosremoterelease config (specific to Canon EOS cameras like the M100).
-Create a bash script for your sequence. Save this as `astro_timelapse.sh` and make executable (`chmod +x astro_timelapse.sh`):
-
+Step 3: Automated Sequence 
+- 100 × 30-Second Bulb Exposures
+- gphoto2 controls bulb via the eosremoterelease config (specific to Canon EOS cameras like the M100).
+- Create a bash script for your sequence.
+- Save this as `astro_timelapse.sh` and make executable (`chmod +x astro_timelapse.sh`):
 
 ```Bash
 #!/bin/bash
@@ -245,19 +245,15 @@ done
 echo "Sequence complete!"
 ```
 
-//
-
-
-Notes on eosremoterelease values (these vary slightly by model; test with `gphoto2 --list-config` and trial shots):
-
-Common working pairs for M100/EOS series:
-Start: "Press Full" or numeric 5 / 2
-End: "Release Full" or numeric 11 / 4
-
-From user reports (including M100): One example uses `--set-config eosremoterelease=2` (press), wait, `=4` (release).
-If string values don't work, use numerics—run `gphoto2 --get-config eosremoterelease` to see choices.
-
-Alternative simpler bulb method (if your gphoto2 version supports -B flag for bulb):
+## Notes on eosremoterelease values 
+- (these vary slightly by model; test with `gphoto2 --list-config` and trial shots):
+- Common working pairs for M100/EOS series:
+- Start: "Press Full" or numeric 5 / 2
+- End: "Release Full" or numeric 11 / 4
+- From user reports (including M100):
+- One example uses `--set-config eosremoterelease=2` (press), wait, `=4` (release).
+- If string values don't work, use numerics—run `gphoto2 --get-config eosremoterelease` to see choices.
+- Alternative simpler bulb method (if your gphoto2 version supports -B flag for bulb):
 
 ```Bash
 for i in $(seq 1 100); do
@@ -268,16 +264,16 @@ done
 This works on many Canon models if the camera is in Bulb mode.
 
 Advantages Over Wireless
+- More reliable (no Wi-Fi dropouts or battery drain from hotspot).
+- Faster downloads (direct USB).
+- Full scripting for exact timing (e.g., minimal gaps for star trails).
+- Can combine with tools like darktable for immediate RAW processing.
+- If the script throws errors
+- (e.g., unknown eosremoterelease value), run a single test: `gphoto2 --summary`   and share output—I can refine it.
+- This setup is widely used for astro with the M100! Let me know how it goes.
 
-More reliable (no Wi-Fi dropouts or battery drain from hotspot).
-Faster downloads (direct USB).
-Full scripting for exact timing (e.g., minimal gaps for star trails).
-Can combine with tools like darktable for immediate RAW processing.
 
-If the script throws errors (e.g., unknown eosremoterelease value), run a single test: `gphoto2 --summary`   and share output—I can refine it. This setup is widely used for astro with the M100! Let me know how it goes.
-
-
-
+# settings
    **Typical Settings for Milky Way:**
    ```
    Intervalometer Settings:
