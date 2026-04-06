@@ -1,0 +1,279 @@
+; ============================================================================
+; TELESCOPE STEPPER MOTOR CONTROL - CONFIGURATION
+; ============================================================================
+; Configuration file for dual stepper motor control system
+; Alt (Altitude) and Az (Azimuth) stepper motors with 10:1 gear reduction
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; I/O PORT DEFINITIONS
+; ----------------------------------------------------------------------------
+; NOTE: TEC-1 SBC uses ports 00h-02h for keyboard and display
+; Port 00h - Keyboard data input (74C923, triggers NMI on keypress)
+; Port 01h - Display digit select (multiplexes common ground across 6 displays)
+; Port 02h - Display segment data (drives segments a-g + dp)
+; Using ports 03h-05h for motor control to avoid conflicts
+
+ALT_PORT        .EQU    03H     ; Altitude motor control port
+AZ_PORT         .EQU    04H     ; Azimuth motor control port
+STATUS_PORT     .EQU    05H     ; Status/control port (optional)
+
+; ----------------------------------------------------------------------------
+; STEPPER MOTOR SPECIFICATIONS
+; ----------------------------------------------------------------------------
+STEPS_PER_REV   .EQU    200     ; Steps per revolution (1.8° per step)
+GEAR_RATIO      .EQU    10      ; 10:1 gear reduction
+MICROSTEP       .EQU    1       ; Microstepping factor (1, 2, 4, 8, 16)
+
+; Effective steps for full telescope rotation
+; Steps = STEPS_PER_REV * GEAR_RATIO * MICROSTEP
+; For 200 steps/rev * 10 gear ratio = 2000 steps for 360°
+
+; ----------------------------------------------------------------------------
+; ANGLE TO STEPS CONVERSION
+; ----------------------------------------------------------------------------
+; For 360° = 2000 steps (with 10:1 gearing)
+; 1° = 5.555... steps ≈ 56 steps per 10 degrees
+; We'll use fixed point math: multiply angle by 56 then divide by 10
+
+STEPS_PER_10_DEG .EQU   56      ; Steps for 10 degrees of telescope movement
+
+; ----------------------------------------------------------------------------
+; ALTITUDE LIMITS (in steps from horizon = 0)
+; ----------------------------------------------------------------------------
+ALT_MIN         .EQU    0       ; Horizon (0°)
+ALT_MAX         .EQU    900     ; 90° (zenith) = 900 steps
+
+; ----------------------------------------------------------------------------
+; AZIMUTH LIMITS (in steps from north = 0)
+; ----------------------------------------------------------------------------
+AZ_MIN          .EQU    0       ; North (0°)
+AZ_MAX          .EQU    2000    ; 360° = 2000 steps (full rotation)
+
+; ----------------------------------------------------------------------------
+; MOTOR SPEED SETTINGS
+; ----------------------------------------------------------------------------
+SLEW_DELAY      .EQU    50      ; Delay for slew speed (lower = faster)
+TRACK_DELAY     .EQU    200     ; Delay for tracking speed (slower)
+SLOW_DELAY      .EQU    100     ; Delay for slow approach
+
+; ----------------------------------------------------------------------------
+; STEPPER STEP PATTERNS (4-step sequence, FULL-STEP for maximum torque)
+; ----------------------------------------------------------------------------
+; Bit pattern for each coil: [0 0 0 0 A B A' B']
+; A, B are coil pairs; A', B' are complements
+;
+; FULL-STEP MODE (two coils energized) - 41% MORE TORQUE than wave drive
+; This is recommended for telescopes with significant mass/wind load
+
+STEP_0          .EQU    0011B   ; 0011 - Coil A + B
+STEP_1          .EQU    0110B   ; 0110 - Coil B + A'
+STEP_2          .EQU    1100B   ; 1100 - Coil A' + B'
+STEP_3          .EQU    1001B   ; 1001 - Coil B' + A
+
+; Alternative: Wave drive (single phase, lower torque but lower power)
+; Use this only for very light telescopes or power-constrained systems
+; STEP_0        .EQU    0001B   ; A only
+; STEP_1        .EQU    0010B   ; B only
+; STEP_2        .EQU    0100B   ; A' only
+; STEP_3        .EQU    1000B   ; B' only
+
+; Alternative: Half-stepping (8-step sequence) for smoother motion
+; Requires code changes: AND 03H → AND 07H in all step routines
+; Resolution doubles: 4000 steps per 360° instead of 2000
+; STEP_0        .EQU    0001B   ; A
+; STEP_1        .EQU    0011B   ; A+B
+; STEP_2        .EQU    0010B   ; B
+; STEP_3        .EQU    0110B   ; B+A'
+; STEP_4        .EQU    0100B   ; A'
+; STEP_5        .EQU    1100B   ; A'+B'
+; STEP_6        .EQU    1000B   ; B'
+; STEP_7        .EQU    1001B   ; B'+A
+
+; ----------------------------------------------------------------------------
+; MEMORY LOCATIONS FOR POSITION TRACKING
+; ----------------------------------------------------------------------------
+ALT_POS_LO      .EQU    0800H   ; Current altitude position (16-bit, low byte)
+ALT_POS_HI      .EQU    0801H   ; Current altitude position (high byte)
+AZ_POS_LO       .EQU    0802H   ; Current azimuth position (16-bit, low byte)
+AZ_POS_HI       .EQU    0803H   ; Current azimuth position (high byte)
+
+ALT_TARGET_LO   .EQU    0804H   ; Target altitude position (low byte)
+ALT_TARGET_HI   .EQU    0805H   ; Target altitude position (high byte)
+AZ_TARGET_LO    .EQU    0806H   ; Target azimuth position (low byte)
+AZ_TARGET_HI    .EQU    0807H   ; Target azimuth position (high byte)
+
+ALT_STEP_IDX    .EQU    0808H   ; Current step index for alt motor (0-3)
+AZ_STEP_IDX     .EQU    0809H   ; Current step index for az motor (0-3)
+
+MOTOR_STATE     .EQU    800AH   ; Motor state flags
+                                ; Bit 0: Alt motor active
+                                ; Bit 1: Az motor active
+                                ; Bit 2: Slew in progress
+                                ; Bit 3: Error state
+
+; ----------------------------------------------------------------------------
+; ERROR CODES
+; ----------------------------------------------------------------------------
+ERR_NONE        .EQU    00H
+ERR_ALT_LIMIT   .EQU    01H     ; Altitude out of range
+ERR_AZ_LIMIT    .EQU    02H     ; Azimuth out of range
+ERR_TIMEOUT     .EQU    03H     ; Operation timeout
+
+; ----------------------------------------------------------------------------
+; STEP PATTERN TABLE
+; ----------------------------------------------------------------------------
+STEP_TABLE:
+            .DB     STEP_0, STEP_1, STEP_2, STEP_3
+
+; ============================================================================
+; CALIBRATION CONFIGURATION - SYDNEY, AUSTRALIA
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; GEOGRAPHIC LOCATION
+; ----------------------------------------------------------------------------
+; Sydney, Australia coordinates
+LATITUDE        .EQU    34      ; 34° South latitude (use positive value)
+LONGITUDE       .EQU    151     ; 151° East longitude
+
+; Southern Hemisphere flag
+SOUTH_HEMI      .EQU    1       ; 1 = Southern hemisphere, 0 = Northern
+
+; ----------------------------------------------------------------------------
+; POLAR ALIGNMENT - SOUTH CELESTIAL POLE (SCP)
+; ----------------------------------------------------------------------------
+; For Sydney at 34°S, the South Celestial Pole (SCP) is located:
+; - Altitude: 34° above the southern horizon
+; - Azimuth: 180° (due south)
+;
+; Mount Setup: Polar axis tilted 34° from horizontal pointing south
+; This allows the azimuth axis to track the celestial equator
+
+SCP_ALTITUDE    .EQU    189     ; 34° = 189 steps (34 * 5.555)
+SCP_AZIMUTH     .EQU    1000    ; 180° = 1000 steps (due south)
+
+; Polar axis tilt angle (equals latitude)
+POLAR_TILT      .EQU    34      ; Degrees - mount tilt angle
+
+; ----------------------------------------------------------------------------
+; REFERENCE STARS FOR ALIGNMENT (SOUTHERN HEMISPHERE)
+; ----------------------------------------------------------------------------
+; Common bright southern stars for alignment verification
+
+; SOUTHERN CROSS (Crux) - Use to find SCP
+; Acrux (Alpha Crucis) - Brightest star in Southern Cross
+ACRUX_ALT       .EQU    60      ; Typical altitude in steps (varies by time)
+ACRUX_AZ        .EQU    180     ; Azimuth in degrees
+
+; CANOPUS (Alpha Carinae) - 2nd brightest star, good southern reference
+; At culmination (highest point) for Sydney
+CANOPUS_ALT     .EQU    78      ; ~78° altitude at culmination
+CANOPUS_AZ      .EQU    180     ; Due south at culmination
+
+; ACHERNAR (Alpha Eridani) - Bright southern star
+ACHERNAR_ALT    .EQU    56      ; Typical altitude (varies)
+ACHERNAR_AZ     .EQU    180     ; Near south at culmination
+
+; SIGMA OCTANTIS - Closest to South Celestial Pole (but very faint, mag 5.5)
+; Located about 1° from true SCP
+SIGMA_OCT_ALT   .EQU    34      ; Same as SCP ~34° for Sydney
+SIGMA_OCT_AZ    .EQU    180     ; Due south
+
+; ----------------------------------------------------------------------------
+; SIDEREAL TRACKING RATES
+; ----------------------------------------------------------------------------
+; Earth's sidereal rotation: 360° in 23h 56m 4s = 86164 seconds
+; Sidereal rate = 15.041067° per hour = 0.004178° per second
+;
+; For our system: 0.004178° = 0.023 steps/second
+; Or: 1 step every 43.5 seconds
+
+; Tracking rate in steps per minute
+SIDEREAL_STEPS_MIN  .EQU    1   ; 1 step per minute (approx, adjust as needed)
+
+; More precise: steps per 10 seconds (for finer control)
+SIDEREAL_STEPS_10S  .EQU    0   ; 0 steps per 10 sec, use timer for fractional
+
+; Delay between sidereal tracking steps (in loop iterations)
+; For 1 step every ~44 seconds at 4MHz Z80
+SIDEREAL_DELAY_HI   .EQU    128 ; High byte of delay counter
+SIDEREAL_DELAY_LO   .EQU    0   ; Low byte of delay counter
+
+; Tracking direction for southern hemisphere
+; In southern hemisphere, tracking moves WEST (decreasing azimuth)
+TRACK_DIRECTION .EQU    0       ; 0 = CCW/West, 1 = CW/East
+
+; ----------------------------------------------------------------------------
+; CALIBRATION OFFSETS AND ALIGNMENT DATA
+; ----------------------------------------------------------------------------
+; Memory locations for storing calibration data
+
+CAL_OFFSET_ALT  .EQU    080BH   ; Altitude alignment offset (16-bit signed)
+CAL_OFFSET_AZ   .EQU    080DH   ; Azimuth alignment offset (16-bit signed)
+
+CAL_REF_STAR_ALT .EQU   080FH   ; Reference star altitude (16-bit)
+CAL_REF_STAR_AZ  .EQU   0811H   ; Reference star azimuth (16-bit)
+
+CAL_TRUE_SOUTH  .EQU    0813H   ; True south azimuth reading (16-bit)
+                                ; Stores actual Az reading when pointed south
+                                ; Used to correct for compass/mount alignment errors
+
+CAL_STATUS      .EQU    0815H   ; Calibration status byte
+                                ; Bit 0: South alignment complete
+                                ; Bit 1: Reference star aligned
+                                ; Bit 2: Polar axis aligned
+                                ; Bit 3: Tracking calibrated
+                                ; Bit 4-7: Reserved
+
+; ----------------------------------------------------------------------------
+; ALIGNMENT PROCEDURE POSITIONS
+; ----------------------------------------------------------------------------
+; Step-by-step polar alignment for southern hemisphere
+
+; Step 1: Point scope south at horizon level for rough alignment
+ALIGN_STEP1_ALT .EQU    0       ; Horizon (0°)
+ALIGN_STEP1_AZ  .EQU    1000    ; South (180°)
+
+; Step 2: Tilt to latitude angle (SCP altitude)
+ALIGN_STEP2_ALT .EQU    189     ; 34° = latitude
+ALIGN_STEP2_AZ  .EQU    1000    ; South (180°)
+
+; Step 3: Fine-tune using reference star or Sigma Octantis
+; (User adjusts and stores offset)
+
+; ----------------------------------------------------------------------------
+; COMPASS DECLINATION CORRECTION
+; ----------------------------------------------------------------------------
+; Magnetic declination for Sydney, Australia (as of 2024)
+; Magnetic North is approximately 12° EAST of True North
+; This means: Magnetic South is 12° EAST of True South
+;
+; When aligning with compass:
+; - Compass shows South = 180° magnetic
+; - True South = 180° magnetic - 12° = 168° magnetic
+; - Or: Point to 168° on compass to get true south
+
+MAG_DECLINATION .EQU    12      ; Degrees (East is positive)
+MAG_DECL_STEPS  .EQU    67      ; 12° in steps (12 * 5.555)
+
+; Corrected true south azimuth when using compass
+TRUE_SOUTH_MAG  .EQU    933     ; 168° = 1000 - 67 steps
+                                ; Point telescope to 168° on compass
+
+; NOTE: Update MAG_DECLINATION periodically as it changes over time
+; Check current value at: https://www.ngdc.noaa.gov/geomag/calculators/
+
+; ----------------------------------------------------------------------------
+; CALIBRATION CONSTANTS
+; ----------------------------------------------------------------------------
+; Maximum allowed alignment error before warning
+MAX_ALIGN_ERROR .EQU    28      ; 5° = 28 steps (pointing accuracy threshold)
+
+; Polar alignment tolerance
+POLAR_TOLERANCE .EQU    6       ; 1° = 6 steps (acceptable polar alignment error)
+
+; Star drift test duration (in seconds)
+DRIFT_TEST_TIME .EQU    60      ; 60 second drift test for polar alignment
+
+; ----------------------------------------------------------------------------

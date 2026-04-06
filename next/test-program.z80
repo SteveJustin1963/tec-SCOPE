@@ -1,0 +1,347 @@
+; ============================================================================
+; TEC-SCOPE Hardware Test Program
+; Simple tests to verify motors and encoders before running main code
+; ============================================================================
+; Usage: Run each test individually to verify hardware
+; ============================================================================
+
+        ORG     0800h
+
+; Port definitions (same as main code)
+SPI_PORT:       EQU     03h
+MOTOR_PORT:     EQU     04h
+PWM1_PORT:      EQU     05h
+PWM2_PORT:      EQU     06h
+INPUT_PORT:     EQU     07h
+
+SPI_CLK:        EQU     01h
+SPI_MOSI:       EQU     02h
+SPI_CS1:        EQU     04h
+SPI_CS2:        EQU     08h
+SPI_MISO:       EQU     10h
+
+; ============================================================================
+; TEST 1: Motor Test - Spin each motor forward/reverse
+; Run this first to verify motor wiring and drivers
+; ============================================================================
+TEST_MOTORS:
+        ; Test Motor 1 Forward
+        LD      A, 01h          ; Direction = forward
+        OUT     (MOTOR_PORT), A
+        LD      A, 0FFh         ; Full speed
+        OUT     (PWM1_PORT), A
+
+        LD      B, 0            ; Delay ~2 seconds
+TEST_M1F_DELAY:
+        LD      C, 0
+TEST_M1F_INNER:
+        DEC     C
+        JR      NZ, TEST_M1F_INNER
+        DJNZ    TEST_M1F_DELAY
+
+        ; Stop Motor 1
+        XOR     A
+        OUT     (PWM1_PORT), A
+
+        ; Pause
+        LD      B, 0
+TEST_PAUSE1:
+        LD      C, 0
+TEST_PAUSE1_INNER:
+        DEC     C
+        JR      NZ, TEST_PAUSE1_INNER
+        DJNZ    TEST_PAUSE1
+
+        ; Test Motor 1 Reverse
+        XOR     A               ; Direction = reverse
+        OUT     (MOTOR_PORT), A
+        LD      A, 0FFh         ; Full speed
+        OUT     (PWM1_PORT), A
+
+        LD      B, 0            ; Delay ~2 seconds
+TEST_M1R_DELAY:
+        LD      C, 0
+TEST_M1R_INNER:
+        DEC     C
+        JR      NZ, TEST_M1R_INNER
+        DJNZ    TEST_M1R_DELAY
+
+        ; Stop Motor 1
+        XOR     A
+        OUT     (PWM1_PORT), A
+
+        ; Pause
+        LD      B, 0
+TEST_PAUSE2:
+        LD      C, 0
+TEST_PAUSE2_INNER:
+        DEC     C
+        JR      NZ, TEST_PAUSE2_INNER
+        DJNZ    TEST_PAUSE2
+
+        ; Test Motor 2 Forward
+        LD      A, 02h          ; Direction = forward (bit 1)
+        OUT     (MOTOR_PORT), A
+        LD      A, 0FFh         ; Full speed
+        OUT     (PWM2_PORT), A
+
+        LD      B, 0
+TEST_M2F_DELAY:
+        LD      C, 0
+TEST_M2F_INNER:
+        DEC     C
+        JR      NZ, TEST_M2F_INNER
+        DJNZ    TEST_M2F_DELAY
+
+        ; Stop Motor 2
+        XOR     A
+        OUT     (PWM2_PORT), A
+
+        ; Pause
+        LD      B, 0
+TEST_PAUSE3:
+        LD      C, 0
+TEST_PAUSE3_INNER:
+        DEC     C
+        JR      NZ, TEST_PAUSE3_INNER
+        DJNZ    TEST_PAUSE3
+
+        ; Test Motor 2 Reverse
+        XOR     A
+        OUT     (MOTOR_PORT), A
+        LD      A, 0FFh
+        OUT     (PWM2_PORT), A
+
+        LD      B, 0
+TEST_M2R_DELAY:
+        LD      C, 0
+TEST_M2R_INNER:
+        DEC     C
+        JR      NZ, TEST_M2R_INNER
+        DJNZ    TEST_M2R_DELAY
+
+        ; Stop Motor 2
+        XOR     A
+        OUT     (PWM2_PORT), A
+        OUT     (MOTOR_PORT), A
+
+        HALT
+
+; ============================================================================
+; TEST 2: SPI Clock Test - Verify SPI clock signal
+; Use oscilloscope on port 03h bit 0 to see clock pulses
+; ============================================================================
+TEST_SPI_CLOCK:
+        LD      A, SPI_CS1 | SPI_CS2    ; CS high
+        OUT     (SPI_PORT), A
+
+        LD      B, 100          ; 100 clock cycles
+
+TEST_CLK_LOOP:
+        LD      A, SPI_CS1 | SPI_CS2    ; CLK low
+        OUT     (SPI_PORT), A
+
+        NOP
+        NOP
+        NOP
+
+        LD      A, SPI_CS1 | SPI_CS2 | SPI_CLK  ; CLK high
+        OUT     (SPI_PORT), A
+
+        NOP
+        NOP
+        NOP
+
+        DJNZ    TEST_CLK_LOOP
+
+        HALT
+
+; ============================================================================
+; TEST 3: Read Encoder Test - Simple encoder read and display
+; Reads encoder 1, displays count on TEC-1 display (if available)
+; ============================================================================
+TEST_READ_ENCODER:
+        ; Initialize SPI
+        LD      A, SPI_CS1 | SPI_CS2
+        OUT     (SPI_PORT), A
+
+        ; Lower CS1
+        LD      A, SPI_CS2      ; CS1 low, CS2 high
+        OUT     (SPI_PORT), A
+
+        ; Send command 0x01 (read counter)
+        LD      A, 01h
+        CALL    SPI_WRITE_BYTE_TEST
+
+        ; Read 4 bytes
+        XOR     A
+        CALL    SPI_WRITE_BYTE_TEST
+        LD      H, A            ; Save MSB
+
+        XOR     A
+        CALL    SPI_WRITE_BYTE_TEST
+        LD      L, A
+
+        XOR     A
+        CALL    SPI_WRITE_BYTE_TEST
+        LD      D, A
+
+        XOR     A
+        CALL    SPI_WRITE_BYTE_TEST
+        LD      E, A            ; E = LSB
+
+        ; Raise CS
+        LD      A, SPI_CS1 | SPI_CS2
+        OUT     (SPI_PORT), A
+
+        ; Display result (LSB in E) on TEC display if available
+        ; For TEC-1: Port 01h = data, Port 02h = address
+        ; This is TEC-1 specific - modify for your hardware
+        LD      A, E
+        OUT     (01h), A        ; Display LSB
+
+        HALT
+
+; Helper: SPI_WRITE_BYTE for test program
+SPI_WRITE_BYTE_TEST:
+        LD      B, 8
+        LD      C, A
+        XOR     A
+
+TEST_SPI_BIT:
+        SLA     A
+        SLA     C
+        LD      D, A
+        LD      A, SPI_CS2      ; CS1 low
+        JR      NC, TEST_SPI_0
+
+TEST_SPI_1:
+        OR      SPI_MOSI
+TEST_SPI_0:
+        OUT     (SPI_PORT), A
+        OR      SPI_CLK
+        OUT     (SPI_PORT), A
+
+        IN      A, (SPI_PORT)
+        AND     SPI_MISO
+        LD      A, D
+        JR      Z, TEST_SPI_NEXT
+        OR      01h
+
+TEST_SPI_NEXT:
+        DJNZ    TEST_SPI_BIT
+        RET
+
+; ============================================================================
+; TEST 4: PWM Test - Generate slow PWM for oscilloscope viewing
+; Generates 50% duty cycle PWM on Motor 1 output
+; ============================================================================
+TEST_PWM:
+        LD      A, 01h          ; Direction forward
+        OUT     (MOTOR_PORT), A
+
+        LD      D, 100          ; 100 PWM cycles
+
+TEST_PWM_LOOP:
+        ; PWM ON phase (128 counts)
+        LD      B, 128
+TEST_PWM_ON:
+        LD      A, 0FFh
+        OUT     (PWM1_PORT), A
+        NOP
+        NOP
+        DJNZ    TEST_PWM_ON
+
+        ; PWM OFF phase (128 counts)
+        LD      B, 128
+TEST_PWM_OFF:
+        XOR     A
+        OUT     (PWM1_PORT), A
+        NOP
+        NOP
+        DJNZ    TEST_PWM_OFF
+
+        DEC     D
+        JR      NZ, TEST_PWM_LOOP
+
+        XOR     A
+        OUT     (PWM1_PORT), A
+        HALT
+
+; ============================================================================
+; TEST 5: Encoder Direction Test
+; Spin motor and verify encoder counts in correct direction
+; ============================================================================
+TEST_ENCODER_DIRECTION:
+        ; Read initial encoder position
+        CALL    READ_ENC1_TEST
+        LD      (0900h), A      ; Save initial count LSB
+
+        ; Spin motor 1 forward for 1 second
+        LD      A, 01h
+        OUT     (MOTOR_PORT), A
+        LD      A, 80h          ; Half speed
+        OUT     (PWM1_PORT), A
+
+        ; Delay 1 second
+        LD      B, 0
+TEST_DIR_DELAY:
+        LD      C, 0
+TEST_DIR_INNER:
+        DEC     C
+        JR      NZ, TEST_DIR_INNER
+        DJNZ    TEST_DIR_DELAY
+
+        ; Stop motor
+        XOR     A
+        OUT     (PWM1_PORT), A
+
+        ; Read final encoder position
+        CALL    READ_ENC1_TEST
+        LD      B, A
+        LD      A, (0900h)      ; Get initial count
+
+        ; Compare: if final > initial, direction is correct
+        ; Display on TEC: 01 = correct, FF = wrong
+        CP      B
+        JR      C, TEST_DIR_OK
+
+        LD      A, 0FFh         ; Wrong direction
+        OUT     (01h), A
+        HALT
+
+TEST_DIR_OK:
+        LD      A, 01h          ; Correct direction
+        OUT     (01h), A
+        HALT
+
+READ_ENC1_TEST:
+        LD      A, SPI_CS2
+        OUT     (SPI_PORT), A
+        LD      A, 01h
+        CALL    SPI_WRITE_BYTE_TEST
+        XOR     A
+        CALL    SPI_WRITE_BYTE_TEST
+        XOR     A
+        CALL    SPI_WRITE_BYTE_TEST
+        XOR     A
+        CALL    SPI_WRITE_BYTE_TEST
+        PUSH    AF
+        LD      A, SPI_CS1 | SPI_CS2
+        OUT     (SPI_PORT), A
+        POP     AF
+        RET
+
+; ============================================================================
+; How to Use These Tests:
+; ============================================================================
+; 1. JP TEST_MOTORS          - Verify both motors spin both directions
+; 2. JP TEST_SPI_CLOCK       - Use scope to verify SPI clock on port 03h bit 0
+; 3. JP TEST_READ_ENCODER    - Verify you can read encoder via SPI
+; 4. JP TEST_PWM             - Use scope to verify PWM on port 05h
+; 5. JP TEST_ENCODER_DIRECTION - Verify encoder increments when motor goes forward
+;
+; Run each test by jumping to the test address from TEC monitor or MINT
+; ============================================================================
+
+        END

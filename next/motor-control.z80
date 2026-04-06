@@ -1,0 +1,415 @@
+; ============================================================================
+; TEC-SCOPE Motor Control System
+; Z80 Assembly for DC Motors with PWM + Encoder Feedback
+; ============================================================================
+; Memory: ORG 0800h, 2K RAM limit (0800h - 0FFFh)
+; I/O Ports: 03h, 04h, 05h, 06h, 07h
+;
+; Port Assignments:
+;   03h - SPI Control (bit0=CLK, bit1=MOSI, bit2=CS1, bit3=CS2, bit4=MISO)
+;   04h - Motor outputs (bit0=M1_DIR, bit1=M2_DIR, bit2-7=unused)
+;   05h - PWM Duty Motor 1 (0-255)
+;   06h - PWM Duty Motor 2 (0-255)
+;   07h - Input port (keyboard/joystick)
+;
+; Encoder Interface: Two ATtiny85s via SPI
+;   CS1 (bit2 of port 03h) = Alt encoder
+;   CS2 (bit3 of port 03h) = Az encoder
+; ============================================================================
+
+        ORG     0800h
+
+; ============================================================================
+; RAM Variables (Keep minimal for 2K limit)
+; ============================================================================
+MOTOR1_PWM:     EQU     0900h   ; Motor 1 PWM duty (0-255)
+MOTOR2_PWM:     EQU     0901h   ; Motor 2 PWM duty (0-255)
+MOTOR1_DIR:     EQU     0902h   ; Motor 1 direction (0=CCW, 1=CW)
+MOTOR2_DIR:     EQU     0903h   ; Motor 2 direction (0=CCW, 1=CW)
+
+ENC1_POS:       EQU     0904h   ; Encoder 1 position (4 bytes, 32-bit)
+ENC2_POS:       EQU     0908h   ; Encoder 2 position (4 bytes, 32-bit)
+
+TARGET1_POS:    EQU     090Ch   ; Target position motor 1 (4 bytes)
+TARGET2_POS:    EQU     0910h   ; Target position motor 2 (4 bytes)
+
+PWM_COUNTER:    EQU     0914h   ; PWM cycle counter
+
+; Port definitions
+SPI_PORT:       EQU     03h
+MOTOR_PORT:     EQU     04h
+PWM1_PORT:      EQU     05h
+PWM2_PORT:      EQU     06h
+INPUT_PORT:     EQU     07h
+
+; SPI bit masks for port 03h
+SPI_CLK:        EQU     01h     ; Bit 0
+SPI_MOSI:       EQU     02h     ; Bit 1
+SPI_CS1:        EQU     04h     ; Bit 2 (Alt encoder)
+SPI_CS2:        EQU     08h     ; Bit 3 (Az encoder)
+SPI_MISO:       EQU     10h     ; Bit 4 (input)
+
+; Motor bit masks for port 04h
+M1_DIR_BIT:     EQU     01h     ; Bit 0
+M2_DIR_BIT:     EQU     02h     ; Bit 1
+
+; ============================================================================
+; MAIN ENTRY POINT
+; ============================================================================
+START:
+        DI                      ; Disable interrupts
+        CALL    INIT_SYSTEM     ; Initialize everything
+        EI                      ; Enable interrupts (if using)
+
+MAIN_LOOP:
+        CALL    READ_ENCODERS   ; Read both encoder positions
+        CALL    UPDATE_MOTORS   ; Update motor speeds based on position
+        CALL    PWM_CYCLE       ; Execute one PWM cycle
+        JP      MAIN_LOOP       ; Loop forever
+
+; ============================================================================
+; INIT_SYSTEM - Initialize all hardware and variables
+; ============================================================================
+INIT_SYSTEM:
+        ; Clear all motor variables
+        XOR     A
+        LD      (MOTOR1_PWM), A
+        LD      (MOTOR2_PWM), A
+        LD      (MOTOR1_DIR), A
+        LD      (MOTOR2_DIR), A
+        LD      (PWM_COUNTER), A
+
+        ; Initialize SPI - CS high, CLK low
+        LD      A, SPI_CS1 | SPI_CS2    ; Both CS lines high (idle)
+        OUT     (SPI_PORT), A
+
+        ; Motors off initially
+        XOR     A
+        OUT     (MOTOR_PORT), A
+        OUT     (PWM1_PORT), A
+        OUT     (PWM2_PORT), A
+
+        RET
+
+; ============================================================================
+; SPI_WRITE_BYTE - Send one byte via SPI
+; Input: A = byte to send
+; Output: A = byte received
+; Uses: B, C
+; ============================================================================
+SPI_WRITE_BYTE:
+        LD      B, 8            ; 8 bits to send
+        LD      C, A            ; Save byte in C
+        XOR     A               ; A will accumulate received bits
+
+SPI_BIT_LOOP:
+        SLA     A               ; Shift received data left
+        SLA     C               ; Get next bit to send into carry
+        LD      E, A            ; Save received data
+
+        LD      A, 00h          ; Start with CLK low
+        JR      NC, SPI_SEND_0  ; If carry clear, send 0
+
+SPI_SEND_1:
+        OR      SPI_MOSI        ; Set MOSI high
+SPI_SEND_0:
+        OUT     (SPI_PORT), A   ; Output MOSI with CLK low
+        OR      SPI_CLK         ; Set CLK high
+        OUT     (SPI_PORT), A   ; Clock the bit
+
+        ; Read MISO
+        IN      A, (SPI_PORT)
+        AND     SPI_MISO        ; Check MISO bit
+        JR      Z, SPI_MISO_LOW
+        LD      A, E
+        OR      01h             ; Set bit 0 if MISO was high
+        JR      SPI_NEXT_BIT
+
+SPI_MISO_LOW:
+        LD      A, E
+
+SPI_NEXT_BIT:
+        DJNZ    SPI_BIT_LOOP    ; Repeat for 8 bits
+        RET
+
+; ============================================================================
+; READ_ENCODER - Read 32-bit position from one encoder
+; Input: D = CS bit mask (SPI_CS1 or SPI_CS2)
+;        HL = address to store 4-byte result
+; Uses: A, B, C, DE, HL
+; ============================================================================
+READ_ENCODER:
+        ; Lower CS
+        LD      A, (SPI_PORT)
+        AND     0F0h            ; Clear CS bits
+        LD      E, A
+        LD      A, D
+        CPL                     ; Invert CS bit (active low)
+        AND     0Fh
+        OR      E
+        OUT     (SPI_PORT), A
+
+        ; Send command 0x01 (read counter)
+        LD      A, 01h
+        CALL    SPI_WRITE_BYTE
+
+        ; Read 4 bytes (32-bit counter, MSB first)
+        CALL    SPI_WRITE_BYTE  ; Read byte 3 (MSB)
+        LD      (HL), A
+        INC     HL
+
+        XOR     A
+        CALL    SPI_WRITE_BYTE  ; Read byte 2
+        LD      (HL), A
+        INC     HL
+
+        XOR     A
+        CALL    SPI_WRITE_BYTE  ; Read byte 1
+        LD      (HL), A
+        INC     HL
+
+        XOR     A
+        CALL    SPI_WRITE_BYTE  ; Read byte 0 (LSB)
+        LD      (HL), A
+
+        ; Raise CS
+        LD      A, SPI_CS1 | SPI_CS2
+        OUT     (SPI_PORT), A
+
+        RET
+
+; ============================================================================
+; READ_ENCODERS - Read both encoder positions
+; ============================================================================
+READ_ENCODERS:
+        ; Read Encoder 1 (Alt)
+        LD      D, SPI_CS1
+        LD      HL, ENC1_POS
+        CALL    READ_ENCODER
+
+        ; Read Encoder 2 (Az)
+        LD      D, SPI_CS2
+        LD      HL, ENC2_POS
+        CALL    READ_ENCODER
+
+        RET
+
+; ============================================================================
+; UPDATE_MOTORS - Simple proportional control
+; Compare current position to target, adjust PWM
+; ============================================================================
+UPDATE_MOTORS:
+        ; Motor 1 control (simplified - compare LSB only for demo)
+        LD      A, (TARGET1_POS+3)      ; Get target LSB
+        LD      B, A
+        LD      A, (ENC1_POS+3)         ; Get current LSB
+        SUB     B                       ; Error = Current - Target
+        JR      Z, MOTOR1_STOP          ; If error = 0, stop
+        JR      C, MOTOR1_REVERSE       ; If negative, go reverse
+
+MOTOR1_FORWARD:
+        ; Positive error - go forward
+        LD      (MOTOR1_DIR), A         ; Store direction (1)
+        CP      50                      ; Limit error to reasonable PWM
+        JR      C, MOTOR1_SET_PWM
+        LD      A, 50
+MOTOR1_SET_PWM:
+        SLA     A                       ; Multiply by 2 for more aggressive
+        SLA     A                       ; x4 total (proportional gain)
+        LD      (MOTOR1_PWM), A
+        JR      MOTOR2_CONTROL
+
+MOTOR1_REVERSE:
+        NEG                             ; Make positive
+        XOR     A
+        LD      (MOTOR1_DIR), A         ; Store direction (0)
+        CP      50
+        JR      C, MOTOR1_SET_PWM
+        LD      A, 50
+        JR      MOTOR1_SET_PWM
+
+MOTOR1_STOP:
+        XOR     A
+        LD      (MOTOR1_PWM), A
+
+MOTOR2_CONTROL:
+        ; Motor 2 control (same logic)
+        LD      A, (TARGET2_POS+3)
+        LD      B, A
+        LD      A, (ENC2_POS+3)
+        SUB     B
+        JR      Z, MOTOR2_STOP
+        JR      C, MOTOR2_REVERSE
+
+MOTOR2_FORWARD:
+        LD      (MOTOR2_DIR), A
+        CP      50
+        JR      C, MOTOR2_SET_PWM
+        LD      A, 50
+MOTOR2_SET_PWM:
+        SLA     A
+        SLA     A
+        LD      (MOTOR2_PWM), A
+        JR      UPDATE_MOTORS_END
+
+MOTOR2_REVERSE:
+        NEG
+        XOR     A
+        LD      (MOTOR2_DIR), A
+        CP      50
+        JR      C, MOTOR2_SET_PWM
+        LD      A, 50
+        JR      MOTOR2_SET_PWM
+
+MOTOR2_STOP:
+        XOR     A
+        LD      (MOTOR2_PWM), A
+
+UPDATE_MOTORS_END:
+        ; Update direction port
+        LD      A, (MOTOR1_DIR)
+        AND     01h
+        LD      B, A
+        LD      A, (MOTOR2_DIR)
+        AND     01h
+        SLA     A                       ; Shift to bit 1
+        OR      B
+        OUT     (MOTOR_PORT), A
+
+        RET
+
+; ============================================================================
+; PWM_CYCLE - Software PWM implementation
+; Generates PWM by comparing counter to duty cycle
+; ============================================================================
+PWM_CYCLE:
+        LD      A, (PWM_COUNTER)
+        INC     A
+        LD      (PWM_COUNTER), A
+
+        ; Motor 1 PWM
+        LD      B, A                    ; B = counter
+        LD      A, (MOTOR1_PWM)         ; A = duty
+        CP      B                       ; Compare duty to counter
+        LD      A, 0FFh                 ; Assume ON
+        JR      NC, M1_ON               ; If duty >= counter, ON
+        XOR     A                       ; Else OFF
+M1_ON:
+        OUT     (PWM1_PORT), A
+
+        ; Motor 2 PWM
+        LD      A, (MOTOR2_PWM)
+        CP      B
+        LD      A, 0FFh
+        JR      NC, M2_ON
+        XOR     A
+M2_ON:
+        OUT     (PWM2_PORT), A
+
+        ; Small delay for PWM frequency (~1kHz at 4MHz Z80)
+        LD      B, 10
+PWM_DELAY:
+        DJNZ    PWM_DELAY
+
+        RET
+
+; ============================================================================
+; UTILITY FUNCTIONS
+; ============================================================================
+
+; SET_TARGET1 - Set target position for motor 1
+; Input: BCDE = 32-bit target position
+SET_TARGET1:
+        LD      HL, TARGET1_POS
+        LD      (HL), B
+        INC     HL
+        LD      (HL), C
+        INC     HL
+        LD      (HL), D
+        INC     HL
+        LD      (HL), E
+        RET
+
+; SET_TARGET2 - Set target position for motor 2
+; Input: BCDE = 32-bit target position
+SET_TARGET2:
+        LD      HL, TARGET2_POS
+        LD      (HL), B
+        INC     HL
+        LD      (HL), C
+        INC     HL
+        LD      (HL), D
+        INC     HL
+        LD      (HL), E
+        RET
+
+; MANUAL_CONTROL - Manual joystick control
+; Call this instead of UPDATE_MOTORS for manual mode
+MANUAL_CONTROL:
+        IN      A, (INPUT_PORT)         ; Read joystick/buttons
+        LD      B, A
+
+        ; Bit 0: Motor 1 forward
+        BIT     0, B
+        JR      Z, MC_CHECK_M1_REV
+        LD      A, 80
+        LD      (MOTOR1_PWM), A
+        LD      A, 1
+        LD      (MOTOR1_DIR), A
+        JR      MC_CHECK_M2
+
+MC_CHECK_M1_REV:
+        ; Bit 1: Motor 1 reverse
+        BIT     1, B
+        JR      Z, MC_M1_STOP
+        LD      A, 80
+        LD      (MOTOR1_PWM), A
+        XOR     A
+        LD      (MOTOR1_DIR), A
+        JR      MC_CHECK_M2
+
+MC_M1_STOP:
+        XOR     A
+        LD      (MOTOR1_PWM), A
+
+MC_CHECK_M2:
+        ; Bit 2: Motor 2 forward
+        BIT     2, B
+        JR      Z, MC_CHECK_M2_REV
+        LD      A, 80
+        LD      (MOTOR2_PWM), A
+        LD      A, 1
+        LD      (MOTOR2_DIR), A
+        JR      MC_UPDATE_DIR
+
+MC_CHECK_M2_REV:
+        ; Bit 3: Motor 2 reverse
+        BIT     3, B
+        JR      Z, MC_M2_STOP
+        LD      A, 80
+        LD      (MOTOR2_PWM), A
+        XOR     A
+        LD      (MOTOR2_DIR), A
+        JR      MC_UPDATE_DIR
+
+MC_M2_STOP:
+        XOR     A
+        LD      (MOTOR2_PWM), A
+
+MC_UPDATE_DIR:
+        ; Update direction port
+        LD      A, (MOTOR1_DIR)
+        AND     01h
+        LD      B, A
+        LD      A, (MOTOR2_DIR)
+        AND     01h
+        SLA     A
+        OR      B
+        OUT     (MOTOR_PORT), A
+        RET
+
+; ============================================================================
+; END OF CODE
+; Total size should be < 2K (0800h bytes)
+; ============================================================================
+        END

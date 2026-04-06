@@ -1,0 +1,242 @@
+; ============================================================================
+; SIMPLE STEPPER MOTOR TEST PROGRAM
+; ============================================================================
+; Minimal example for testing stepper motor control
+; Easy to understand and modify for quick testing
+; ============================================================================
+
+; Port definitions
+; NOTE: TEC-1 SBC uses ports 00h-02h, so we use 03h-04h
+ALT_PORT    .EQU    03H     ; Altitude motor
+AZ_PORT     .EQU    04H     ; Azimuth motor
+
+; Step patterns (4-step sequence, full-step for maximum torque)
+STEP_0      .EQU    0011B   ; 0011 - Coil A+B
+STEP_1      .EQU    0110B   ; 0110 - Coil B+A'
+STEP_2      .EQU    1100B   ; 1100 - Coil A'+B'
+STEP_3      .EQU    1001B   ; 1001 - Coil B'+A
+
+            .ORG    0000H
+
+; ============================================================================
+; MAIN PROGRAM
+; ============================================================================
+
+START:
+            LD      SP, 1000H       ; Initialize stack (top of RAM at 0800h-0FFFh)
+
+            ; Test 1: Step altitude motor clockwise 100 steps
+            CALL    TEST1_ALT_CW
+
+            ; Pause between tests
+            CALL    LONG_DELAY
+
+            ; Test 2: Step altitude motor counter-clockwise 100 steps
+            CALL    TEST2_ALT_CCW
+
+            ; Pause
+            CALL    LONG_DELAY
+
+            ; Test 3: Step azimuth motor clockwise 100 steps
+            CALL    TEST3_AZ_CW
+
+            ; Pause
+            CALL    LONG_DELAY
+
+            ; Test 4: Step both motors together
+            CALL    TEST4_BOTH
+
+            ; Done
+            HALT
+
+; ============================================================================
+; TEST ROUTINES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; TEST1 - Step altitude motor clockwise 100 steps
+; ----------------------------------------------------------------------------
+TEST1_ALT_CW:
+            LD      B, 100          ; 100 steps
+            LD      C, 0            ; Step index = 0
+
+TEST1_LOOP:
+            ; Get step pattern
+            LD      A, C
+            CALL    GET_STEP_PATTERN
+
+            ; Output to altitude motor
+            OUT     (ALT_PORT), A
+
+            ; Delay
+            CALL    SHORT_DELAY
+
+            ; Next step (increment step index 0-3)
+            INC     C
+            LD      A, C
+            AND     03H             ; Wrap at 4
+            LD      C, A
+
+            ; Decrement counter
+            DJNZ    TEST1_LOOP
+
+            RET
+
+; ----------------------------------------------------------------------------
+; TEST2 - Step altitude motor counter-clockwise 100 steps
+; ----------------------------------------------------------------------------
+TEST2_ALT_CCW:
+            LD      B, 100          ; 100 steps
+            LD      C, 0            ; Step index = 0
+
+TEST2_LOOP:
+            ; Get step pattern
+            LD      A, C
+            CALL    GET_STEP_PATTERN
+
+            ; Output to altitude motor
+            OUT     (ALT_PORT), A
+
+            ; Delay
+            CALL    SHORT_DELAY
+
+            ; Previous step (decrement step index 3-0)
+            DEC     C
+            LD      A, C
+            AND     03H             ; Wrap at 4
+            LD      C, A
+
+            ; Decrement counter
+            DJNZ    TEST2_LOOP
+
+            RET
+
+; ----------------------------------------------------------------------------
+; TEST3 - Step azimuth motor clockwise 100 steps
+; ----------------------------------------------------------------------------
+TEST3_AZ_CW:
+            LD      B, 100          ; 100 steps
+            LD      C, 0            ; Step index = 0
+
+TEST3_LOOP:
+            ; Get step pattern
+            LD      A, C
+            CALL    GET_STEP_PATTERN
+
+            ; Output to azimuth motor
+            OUT     (AZ_PORT), A
+
+            ; Delay
+            CALL    SHORT_DELAY
+
+            ; Next step
+            INC     C
+            LD      A, C
+            AND     03H
+            LD      C, A
+
+            ; Decrement counter
+            DJNZ    TEST3_LOOP
+
+            RET
+
+; ----------------------------------------------------------------------------
+; TEST4 - Step both motors together (diagonal motion)
+; ----------------------------------------------------------------------------
+TEST4_BOTH:
+            LD      B, 100          ; 100 steps
+            LD      C, 0            ; Alt step index = 0
+            LD      D, 0            ; Az step index = 0
+
+TEST4_LOOP:
+            ; Step altitude motor
+            LD      A, C
+            CALL    GET_STEP_PATTERN
+            OUT     (ALT_PORT), A
+
+            ; Step azimuth motor
+            LD      A, D
+            CALL    GET_STEP_PATTERN
+            OUT     (AZ_PORT), A
+
+            ; Delay
+            CALL    SHORT_DELAY
+
+            ; Next step for both
+            INC     C
+            LD      A, C
+            AND     03H
+            LD      C, A
+
+            INC     D
+            LD      A, D
+            AND     03H
+            LD      D, A
+
+            ; Decrement counter
+            DJNZ    TEST4_LOOP
+
+            RET
+
+; ============================================================================
+; UTILITY ROUTINES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; GET_STEP_PATTERN - Get step pattern from index
+; Input: A = step index (0-3)
+; Output: A = step pattern
+; Destroys: HL
+; ----------------------------------------------------------------------------
+GET_STEP_PATTERN:
+            PUSH    BC
+            LD      HL, STEP_TABLE
+            LD      B, 0
+            LD      C, A
+            ADD     HL, BC
+            LD      A, (HL)
+            POP     BC
+            RET
+
+; ----------------------------------------------------------------------------
+; SHORT_DELAY - Delay for motor stepping
+; ----------------------------------------------------------------------------
+SHORT_DELAY:
+            PUSH    BC
+            LD      B, 0
+            LD      C, 50           ; Adjust this value for speed
+DELAY_LOOP1:
+            DEC     C
+            JR      NZ, DELAY_LOOP1
+            POP     BC
+            RET
+
+; ----------------------------------------------------------------------------
+; LONG_DELAY - Delay between tests
+; ----------------------------------------------------------------------------
+LONG_DELAY:
+            PUSH    BC
+            LD      B, 255
+DELAY_LOOP2:
+            PUSH    BC
+            CALL    SHORT_DELAY
+            POP     BC
+            DJNZ    DELAY_LOOP2
+            POP     BC
+            RET
+
+; ============================================================================
+; DATA TABLES
+; ============================================================================
+
+STEP_TABLE:
+            .DB     STEP_0          ; Index 0
+            .DB     STEP_1          ; Index 1
+            .DB     STEP_2          ; Index 2
+            .DB     STEP_3          ; Index 3
+
+; ============================================================================
+; END OF PROGRAM
+; ============================================================================
+
+            .END

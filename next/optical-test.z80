@@ -1,0 +1,341 @@
+; ============================================================================
+; Optical Gate Sensor Test Program
+; Simple tests to verify optical sensors and motors
+; ============================================================================
+;
+; WIRING DIAGRAM - HARDWARE TEST CONFIGURATION
+; ============================================================================
+;
+; Connect hardware same as optical-gate-control.z80:
+;
+; Port 03h bit 0 <--- Optical Sensor X output
+; Port 03h bit 1 <--- Optical Sensor Y output
+; Port 04h bit 0 ---> L298N #1 IN1 (Motor X direction)
+; Port 04h bit 1 ---> L298N #2 IN3 (Motor Y direction)
+; Port 05h       ---> L298N #1 ENA (Motor X PWM)
+; Port 06h       ---> L298N #2 ENB (Motor Y PWM)
+;
+; Optical Sensor Wiring (each):
+;   LED: +5V --[220Ω]-- Anode, Cathode -- GND
+;   PT:  Collector --[10kΩ]-- +5V
+;        Collector --[100nF]-- GND
+;        Collector ------------ Port 03h bit 0 or 1
+;        Emitter  ------------- GND
+;
+; L298N Wiring (each):
+;   IN1/IN3 <--- Port 04h bit 0/1
+;   IN2/IN4 <--- GND
+;   ENA/ENB <--- Port 05h/06h
+;   OUT1-2 ---> Motor X, OUT3-4 ---> Motor Y
+;   +12V <--- 12V supply, GND <--- Common GND
+;
+; Test Programs Available:
+;   JP 0800h - Test optical sensors (rotate disk by hand)
+;   JP 0810h - Count pulses (increments counter)
+;   JP 0830h - Motor forward test (3 seconds)
+;   JP 0850h - Motor reverse test (3 seconds)
+;   JP 0870h - Count while motor moving
+;   JP 08A0h - Full revolution test (counts 8)
+;   JP 08D0h - Alignment test (slow rotation)
+;
+; ============================================================================
+
+        ORG     0800h
+
+INPUT_PORT:     EQU     03h
+DIR_PORT:       EQU     04h
+PWM_X_PORT:     EQU     05h
+PWM_Y_PORT:     EQU     06h
+
+; ============================================================================
+; TEST 1: Optical Sensor Test
+; Displays sensor state on TEC-1 display
+; Rotate disk by hand and watch display change
+; ============================================================================
+TEST_OPTICAL:
+        IN      A, (INPUT_PORT)
+        AND     03h             ; Isolate bits 0 and 1 (sensors)
+        OUT     (01h), A        ; Display on TEC-1 (port 01h = data)
+
+        ; Delay for visible display
+        LD      B, 50
+SENS_DELAY:
+        LD      C, 0FFh
+SENS_INNER:
+        DEC     C
+        JR      NZ, SENS_INNER
+        DJNZ    SENS_DELAY
+
+        JR      TEST_OPTICAL    ; Loop forever
+
+; ============================================================================
+; TEST 2: Count Pulses Test
+; Counts rising edges on X sensor and displays count
+; ============================================================================
+TEST_COUNT:
+        LD      D, 0            ; D = pulse counter
+        LD      E, 0            ; E = last sensor state
+
+COUNT_LOOP:
+        IN      A, (INPUT_PORT)
+        AND     01h             ; Check X sensor (bit 0)
+        LD      B, A            ; B = current state
+
+        ; Check for rising edge (LOW->HIGH)
+        LD      A, E            ; Get last state
+        CP      B               ; Compare with current
+        JR      Z, COUNT_NO_CHANGE
+
+        ; State changed - check if rising edge
+        LD      A, B
+        CP      01h
+        JR      NZ, COUNT_SAVE  ; Not rising edge
+
+        ; Rising edge detected!
+        INC     D               ; Increment counter
+
+COUNT_SAVE:
+        LD      E, B            ; Save current state
+
+COUNT_NO_CHANGE:
+        ; Display count
+        LD      A, D
+        OUT     (01h), A
+
+        ; Small delay
+        LD      B, 10
+COUNT_DELAY:
+        DJNZ    COUNT_DELAY
+
+        JR      COUNT_LOOP
+
+; ============================================================================
+; TEST 3: Motor Forward Test
+; Spins X motor forward for 3 seconds
+; Count should increase on display
+; ============================================================================
+TEST_MOTOR_FWD:
+        ; Set direction forward
+        LD      A, 01h          ; Bit 0 = X direction forward
+        OUT     (DIR_PORT), A
+
+        ; Set PWM to half speed
+        LD      A, 80h
+        OUT     (PWM_X_PORT), A
+
+        ; Delay ~3 seconds
+        LD      B, 0
+FWD_OUTER:
+        LD      C, 0
+FWD_INNER:
+        DEC     C
+        JR      NZ, FWD_INNER
+        DJNZ    FWD_OUTER
+
+        ; Stop motor
+        XOR     A
+        OUT     (PWM_X_PORT), A
+
+        HALT
+
+; ============================================================================
+; TEST 4: Motor Reverse Test
+; Spins X motor reverse for 3 seconds
+; Count should decrease on display
+; ============================================================================
+TEST_MOTOR_REV:
+        ; Set direction reverse
+        XOR     A               ; Bit 0 = 0 = reverse
+        OUT     (DIR_PORT), A
+
+        ; Set PWM to half speed
+        LD      A, 80h
+        OUT     (PWM_X_PORT), A
+
+        ; Delay ~3 seconds
+        LD      B, 0
+REV_OUTER:
+        LD      C, 0
+REV_INNER:
+        DEC     C
+        JR      NZ, REV_INNER
+        DJNZ    REV_OUTER
+
+        ; Stop motor
+        XOR     A
+        OUT     (PWM_X_PORT), A
+
+        HALT
+
+; ============================================================================
+; TEST 5: Count While Moving
+; Spins motor and counts pulses simultaneously
+; ============================================================================
+TEST_COUNT_MOVING:
+        XOR     A
+        LD      (0900h), A      ; Clear counter
+        LD      (0901h), A      ; Clear last state
+
+        ; Start motor forward
+        LD      A, 01h
+        OUT     (DIR_PORT), A
+        LD      A, 60h          ; Slower speed for counting
+        OUT     (PWM_X_PORT), A
+
+COUNT_MOVE_LOOP:
+        ; Read sensor
+        IN      A, (INPUT_PORT)
+        AND     01h
+        LD      B, A
+
+        ; Check for edge
+        LD      A, (0901h)      ; Last state
+        CP      B
+        JR      Z, NO_EDGE
+
+        ; Rising edge?
+        LD      A, B
+        CP      01h
+        JR      NZ, SAVE_STATE
+
+        ; Increment counter
+        LD      A, (0900h)
+        INC     A
+        LD      (0900h), A
+
+SAVE_STATE:
+        LD      A, B
+        LD      (0901h), A
+
+NO_EDGE:
+        ; Display count
+        LD      A, (0900h)
+        OUT     (01h), A
+
+        ; Check if reached 50 counts
+        CP      50
+        JR      C, COUNT_MOVE_LOOP
+
+        ; Stop motor
+        XOR     A
+        OUT     (PWM_X_PORT), A
+
+        HALT
+
+; ============================================================================
+; TEST 6: Full Revolution Test
+; Counts pulses for one full revolution
+; Should count 8 pulses for 8-slot disk
+; ============================================================================
+TEST_FULL_REV:
+        XOR     A
+        LD      (0900h), A      ; Counter
+        LD      (0901h), A      ; Last state
+
+        ; Start motor slow
+        LD      A, 01h
+        OUT     (DIR_PORT), A
+        LD      A, 40h          ; Very slow
+        OUT     (PWM_X_PORT), A
+
+REV_LOOP:
+        ; Read and count
+        IN      A, (INPUT_PORT)
+        AND     01h
+        LD      B, A
+
+        LD      A, (0901h)
+        CP      B
+        JR      Z, REV_NO_EDGE
+
+        LD      A, B
+        CP      01h
+        JR      NZ, REV_SAVE
+
+        LD      A, (0900h)
+        INC     A
+        LD      (0900h), A
+
+REV_SAVE:
+        LD      A, B
+        LD      (0901h), A
+
+REV_NO_EDGE:
+        LD      A, (0900h)
+        OUT     (01h), A
+
+        ; Stop after 8 counts (one revolution)
+        CP      08h
+        JR      C, REV_LOOP
+
+        ; Stop motor
+        XOR     A
+        OUT     (PWM_X_PORT), A
+
+        ; Display final count (should be 8)
+        LD      A, (0900h)
+        OUT     (01h), A
+
+        HALT
+
+; ============================================================================
+; TEST 7: Disk Alignment Test
+; Flashes motor on/off slowly to help align sensor with disk
+; Watch sensor output while disk rotates slowly
+; ============================================================================
+TEST_ALIGNMENT:
+        LD      A, 01h
+        OUT     (DIR_PORT), A
+
+ALIGN_LOOP:
+        ; Motor ON
+        LD      A, 30h          ; Very slow
+        OUT     (PWM_X_PORT), A
+
+        ; Delay
+        LD      B, 100
+ALIGN_ON:
+        ; Read and display sensor
+        IN      A, (INPUT_PORT)
+        AND     01h
+        OUT     (01h), A
+        DJNZ    ALIGN_ON
+
+        ; Motor OFF
+        XOR     A
+        OUT     (PWM_X_PORT), A
+
+        ; Delay
+        LD      B, 100
+ALIGN_OFF:
+        IN      A, (INPUT_PORT)
+        AND     01h
+        OUT     (01h), A
+        DJNZ    ALIGN_OFF
+
+        JR      ALIGN_LOOP
+
+; ============================================================================
+; How to Use These Tests:
+; ============================================================================
+; From TEC-1 monitor or MINT:
+;
+; 1. JP 0800h  - Test optical sensors (rotate disk by hand, display changes)
+; 2. JP 0810h  - Count pulses (rotate disk, count increments)
+; 3. JP 0830h  - Motor forward test (motor spins 3 sec, then stops)
+; 4. JP 0850h  - Motor reverse test (motor spins reverse 3 sec)
+; 5. JP 0870h  - Count while motor moving (counts to 50 then stops)
+; 6. JP 08A0h  - Full revolution test (counts 8 pulses = 1 rev)
+; 7. JP 08D0h  - Alignment test (slow rotation for sensor alignment)
+;
+; Addresses (approximate - assemble to get exact):
+; TEST_OPTICAL:      0800h
+; TEST_COUNT:        0810h (approx)
+; TEST_MOTOR_FWD:    0830h (approx)
+; TEST_MOTOR_REV:    0850h (approx)
+; TEST_COUNT_MOVING: 0870h (approx)
+; TEST_FULL_REV:     08A0h (approx)
+; TEST_ALIGNMENT:    08D0h (approx)
+; ============================================================================
+
+        END

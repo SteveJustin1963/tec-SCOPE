@@ -1,0 +1,16 @@
+log: Siril is in offline mode.
+log: Welcome to siril v1.4.0-beta4
+log: Supported file types: BMP images, PIC images (IRIS), PGM and PPM binary images, RAW images, FITS-CFA images, Films, SER sequences, TIFF images, XISF images, JPG images, JPEG XL images, PNG images, HEIF images, AVIF images.
+log: directory `/home/sj/astro/session_20251113_1523' for config key core.wd doesn't exist, not using it.
+log: Setting CWD (Current Working Directory) to '/home/sj/astro/session_20251113_1528'
+log: Parallel processing enabled: using 4 logical processors.
+log: Preparing python virtual environment: /home/sj/.local/share/siril/venv.
+log: Color management active.
+log: JPEG ICC profiles supported.
+log: # Siril processing script (auto-generated)
+log: # Note: 'requires' line removed for beta compatibility
+log: The "requires" command is missing at the top of the script file. This command is needed to check script compatibility.
+log: Setting CWD (Current Working Directory) to '/home/sj/astro/session_20251113_1528'
+log: Script execution finished successfully.
+log: Total execution time: 3.51 ms
+closing pipes

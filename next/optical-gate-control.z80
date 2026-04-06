@@ -1,0 +1,567 @@
+; ============================================================================
+; TEC-SCOPE Simple Motor Control with Optical Gate Sensors
+; Z80 Assembly for DC Motors with PWM + Optical Position Sensing
+; ============================================================================
+;
+; WIRING DIAGRAM - COMPLETE SYSTEM
+; ============================================================================
+;
+; Z80 Port Connections:
+; --------------------
+; Port 03h (Input):  bit 0 = Optical Sensor X (Alt)
+;                    bit 1 = Optical Sensor Y (Az)
+;                    bit 2-5 = Manual buttons (optional)
+;
+; Port 04h (Output): bit 0 = Motor X direction (1=forward, 0=reverse)
+;                    bit 1 = Motor Y direction (1=forward, 0=reverse)
+;
+; Port 05h (Output): 8-bit PWM for Motor X speed (0x00=off, 0xFF=full)
+; Port 06h (Output): 8-bit PWM for Motor Y speed (0x00=off, 0xFF=full)
+;
+; Hardware Connections:
+; --------------------
+;
+; OPTICAL SENSOR X (for Motor X / Altitude axis):
+;   LED Side:    +5V --[220Ω]-- Anode, Cathode -- GND
+;   PT Side:     Collector --[10kΩ]-- +5V
+;                Collector --[100nF]-- GND (debounce)
+;                Collector ------------ Port 03h bit 0
+;                Emitter  ------------- GND
+;
+; OPTICAL SENSOR Y (for Motor Y / Azimuth axis):
+;   Same as Sensor X, connect to Port 03h bit 1
+;
+; L298N DRIVER #1 (Motor X):
+;   IN1 <--- Port 04h bit 0 (direction)
+;   IN2 <--- GND (fixed)
+;   ENA <--- Port 05h (PWM speed)
+;   OUT1/OUT2 ---> DC Motor X
+;   +12V <--- 12V power supply
+;   GND  <--- Common ground
+;
+; L298N DRIVER #2 (Motor Y):
+;   IN3 <--- Port 04h bit 1 (direction)
+;   IN4 <--- GND (fixed)
+;   ENB <--- Port 06h (PWM speed)
+;   OUT3/OUT4 ---> DC Motor Y
+;   +12V <--- 12V power supply
+;   GND  <--- Common ground
+;
+; POWER SUPPLY:
+;   12V (2A min) ---> L298N +12V (both drivers)
+;   12V (2A min) ---> 7805 input
+;   7805 output  ---> +5V for sensors and TEC-1
+;   All GND pins ---> Common ground (star topology)
+;
+; SLOTTED DISKS:
+;   Motor X shaft --> Tin disk with 8 slots
+;   Motor Y shaft --> Tin disk with 8 slots
+;   Disks pass through optical sensor gaps
+;
+; ============================================================================
+; Memory: ORG 0800h, 2K RAM limit (0800h - 0FFFh)
+; I/O Ports: 03h, 04h, 05h, 06h, 07h
+;
+; Port Assignments:
+;   03h - Input (bit0=OptX sensor, bit1=OptY sensor, bit2-7=buttons)
+;   04h - Motor directions (bit0=X_DIR, bit1=Y_DIR)
+;   05h - Motor X PWM duty (0-255)
+;   06h - Motor Y PWM duty (0-255)
+;   07h - Reserved for future use
+;
+; Hardware:
+;   - 2 DC motors with 100:1 gear reduction
+;   - 2 optical gate sensors (8 slots per motor shaft rotation)
+;   - Resolution: 8 × 100 = 800 counts per full telescope rotation
+;   - Angular resolution: 360° / 800 = 0.45° per count = 27 arc-minutes
+;
+; Optical Gate Setup:
+;   - Cut tin lid with 8 equally-spaced slots
+;   - Mount on motor shaft
+;   - Optical sensor (e.g., GP1A57HRJ00F or similar slot sensor)
+;   - Pulls low when slot passes, high when blocked
+; ============================================================================
+
+        ORG     0800h
+
+; ============================================================================
+; RAM Variables - AFTER CODE (2K RAM: 0800h-0FFFh)
+; ============================================================================
+; Memory Layout:
+;   0800h-0BFFh: Program code (~1KB)
+;   0C00h-0FFFh: RAM variables (~1KB available)
+;
+; Variables start at 0E00h (safely after code, leaves room for expansion)
+; ============================================================================
+
+MOTOR_X_PWM:    EQU     0E00h   ; Motor X (Alt) PWM duty (0-255)
+MOTOR_Y_PWM:    EQU     0E01h   ; Motor Y (Az) PWM duty (0-255)
+MOTOR_X_DIR:    EQU     0E02h   ; Motor X direction (0=CCW, 1=CW)
+MOTOR_Y_DIR:    EQU     0E03h   ; Motor Y direction (0=CCW, 1=CW)
+
+; Position counters (16-bit is enough: 0-800 counts per revolution)
+POS_X_LO:       EQU     0E04h   ; X position low byte
+POS_X_HI:       EQU     0E05h   ; X position high byte
+POS_Y_LO:       EQU     0E06h   ; Y position low byte
+POS_Y_HI:       EQU     0E07h   ; Y position high byte
+
+; Target positions
+TARGET_X_LO:    EQU     0E08h   ; X target low byte
+TARGET_X_HI:    EQU     0E09h   ; X target high byte
+TARGET_Y_LO:    EQU     0E0Ah   ; Y target low byte
+TARGET_Y_HI:    EQU     0E0Bh   ; Y target high byte
+
+; Sensor state tracking (for edge detection)
+LAST_SENS_X:    EQU     0E0Ch   ; Previous state of X sensor
+LAST_SENS_Y:    EQU     0E0Dh   ; Previous state of Y sensor
+
+PWM_COUNTER:    EQU     0E0Eh   ; PWM cycle counter
+
+; Still have 0E0Fh-0FFFh available (497 bytes) for future expansion
+
+; Port definitions
+INPUT_PORT:     EQU     03h
+DIR_PORT:       EQU     04h
+PWM_X_PORT:     EQU     05h
+PWM_Y_PORT:     EQU     06h
+
+; Input port bit masks (port 03h)
+SENS_X_BIT:     EQU     01h     ; Bit 0 = X optical sensor
+SENS_Y_BIT:     EQU     02h     ; Bit 1 = Y optical sensor
+BTN_X_FWD:      EQU     04h     ; Bit 2 = X forward button
+BTN_X_REV:      EQU     08h     ; Bit 3 = X reverse button
+BTN_Y_FWD:      EQU     10h     ; Bit 4 = Y forward button
+BTN_Y_REV:      EQU     20h     ; Bit 5 = Y reverse button
+
+; Direction port bit masks (port 04h)
+DIR_X_BIT:      EQU     01h     ; Bit 0
+DIR_Y_BIT:      EQU     02h     ; Bit 1
+
+; ============================================================================
+; MAIN ENTRY POINT
+; ============================================================================
+START:
+        DI                      ; Disable interrupts initially
+        CALL    INIT_SYSTEM     ; Initialize everything
+
+        ; Optional: Enable interrupt mode for optical sensors
+        ; IM      1              ; Interrupt mode 1
+        ; EI                     ; Enable interrupts
+
+MAIN_LOOP:
+        CALL    READ_SENSORS    ; Read and update position counters
+        CALL    UPDATE_MOTORS   ; Adjust motors based on position
+        CALL    PWM_CYCLE       ; Generate PWM signals
+        JP      MAIN_LOOP       ; Loop forever
+
+; ============================================================================
+; INIT_SYSTEM - Initialize all hardware and variables
+; ============================================================================
+INIT_SYSTEM:
+        ; Clear all motor variables
+        XOR     A
+        LD      (MOTOR_X_PWM), A
+        LD      (MOTOR_Y_PWM), A
+        LD      (MOTOR_X_DIR), A
+        LD      (MOTOR_Y_DIR), A
+        LD      (PWM_COUNTER), A
+
+        ; Clear position counters
+        LD      (POS_X_LO), A
+        LD      (POS_X_HI), A
+        LD      (POS_Y_LO), A
+        LD      (POS_Y_HI), A
+
+        ; Clear targets
+        LD      (TARGET_X_LO), A
+        LD      (TARGET_X_HI), A
+        LD      (TARGET_Y_LO), A
+        LD      (TARGET_Y_HI), A
+
+        ; Initialize sensor state
+        IN      A, (INPUT_PORT)
+        AND     SENS_X_BIT
+        LD      (LAST_SENS_X), A
+        IN      A, (INPUT_PORT)
+        AND     SENS_Y_BIT
+        LD      (LAST_SENS_Y), A
+
+        ; Motors off initially
+        XOR     A
+        OUT     (DIR_PORT), A
+        OUT     (PWM_X_PORT), A
+        OUT     (PWM_Y_PORT), A
+
+        RET
+
+; ============================================================================
+; READ_SENSORS - Read optical sensors and update position counters
+; Uses edge detection: increment counter on LOW->HIGH transition
+; ============================================================================
+READ_SENSORS:
+        ; Check X sensor
+        IN      A, (INPUT_PORT)
+        AND     SENS_X_BIT      ; Isolate X sensor bit
+        LD      B, A            ; B = current state
+        LD      A, (LAST_SENS_X)
+        CP      B               ; Compare with last state
+        JR      Z, CHECK_Y_SENS ; No change, skip
+
+        ; State changed - check if LOW->HIGH (rising edge)
+        LD      A, B
+        AND     SENS_X_BIT
+        JR      Z, SAVE_X_STATE ; Was HIGH->LOW, ignore
+
+        ; Rising edge detected - increment or decrement X position
+        LD      A, (MOTOR_X_DIR)
+        AND     01h
+        JR      Z, DEC_X_POS    ; Direction = 0, decrement
+
+INC_X_POS:
+        ; Increment X position
+        LD      HL, (POS_X_LO)
+        INC     HL
+        LD      (POS_X_LO), HL
+        JR      SAVE_X_STATE
+
+DEC_X_POS:
+        ; Decrement X position
+        LD      HL, (POS_X_LO)
+        DEC     HL
+        LD      (POS_X_LO), HL
+
+SAVE_X_STATE:
+        LD      A, B
+        LD      (LAST_SENS_X), A
+
+CHECK_Y_SENS:
+        ; Check Y sensor (same logic)
+        IN      A, (INPUT_PORT)
+        AND     SENS_Y_BIT
+        LD      B, A
+        LD      A, (LAST_SENS_Y)
+        CP      B
+        JR      Z, SENS_DONE
+
+        LD      A, B
+        AND     SENS_Y_BIT
+        JR      Z, SAVE_Y_STATE
+
+        ; Rising edge - increment or decrement based on direction
+        LD      A, (MOTOR_Y_DIR)
+        AND     01h
+        JR      Z, DEC_Y_POS
+
+INC_Y_POS:
+        LD      HL, (POS_Y_LO)
+        INC     HL
+        LD      (POS_Y_LO), HL
+        JR      SAVE_Y_STATE
+
+DEC_Y_POS:
+        LD      HL, (POS_Y_LO)
+        DEC     HL
+        LD      (POS_Y_LO), HL
+
+SAVE_Y_STATE:
+        LD      A, B
+        LD      (LAST_SENS_Y), A
+
+SENS_DONE:
+        RET
+
+; ============================================================================
+; UPDATE_MOTORS - Simple proportional control
+; Compare current position to target, adjust PWM
+; ============================================================================
+UPDATE_MOTORS:
+        ; Motor X control
+        LD      HL, (TARGET_X_LO)
+        LD      DE, (POS_X_LO)
+        ; HL = target, DE = current
+        ; Calculate error = target - current
+        OR      A               ; Clear carry
+        SBC     HL, DE          ; HL = error
+        JR      Z, MOTOR_X_STOP ; If zero, stop
+        JR      C, MOTOR_X_REV  ; If negative, reverse
+
+MOTOR_X_FWD:
+        ; Positive error - go forward
+        LD      A, 01h
+        LD      (MOTOR_X_DIR), A
+
+        ; Calculate PWM from error (limit to reasonable value)
+        LD      A, L            ; Use low byte of error
+        CP      100
+        JR      C, SET_X_PWM
+        LD      A, 100          ; Max error = 100 counts
+
+SET_X_PWM:
+        ; Proportional gain = 2
+        SLA     A               ; x2
+        LD      (MOTOR_X_PWM), A
+        JR      MOTOR_Y_CONTROL
+
+MOTOR_X_REV:
+        ; Negative error - go reverse
+        ; Need to negate HL
+        LD      A, L
+        NEG
+        XOR     A
+        LD      (MOTOR_X_DIR), A
+        LD      A, L
+        NEG
+        CP      100
+        JR      C, SET_X_PWM_REV
+        LD      A, 100
+
+SET_X_PWM_REV:
+        SLA     A
+        LD      (MOTOR_X_PWM), A
+        JR      MOTOR_Y_CONTROL
+
+MOTOR_X_STOP:
+        XOR     A
+        LD      (MOTOR_X_PWM), A
+
+MOTOR_Y_CONTROL:
+        ; Motor Y control (same logic)
+        LD      HL, (TARGET_Y_LO)
+        LD      DE, (POS_Y_LO)
+        OR      A
+        SBC     HL, DE
+        JR      Z, MOTOR_Y_STOP
+        JR      C, MOTOR_Y_REV
+
+MOTOR_Y_FWD:
+        LD      A, 01h
+        LD      (MOTOR_Y_DIR), A
+        LD      A, L
+        CP      100
+        JR      C, SET_Y_PWM
+        LD      A, 100
+
+SET_Y_PWM:
+        SLA     A
+        LD      (MOTOR_Y_PWM), A
+        JR      UPDATE_DIR_PORT
+
+MOTOR_Y_REV:
+        XOR     A
+        LD      (MOTOR_Y_DIR), A
+        LD      A, L
+        NEG
+        CP      100
+        JR      C, SET_Y_PWM_REV
+        LD      A, 100
+
+SET_Y_PWM_REV:
+        SLA     A
+        LD      (MOTOR_Y_PWM), A
+        JR      UPDATE_DIR_PORT
+
+MOTOR_Y_STOP:
+        XOR     A
+        LD      (MOTOR_Y_PWM), A
+
+UPDATE_DIR_PORT:
+        ; Update direction port with both motor directions
+        LD      A, (MOTOR_X_DIR)
+        AND     01h
+        LD      B, A
+        LD      A, (MOTOR_Y_DIR)
+        AND     01h
+        SLA     A               ; Shift to bit 1
+        OR      B
+        OUT     (DIR_PORT), A
+        RET
+
+; ============================================================================
+; PWM_CYCLE - Software PWM implementation
+; ============================================================================
+PWM_CYCLE:
+        LD      A, (PWM_COUNTER)
+        INC     A
+        LD      (PWM_COUNTER), A
+
+        ; Motor X PWM
+        LD      B, A                    ; B = counter
+        LD      A, (MOTOR_X_PWM)        ; A = duty
+        CP      B                       ; Compare
+        LD      A, 0FFh                 ; Assume ON
+        JR      NC, MX_PWM_ON
+        XOR     A                       ; OFF
+MX_PWM_ON:
+        OUT     (PWM_X_PORT), A
+
+        ; Motor Y PWM
+        LD      A, (MOTOR_Y_PWM)
+        CP      B
+        LD      A, 0FFh
+        JR      NC, MY_PWM_ON
+        XOR     A
+MY_PWM_ON:
+        OUT     (PWM_Y_PORT), A
+
+        ; Small delay for PWM frequency
+        LD      B, 5
+PWM_DELAY:
+        DJNZ    PWM_DELAY
+        RET
+
+; ============================================================================
+; UTILITY FUNCTIONS
+; ============================================================================
+
+; SET_TARGET_X - Set target position for X motor
+; Input: HL = 16-bit target position
+SET_TARGET_X:
+        LD      (TARGET_X_LO), HL
+        RET
+
+; SET_TARGET_Y - Set target position for Y motor
+; Input: HL = 16-bit target position
+SET_TARGET_Y:
+        LD      (TARGET_Y_LO), HL
+        RET
+
+; GET_POSITION_X - Get current X position
+; Output: HL = current position
+GET_POSITION_X:
+        LD      HL, (POS_X_LO)
+        RET
+
+; GET_POSITION_Y - Get current Y position
+; Output: HL = current position
+GET_POSITION_Y:
+        LD      HL, (POS_Y_LO)
+        RET
+
+; ZERO_POSITIONS - Reset both position counters to zero
+ZERO_POSITIONS:
+        XOR     A
+        LD      (POS_X_LO), A
+        LD      (POS_X_HI), A
+        LD      (POS_Y_LO), A
+        LD      (POS_Y_HI), A
+        RET
+
+; MANUAL_CONTROL - Manual joystick/button control
+; Reads buttons on input port and controls motors directly
+MANUAL_CONTROL:
+        IN      A, (INPUT_PORT)
+        LD      B, A
+
+        ; Check X forward button (bit 2)
+        BIT     2, B
+        JR      Z, CHECK_X_REV
+        LD      A, 60
+        LD      (MOTOR_X_PWM), A
+        LD      A, 01h
+        LD      (MOTOR_X_DIR), A
+        JR      CHECK_Y_BTNS
+
+CHECK_X_REV:
+        BIT     3, B
+        JR      Z, STOP_X
+        LD      A, 60
+        LD      (MOTOR_X_PWM), A
+        XOR     A
+        LD      (MOTOR_X_DIR), A
+        JR      CHECK_Y_BTNS
+
+STOP_X:
+        XOR     A
+        LD      (MOTOR_X_PWM), A
+
+CHECK_Y_BTNS:
+        ; Check Y forward button (bit 4)
+        BIT     4, B
+        JR      Z, CHECK_Y_REV
+        LD      A, 60
+        LD      (MOTOR_Y_PWM), A
+        LD      A, 01h
+        LD      (MOTOR_Y_DIR), A
+        JR      MANUAL_UPDATE_DIR
+
+CHECK_Y_REV:
+        BIT     5, B
+        JR      Z, STOP_Y
+        LD      A, 60
+        LD      (MOTOR_Y_PWM), A
+        XOR     A
+        LD      (MOTOR_Y_DIR), A
+        JR      MANUAL_UPDATE_DIR
+
+STOP_Y:
+        XOR     A
+        LD      (MOTOR_Y_PWM), A
+
+MANUAL_UPDATE_DIR:
+        LD      A, (MOTOR_X_DIR)
+        AND     01h
+        LD      C, A
+        LD      A, (MOTOR_Y_DIR)
+        AND     01h
+        SLA     A
+        OR      C
+        OUT     (DIR_PORT), A
+        RET
+
+; ============================================================================
+; CONVERT_TO_DEGREES - Convert count to degrees
+; Input: HL = count (0-800 for full rotation)
+; Output: HL = degrees (0-360)
+; Formula: degrees = (count * 360) / 800 = count * 9 / 20
+; ============================================================================
+COUNT_TO_DEGREES:
+        ; Multiply by 9
+        LD      D, H
+        LD      E, L            ; DE = count
+        ADD     HL, HL          ; HL = count * 2
+        ADD     HL, HL          ; HL = count * 4
+        ADD     HL, HL          ; HL = count * 8
+        ADD     HL, DE          ; HL = count * 9
+
+        ; Divide by 20 (approximate: shift right and adjust)
+        ; Simplified: divide by 16 for quick approximation
+        SRL     H
+        RR      L
+        SRL     H
+        RR      L
+        SRL     H
+        RR      L
+        SRL     H
+        RR      L               ; HL = count * 9 / 16
+        RET
+
+; ============================================================================
+; CONVERT_FROM_DEGREES - Convert degrees to count
+; Input: HL = degrees (0-360)
+; Output: HL = count
+; Formula: count = (degrees * 800) / 360 = degrees * 20 / 9
+; ============================================================================
+DEGREES_TO_COUNT:
+        ; Multiply by 20
+        LD      D, H
+        LD      E, L            ; DE = degrees
+        ADD     HL, HL          ; * 2
+        ADD     HL, HL          ; * 4
+        ADD     HL, DE          ; * 5
+        ADD     HL, HL          ; * 10
+        ADD     HL, HL          ; * 20
+
+        ; Divide by 9 (simplified - divide by 8)
+        SRL     H
+        RR      L
+        SRL     H
+        RR      L
+        SRL     H
+        RR      L               ; HL / 8 (approximation)
+        RET
+
+; ============================================================================
+; END OF CODE
+; Total size: ~500 bytes - well under 2K limit
+; ============================================================================
+        END

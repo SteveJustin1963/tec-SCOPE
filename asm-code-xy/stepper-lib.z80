@@ -1,0 +1,502 @@
+; ============================================================================
+; TELESCOPE STEPPER MOTOR LIBRARY
+; ============================================================================
+; Library routines for controlling two stepper motors
+; Functions for stepping, position tracking, and coordinated motion
+; ============================================================================
+
+            .INCLUDE "config.z80"
+
+; ============================================================================
+; INITIALIZATION ROUTINES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; INIT_MOTORS - Initialize both stepper motors and position tracking
+; Input: None
+; Output: None
+; Destroys: A, HL
+; ----------------------------------------------------------------------------
+INIT_MOTORS:
+            ; Zero all positions
+            LD      HL, 0
+            LD      (ALT_POS_LO), HL
+            LD      (AZ_POS_LO), HL
+            LD      (ALT_TARGET_LO), HL
+            LD      (AZ_TARGET_LO), HL
+
+            ; Initialize step indices to 0
+            XOR     A
+            LD      (ALT_STEP_IDX), A
+            LD      (AZ_STEP_IDX), A
+            LD      (MOTOR_STATE), A
+
+            ; Set motors to initial position (step 0)
+            LD      A, STEP_0
+            OUT     (ALT_PORT), A
+            OUT     (AZ_PORT), A
+
+            RET
+
+; ============================================================================
+; LOW-LEVEL STEPPING ROUTINES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; STEP_ALT_CW - Step altitude motor one step clockwise
+; Input: None
+; Output: None
+; Destroys: A, HL
+; ----------------------------------------------------------------------------
+STEP_ALT_CW:
+            PUSH    BC
+
+            ; Check if at upper limit
+            LD      HL, (ALT_POS_LO)
+            LD      BC, ALT_MAX
+            OR      A
+            SBC     HL, BC
+            JR      NC, STEP_ALT_CW_SKIP    ; Already >= max, don't step
+
+            ; Increment step index (0-3)
+            LD      A, (ALT_STEP_IDX)
+            INC     A
+            AND     03H             ; Wrap at 4 (0-3)
+            LD      (ALT_STEP_IDX), A
+
+            ; Output step pattern
+            LD      HL, STEP_TABLE
+            LD      B, 0
+            LD      C, A
+            ADD     HL, BC
+            LD      A, (HL)
+            OUT     (ALT_PORT), A
+
+            ; Increment position
+            LD      HL, (ALT_POS_LO)
+            INC     HL
+            LD      (ALT_POS_LO), HL
+
+STEP_ALT_CW_SKIP:
+            POP     BC
+            RET
+
+; ----------------------------------------------------------------------------
+; STEP_ALT_CCW - Step altitude motor one step counter-clockwise
+; Input: None
+; Output: None
+; Destroys: A, HL
+; ----------------------------------------------------------------------------
+STEP_ALT_CCW:
+            PUSH    BC
+
+            ; Check if at lower limit
+            LD      HL, (ALT_POS_LO)
+            LD      A, H
+            OR      L
+            JR      Z, STEP_ALT_CCW_SKIP    ; Already at 0, don't step
+
+            ; Decrement step index (3-0)
+            LD      A, (ALT_STEP_IDX)
+            DEC     A
+            AND     03H             ; Wrap at 4 (0-3)
+            LD      (ALT_STEP_IDX), A
+
+            ; Output step pattern
+            LD      HL, STEP_TABLE
+            LD      B, 0
+            LD      C, A
+            ADD     HL, BC
+            LD      A, (HL)
+            OUT     (ALT_PORT), A
+
+            ; Decrement position
+            LD      HL, (ALT_POS_LO)
+            DEC     HL
+            LD      (ALT_POS_LO), HL
+
+STEP_ALT_CCW_SKIP:
+            POP     BC
+            RET
+
+; ----------------------------------------------------------------------------
+; STEP_AZ_CW - Step azimuth motor one step clockwise
+; Input: None
+; Output: None
+; Destroys: A, HL
+; ----------------------------------------------------------------------------
+STEP_AZ_CW:
+            PUSH    BC
+            PUSH    DE
+
+            ; Increment step index (0-3)
+            LD      A, (AZ_STEP_IDX)
+            INC     A
+            AND     03H             ; Wrap at 4 (0-3)
+            LD      (AZ_STEP_IDX), A
+
+            ; Output step pattern
+            LD      HL, STEP_TABLE
+            LD      B, 0
+            LD      C, A
+            ADD     HL, BC
+            LD      A, (HL)
+            OUT     (AZ_PORT), A
+
+            ; Increment position with wraparound at AZ_MAX
+            LD      HL, (AZ_POS_LO)
+            INC     HL
+            LD      DE, AZ_MAX
+            OR      A
+            SBC     HL, DE
+            JR      C, STEP_AZ_CW_STORE ; pos < AZ_MAX, restore and store
+            LD      HL, 0               ; pos >= AZ_MAX, wrap to 0
+            JR      STEP_AZ_CW_SAVE
+STEP_AZ_CW_STORE:
+            ADD     HL, DE              ; Restore original position
+STEP_AZ_CW_SAVE:
+            LD      (AZ_POS_LO), HL
+
+            POP     DE
+            POP     BC
+            RET
+
+; ----------------------------------------------------------------------------
+; STEP_AZ_CCW - Step azimuth motor one step counter-clockwise
+; Input: None
+; Output: None
+; Destroys: A, HL
+; ----------------------------------------------------------------------------
+STEP_AZ_CCW:
+            PUSH    BC
+            PUSH    DE
+
+            ; Decrement step index (3-0)
+            LD      A, (AZ_STEP_IDX)
+            DEC     A
+            AND     03H             ; Wrap at 4 (0-3)
+            LD      (AZ_STEP_IDX), A
+
+            ; Output step pattern
+            LD      HL, STEP_TABLE
+            LD      B, 0
+            LD      C, A
+            ADD     HL, BC
+            LD      A, (HL)
+            OUT     (AZ_PORT), A
+
+            ; Decrement position with wraparound at 0
+            LD      HL, (AZ_POS_LO)
+            LD      A, H
+            OR      L
+            JR      NZ, STEP_AZ_CCW_DEC     ; Not at 0, normal decrement
+            LD      HL, AZ_MAX - 1          ; At 0, wrap to AZ_MAX-1
+            JR      STEP_AZ_CCW_SAVE
+STEP_AZ_CCW_DEC:
+            DEC     HL
+STEP_AZ_CCW_SAVE:
+            LD      (AZ_POS_LO), HL
+
+            POP     DE
+            POP     BC
+            RET
+
+; ============================================================================
+; DELAY ROUTINES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; DELAY - General purpose delay routine
+; Input: BC = delay count (higher = longer delay)
+; Output: None
+; Destroys: BC
+; ----------------------------------------------------------------------------
+DELAY:
+DELAY_LOOP:
+            DEC     BC
+            LD      A, B
+            OR      C
+            JR      NZ, DELAY_LOOP
+            RET
+
+; ----------------------------------------------------------------------------
+; STEP_DELAY - Delay between steps for motor speed control
+; Input: A = delay value (SLEW_DELAY, TRACK_DELAY, etc.)
+; Output: None
+; Destroys: BC
+; ----------------------------------------------------------------------------
+STEP_DELAY:
+            PUSH    BC
+            LD      B, 0
+            LD      C, A
+STEP_DELAY_LOOP:
+            DEC     BC
+            LD      A, B
+            OR      C
+            JR      NZ, STEP_DELAY_LOOP
+            POP     BC
+            RET
+
+; ============================================================================
+; MULTI-STEP MOVEMENT ROUTINES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; MOVE_ALT - Move altitude motor by specified steps
+; Input: BC = number of steps (signed)
+;        Sign determined by bit 15 of BC (B bit 7)
+; Output: None
+; Destroys: A, BC
+; ----------------------------------------------------------------------------
+MOVE_ALT:
+            ; Check if BC is negative
+            LD      A, B
+            BIT     7, A
+            JR      NZ, MOVE_ALT_NEG
+
+            ; Positive - move CW
+MOVE_ALT_POS:
+            LD      A, B
+            OR      C
+            RET     Z               ; Return if BC = 0
+
+            ; Display countdown
+            LD      H, B
+            LD      L, C
+            CALL    DISPLAY_NUMBER
+
+            CALL    STEP_ALT_CW
+            LD      A, SLEW_DELAY
+            CALL    STEP_DELAY
+
+            DEC     BC
+            JR      MOVE_ALT_POS
+
+            ; Negative - move CCW
+MOVE_ALT_NEG:
+            ; Two's complement to get absolute value
+            LD      A, C
+            CPL
+            LD      C, A
+            LD      A, B
+            CPL
+            LD      B, A
+            INC     BC
+
+MOVE_ALT_NEG_LOOP:
+            LD      A, B
+            OR      C
+            RET     Z               ; Return if BC = 0
+
+            ; Display countdown
+            LD      H, B
+            LD      L, C
+            CALL    DISPLAY_NUMBER
+
+            CALL    STEP_ALT_CCW
+            LD      A, SLEW_DELAY
+            CALL    STEP_DELAY
+
+            DEC     BC
+            JR      MOVE_ALT_NEG_LOOP
+
+; ----------------------------------------------------------------------------
+; MOVE_AZ - Move azimuth motor by specified steps
+; Input: BC = number of steps (signed)
+; Output: None
+; Destroys: A, BC
+; ----------------------------------------------------------------------------
+MOVE_AZ:
+            ; Check if BC is negative
+            LD      A, B
+            BIT     7, A
+            JR      NZ, MOVE_AZ_NEG
+
+            ; Positive - move CW
+MOVE_AZ_POS:
+            LD      A, B
+            OR      C
+            RET     Z               ; Return if BC = 0
+
+            ; Display countdown
+            LD      H, B
+            LD      L, C
+            CALL    DISPLAY_NUMBER
+
+            CALL    STEP_AZ_CW
+            LD      A, SLEW_DELAY
+            CALL    STEP_DELAY
+
+            DEC     BC
+            JR      MOVE_AZ_POS
+
+            ; Negative - move CCW
+MOVE_AZ_NEG:
+            ; Two's complement to get absolute value
+            LD      A, C
+            CPL
+            LD      C, A
+            LD      A, B
+            CPL
+            LD      B, A
+            INC     BC
+
+MOVE_AZ_NEG_LOOP:
+            LD      A, B
+            OR      C
+            RET     Z               ; Return if BC = 0
+
+            ; Display countdown
+            LD      H, B
+            LD      L, C
+            CALL    DISPLAY_NUMBER
+
+            CALL    STEP_AZ_CCW
+            LD      A, SLEW_DELAY
+            CALL    STEP_DELAY
+
+            DEC     BC
+            JR      MOVE_AZ_NEG_LOOP
+
+; ============================================================================
+; SLEW TO POSITION ROUTINES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; SLEW_TO_POSITION - Slew telescope to target position
+; Input: Target position must be set in ALT_TARGET and AZ_TARGET
+; Output: None
+; Destroys: A, BC, DE, HL
+; ----------------------------------------------------------------------------
+SLEW_TO_POSITION:
+            ; Set slew in progress flag
+            LD      A, (MOTOR_STATE)
+            OR      04H             ; Set bit 2
+            LD      (MOTOR_STATE), A
+
+SLEW_LOOP:
+            ; Calculate altitude steps needed
+            LD      HL, (ALT_TARGET_LO)
+            LD      DE, (ALT_POS_LO)
+            OR      A               ; Clear carry
+            SBC     HL, DE          ; HL = target - current
+            LD      B, H
+            LD      C, L
+
+            ; Move altitude if needed
+            LD      A, B
+            OR      C
+            JR      Z, SLEW_CHECK_AZ
+
+            ; Determine direction and step
+            BIT     7, B
+            JR      NZ, SLEW_ALT_CCW
+
+SLEW_ALT_CW:
+            CALL    STEP_ALT_CW
+            JR      SLEW_CHECK_AZ
+
+SLEW_ALT_CCW:
+            CALL    STEP_ALT_CCW
+
+SLEW_CHECK_AZ:
+            ; Calculate azimuth steps needed
+            LD      HL, (AZ_TARGET_LO)
+            LD      DE, (AZ_POS_LO)
+            OR      A               ; Clear carry
+            SBC     HL, DE          ; HL = target - current
+            LD      B, H
+            LD      C, L
+
+            ; Move azimuth if needed
+            LD      A, B
+            OR      C
+            JR      Z, SLEW_DELAY_STEP
+
+            ; Determine direction and step
+            BIT     7, B
+            JR      NZ, SLEW_AZ_CCW
+
+SLEW_AZ_CW:
+            CALL    STEP_AZ_CW
+            JR      SLEW_DELAY_STEP
+
+SLEW_AZ_CCW:
+            CALL    STEP_AZ_CCW
+
+SLEW_DELAY_STEP:
+            ; Delay between steps
+            LD      A, SLEW_DELAY
+            CALL    STEP_DELAY
+
+            ; Check if both motors are at target
+            LD      HL, (ALT_TARGET_LO)
+            LD      DE, (ALT_POS_LO)
+            OR      A
+            SBC     HL, DE
+            LD      A, H
+            OR      L
+            JR      NZ, SLEW_LOOP   ; Alt not at target, continue
+
+            LD      HL, (AZ_TARGET_LO)
+            LD      DE, (AZ_POS_LO)
+            OR      A
+            SBC     HL, DE
+            LD      A, H
+            OR      L
+            JR      NZ, SLEW_LOOP   ; Az not at target, continue
+
+SLEW_CHECK_DONE:
+            ; Clear slew in progress flag
+            LD      A, (MOTOR_STATE)
+            AND     0FBH            ; Clear bit 2
+            LD      (MOTOR_STATE), A
+
+            RET
+
+; ----------------------------------------------------------------------------
+; SET_TARGET_POSITION - Set target position from angle values
+; Input: DE = altitude in steps
+;        HL = azimuth in steps
+; Output: None
+; Destroys: A
+; ----------------------------------------------------------------------------
+SET_TARGET_POSITION:
+            ; Store altitude target
+            LD      (ALT_TARGET_LO), DE
+
+            ; Store azimuth target
+            LD      (AZ_TARGET_LO), HL
+
+            RET
+
+; ============================================================================
+; POSITION QUERY ROUTINES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; GET_CURRENT_POSITION - Get current telescope position
+; Input: None
+; Output: DE = current altitude in steps
+;         HL = current azimuth in steps
+; Destroys: None
+; ----------------------------------------------------------------------------
+GET_CURRENT_POSITION:
+            LD      DE, (ALT_POS_LO)
+            LD      HL, (AZ_POS_LO)
+            RET
+
+; ----------------------------------------------------------------------------
+; HOME_TELESCOPE - Move telescope to home position (0,0)
+; Input: None
+; Output: None
+; Destroys: A, BC, DE, HL
+; ----------------------------------------------------------------------------
+HOME_TELESCOPE:
+            LD      DE, 0           ; Alt = 0
+            LD      HL, 0           ; Az = 0
+            CALL    SET_TARGET_POSITION
+            CALL    SLEW_TO_POSITION
+            RET
+
+; ============================================================================

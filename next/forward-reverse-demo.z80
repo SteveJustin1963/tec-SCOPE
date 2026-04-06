@@ -1,0 +1,473 @@
+; ============================================================================
+; Forward/Reverse Motor Control Demonstration
+; Shows how bi-directional control works with position tracking
+; ============================================================================
+;
+; WIRING DIAGRAM - BI-DIRECTIONAL MOTOR CONTROL
+; ============================================================================
+;
+; This demo program shows motors going FORWARD and REVERSE
+;
+; Port Connections:
+;   Port 03h bit 0 <--- Optical Sensor X (counts pulses)
+;   Port 03h bit 1 <--- Optical Sensor Y (counts pulses)
+;   Port 04h bit 0 ---> Motor X direction (1=fwd, 0=rev)
+;   Port 04h bit 1 ---> Motor Y direction (1=fwd, 0=rev)
+;   Port 05h       ---> Motor X speed (PWM 0-255)
+;   Port 06h       ---> Motor Y speed (PWM 0-255)
+;
+; Hardware (same as optical-gate-control.z80):
+;   - 2 optical sensors with 10kΩ pull-ups and 100nF debounce caps
+;   - 2 L298N motor drivers (IN1/IN3 from Port 04h, ENA/ENB from Port 05h/06h)
+;   - 2 DC motors with 100:1 gearing
+;   - 2 slotted disks (8 slots each)
+;
+; Demo Programs:
+;   JP 0800h - Move forward 100, reverse 100 (returns to start)
+;   JP 0830h - Full 360° rotation forward, then reverse
+;   JP 0860h - GoTo specific positions (45°, 90°, 180°, 270°, 0°)
+;   JP 0890h - Display position while moving
+;
+; Direction Control Works By:
+;   - When DIR=1 (forward): Counter INCREMENTS on each pulse
+;   - When DIR=0 (reverse): Counter DECREMENTS on each pulse
+;   - This tracks absolute position even when changing direction
+;
+; ============================================================================
+
+        ORG     0800h
+
+; Port definitions
+INPUT_PORT:     EQU     03h     ; Optical sensors on bit 0, 1
+DIR_PORT:       EQU     04h     ; Direction bits
+PWM_X_PORT:     EQU     05h     ; Motor X speed
+PWM_Y_PORT:     EQU     06h     ; Motor Y speed
+
+; Position counters
+POS_X:          EQU     0900h   ; X axis count (16-bit)
+POS_Y:          EQU     0902h   ; Y axis count (16-bit)
+LAST_SENS_X:    EQU     0904h   ; Previous X sensor state
+LAST_SENS_Y:    EQU     0905h   ; Previous Y sensor state
+
+; ============================================================================
+; DEMO 1: Simple Forward/Reverse Test
+; Moves motor forward 100 counts, then reverse 100 counts
+; ============================================================================
+TEST_FORWARD_REVERSE:
+        CALL    INIT_SYSTEM
+
+        ; === Move FORWARD 100 counts ===
+        LD      A, 01h          ; Direction = FORWARD (bit 0 = 1)
+        OUT     (DIR_PORT), A
+
+        LD      A, 80h          ; Medium speed PWM
+        OUT     (PWM_X_PORT), A
+
+        ; Wait until count reaches 100
+WAIT_FORWARD:
+        CALL    READ_SENSOR_X
+        LD      HL, (POS_X)
+        LD      A, L
+        CP      100
+        JR      C, WAIT_FORWARD
+
+        ; Stop motor
+        XOR     A
+        OUT     (PWM_X_PORT), A
+
+        ; Pause 2 seconds
+        LD      BC, 0
+PAUSE1:
+        DEC     BC
+        LD      A, B
+        OR      C
+        JR      NZ, PAUSE1
+
+        ; === Move REVERSE 100 counts ===
+        XOR     A               ; Direction = REVERSE (bit 0 = 0)
+        OUT     (DIR_PORT), A
+
+        LD      A, 80h          ; Medium speed PWM
+        OUT     (PWM_X_PORT), A
+
+        ; Wait until count returns to 0
+WAIT_REVERSE:
+        CALL    READ_SENSOR_X
+        LD      HL, (POS_X)
+        LD      A, L
+        OR      H
+        JR      NZ, WAIT_REVERSE
+
+        ; Stop motor - back at starting position!
+        XOR     A
+        OUT     (PWM_X_PORT), A
+
+        HALT
+
+; ============================================================================
+; DEMO 2: Rotate Full Circle Both Ways
+; Demonstrates 360° rotation forward, then reverse
+; ============================================================================
+TEST_FULL_ROTATION:
+        CALL    INIT_SYSTEM
+
+        ; === Rotate FORWARD 360° (800 counts) ===
+        LD      A, 01h
+        OUT     (DIR_PORT), A
+
+        LD      A, 60h          ; Slow speed to watch
+        OUT     (PWM_X_PORT), A
+
+WAIT_360_FWD:
+        CALL    READ_SENSOR_X
+        LD      HL, (POS_X)
+        LD      BC, 800         ; 800 counts = 360°
+        OR      A
+        SBC     HL, BC
+        JR      C, WAIT_360_FWD
+
+        ; Stop
+        XOR     A
+        OUT     (PWM_X_PORT), A
+
+        ; Pause
+        LD      BC, 0
+PAUSE2:
+        DEC     BC
+        LD      A, B
+        OR      C
+        JR      NZ, PAUSE2
+
+        ; === Rotate REVERSE 360° back to start ===
+        XOR     A               ; Reverse
+        OUT     (DIR_PORT), A
+
+        LD      A, 60h
+        OUT     (PWM_X_PORT), A
+
+WAIT_360_REV:
+        CALL    READ_SENSOR_X
+        LD      HL, (POS_X)
+        LD      A, L
+        OR      H
+        JR      NZ, WAIT_360_REV
+
+        ; Stop - completed full circle and returned!
+        XOR     A
+        OUT     (PWM_X_PORT), A
+
+        HALT
+
+; ============================================================================
+; DEMO 3: Precise Position Control
+; Move to specific degree positions using counts
+; ============================================================================
+GOTO_POSITIONS_DEMO:
+        CALL    INIT_SYSTEM
+
+        ; Move to 45° (100 counts)
+        LD      HL, 100
+        CALL    GOTO_POSITION_X
+
+        ; Pause
+        CALL    DELAY_1SEC
+
+        ; Move to 90° (200 counts)
+        LD      HL, 200
+        CALL    GOTO_POSITION_X
+
+        CALL    DELAY_1SEC
+
+        ; Move to 180° (400 counts)
+        LD      HL, 400
+        CALL    GOTO_POSITION_X
+
+        CALL    DELAY_1SEC
+
+        ; Move to 270° (600 counts)
+        LD      HL, 600
+        CALL    GOTO_POSITION_X
+
+        CALL    DELAY_1SEC
+
+        ; Return to 0° (0 counts)
+        LD      HL, 0
+        CALL    GOTO_POSITION_X
+
+        HALT
+
+; ============================================================================
+; DEMO 4: Display Position While Moving
+; Shows position in degrees (3 decimal places) on serial port
+; ============================================================================
+DISPLAY_WHILE_MOVING:
+        CALL    INIT_SYSTEM
+
+        ; Start motor forward
+        LD      A, 01h
+        OUT     (DIR_PORT), A
+        LD      A, 40h          ; Slow speed
+        OUT     (PWM_X_PORT), A
+
+DISPLAY_LOOP:
+        ; Read current position
+        CALL    READ_SENSOR_X
+        LD      HL, (POS_X)
+
+        ; Convert to degrees
+        CALL    COUNT_TO_DEGREES
+
+        ; Display "Position: XXX.XXX°"
+        CALL    DISPLAY_POSITION
+
+        ; Stop after 360° (800 counts)
+        LD      HL, (POS_X)
+        LD      BC, 800
+        OR      A
+        SBC     HL, BC
+        JR      C, DISPLAY_LOOP
+
+        ; Stop motor
+        XOR     A
+        OUT     (PWM_X_PORT), A
+
+        HALT
+
+; ============================================================================
+; GOTO_POSITION_X - Move to specific count position
+; Input: HL = target count
+; ============================================================================
+GOTO_POSITION_X:
+        ; Save target
+        LD      (TARGET_X), HL
+
+GOTO_LOOP:
+        ; Read current position
+        CALL    READ_SENSOR_X
+        LD      HL, (POS_X)
+        LD      DE, (TARGET_X)
+
+        ; Calculate error (target - current)
+        OR      A
+        SBC     HL, DE          ; HL = current - target
+        JR      Z, GOTO_DONE    ; At target!
+
+        JR      NC, GOTO_REVERSE ; Current > target, go reverse
+
+GOTO_FORWARD:
+        ; Need to go forward
+        LD      A, 01h
+        OUT     (DIR_PORT), A
+        LD      A, 60h          ; Medium speed
+        OUT     (PWM_X_PORT), A
+        JR      GOTO_LOOP
+
+GOTO_REVERSE:
+        ; Need to go reverse
+        XOR     A
+        OUT     (DIR_PORT), A
+        LD      A, 60h
+        OUT     (PWM_X_PORT), A
+        JR      GOTO_LOOP
+
+GOTO_DONE:
+        ; Stop at target
+        XOR     A
+        OUT     (PWM_X_PORT), A
+        RET
+
+; ============================================================================
+; READ_SENSOR_X - Read optical sensor and update counter
+; Increments if going forward, decrements if going reverse
+; ============================================================================
+READ_SENSOR_X:
+        ; Read sensor
+        IN      A, (INPUT_PORT)
+        AND     01h             ; Isolate X sensor
+        LD      B, A            ; B = current state
+
+        ; Compare with last state
+        LD      A, (LAST_SENS_X)
+        CP      B
+        RET     Z               ; No change
+
+        ; Check for rising edge (LOW→HIGH)
+        LD      A, B
+        AND     01h
+        JR      Z, SAVE_X_STATE ; Was falling edge, ignore
+
+        ; Rising edge detected!
+        ; Check direction
+        IN      A, (DIR_PORT)
+        AND     01h             ; Check X direction bit
+        JR      Z, DECREMENT_X
+
+INCREMENT_X:
+        ; Going forward - increment counter
+        LD      HL, (POS_X)
+        INC     HL
+        LD      (POS_X), HL
+        JR      SAVE_X_STATE
+
+DECREMENT_X:
+        ; Going reverse - decrement counter
+        LD      HL, (POS_X)
+        DEC     HL
+        LD      (POS_X), HL
+
+SAVE_X_STATE:
+        LD      A, B
+        LD      (LAST_SENS_X), A
+        RET
+
+; ============================================================================
+; COUNT_TO_DEGREES - Convert count to degrees × 1000
+; Input: HL = count
+; Output: DE = degrees (integer part), HL = thousandths
+; ============================================================================
+COUNT_TO_DEGREES:
+        ; degrees = (count × 360) / 800
+        ;         = (count × 45) / 100
+
+        ; Multiply count by 45
+        LD      D, H
+        LD      E, L            ; Save count in DE
+
+        ; HL × 32
+        ADD     HL, HL
+        ADD     HL, HL
+        ADD     HL, HL
+        ADD     HL, HL
+        ADD     HL, HL          ; HL = count × 32
+
+        PUSH    HL              ; Save × 32
+
+        ; DE × 8
+        LD      H, D
+        LD      L, E
+        ADD     HL, HL
+        ADD     HL, HL
+        ADD     HL, HL          ; HL = count × 8
+
+        LD      B, H
+        LD      C, L
+
+        POP     HL              ; HL = count × 32
+        ADD     HL, BC          ; HL = count × 40
+
+        ; Add count × 4
+        LD      H, D
+        LD      L, E
+        ADD     HL, HL
+        ADD     HL, HL          ; HL = count × 4
+
+        LD      B, H
+        LD      C, L
+
+        POP     HL
+        ADD     HL, BC          ; HL = count × 44
+
+        ; Add count × 1
+        ADD     HL, DE          ; HL = count × 45
+
+        ; Now divide by 100
+        LD      DE, 100
+        CALL    DIV_16BIT       ; HL = integer degrees
+
+        RET
+
+; ============================================================================
+; DIV_16BIT - 16-bit division
+; Input: HL = dividend, DE = divisor
+; Output: HL = quotient, DE = remainder
+; ============================================================================
+DIV_16BIT:
+        LD      BC, 0           ; Quotient
+
+DIV_LOOP:
+        LD      A, H
+        CP      D
+        JR      C, DIV_DONE
+        JR      NZ, DIV_SUB
+        LD      A, L
+        CP      E
+        JR      C, DIV_DONE
+
+DIV_SUB:
+        OR      A
+        SBC     HL, DE
+        INC     BC
+        JR      DIV_LOOP
+
+DIV_DONE:
+        PUSH    HL
+        LD      H, B
+        LD      L, C
+        POP     DE
+        RET
+
+; ============================================================================
+; Helper Functions
+; ============================================================================
+INIT_SYSTEM:
+        ; Clear position counters
+        XOR     A
+        LD      (POS_X), A
+        LD      (POS_X+1), A
+        LD      (POS_Y), A
+        LD      (POS_Y+1), A
+
+        ; Initialize sensor states
+        IN      A, (INPUT_PORT)
+        AND     01h
+        LD      (LAST_SENS_X), A
+        IN      A, (INPUT_PORT)
+        AND     02h
+        LD      (LAST_SENS_Y), A
+
+        ; Motors off
+        XOR     A
+        OUT     (DIR_PORT), A
+        OUT     (PWM_X_PORT), A
+        OUT     (PWM_Y_PORT), A
+
+        RET
+
+DELAY_1SEC:
+        LD      BC, 0
+DELAY_LOOP:
+        DEC     BC
+        LD      A, B
+        OR      C
+        JR      NZ, DELAY_LOOP
+        RET
+
+DISPLAY_POSITION:
+        ; TODO: Implement for your display
+        ; Should show "Position: XXX.XXX°"
+        RET
+
+; ============================================================================
+; RAM Variables
+; ============================================================================
+        ORG     0900h
+; (Already defined at top)
+TARGET_X:       DS      2       ; Target position for GOTO
+
+; ============================================================================
+; Usage Examples:
+;
+; 1. Test forward/reverse:
+;    JP 0800h (TEST_FORWARD_REVERSE)
+;
+; 2. Test full rotation:
+;    JP 0830h (TEST_FULL_ROTATION)
+;
+; 3. Demo precise positioning:
+;    JP 0860h (GOTO_POSITIONS_DEMO)
+;
+; 4. Display position while moving:
+;    JP 0890h (DISPLAY_WHILE_MOVING)
+; ============================================================================
+
+        END

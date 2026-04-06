@@ -1,0 +1,10 @@
+# Siril processing script (auto-generated)
+# Note: 'requires' line removed for beta compatibility
+
+cd /home/steve/astro/session_20251113_1528/lights
+# Example workflow — adjust as needed
+convert light_ prefix=light seq
+register light
+stack light rej 3 3
+save /home/steve/astro/session_20251113_1528/processed/result.fit
+exit

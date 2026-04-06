@@ -1,0 +1,1053 @@
+; ============================================================================
+; TELESCOPE KEYPAD INPUT HANDLER - TEC-1 74C923 INTERFACE
+; ============================================================================
+; Single mode: Decimal degrees with D key as decimal point
+; Flow: AD → +/- → DDD.DDD → GO → Execute with countdown display
+; ============================================================================
+
+           .INCLUDE "config.z80"
+
+; ----------------------------------------------------------------------------
+; TEC-1 I/O PORTS (from tec1-sbc-spec.md)
+; ----------------------------------------------------------------------------
+KEYPAD_PORT     .EQU    00H     ; 74C923 keyboard data (D0-D4)
+DISP_DIGIT_PORT .EQU    01H     ; Display digit select (6 bits)
+DISP_SEG_PORT   .EQU    02H     ; Display segment data (8 bits)
+
+; ----------------------------------------------------------------------------
+; KEY CODES (from 74C923 encoder)
+; ----------------------------------------------------------------------------
+KEY_0           .EQU    00H
+KEY_1           .EQU    01H
+KEY_2           .EQU    02H
+KEY_3           .EQU    03H
+KEY_4           .EQU    04H
+KEY_5           .EQU    05H
+KEY_6           .EQU    06H
+KEY_7           .EQU    07H
+KEY_8           .EQU    08H
+KEY_9           .EQU    09H
+KEY_A           .EQU    0AH
+KEY_B           .EQU    0BH
+KEY_C           .EQU    0CH
+KEY_D           .EQU    0DH
+KEY_E           .EQU    0EH
+KEY_F           .EQU    0FH
+KEY_PLUS        .EQU    10H
+KEY_MINUS       .EQU    11H
+KEY_GO          .EQU    12H
+KEY_AD          .EQU    13H
+
+; ----------------------------------------------------------------------------
+; MEMORY LOCATIONS FOR INPUT STATE
+; ----------------------------------------------------------------------------
+INPUT_AXIS          .EQU    0821H   ; 0=ALT, 1=AZZ
+INPUT_SIGN          .EQU    0822H   ; 0=positive, 1=negative
+INPUT_STATE         .EQU    0823H   ; Input state (0-2)
+INPUT_INTEGER_PART  .EQU    0824H   ; Integer degrees (16-bit)
+INPUT_FRAC_PART     .EQU    0826H   ; Fractional digits (16-bit, max 999)
+INPUT_FRAC_COUNT    .EQU    0828H   ; Number of fractional digits entered (0-3)
+INPUT_DECIMAL_FLAG  .EQU    0829H   ; 0=before decimal, 1=after D pressed
+LAST_KEY            .EQU    082AH   ; Last key pressed
+
+; Input state values
+STATE_IDLE          .EQU    0
+STATE_WAIT_SIGN     .EQU    1
+STATE_ENTER_DECIMAL .EQU    2
+
+; ----------------------------------------------------------------------------
+; 7-SEGMENT DISPLAY PATTERNS (from tec1-sbc-spec.md)
+; ----------------------------------------------------------------------------
+; Non-sequential segment mapping: a=D0, f=D1, g=D2, b=D3, dp=D4, c=D5, e=D6, d=D7
+
+SEG_PATTERNS:
+           .DB     0EBH        ; 0
+           .DB     028H        ; 1
+           .DB     095H        ; 2
+           .DB     0ADH        ; 3
+           .DB     02EH        ; 4
+           .DB     0A7H        ; 5
+           .DB     0E7H        ; 6
+           .DB     029H        ; 7
+           .DB     0EFH        ; 8
+           .DB     0AFH        ; 9
+           .DB     06FH        ; A
+           .DB     0E6H        ; B
+           .DB     0C3H        ; C
+           .DB     0D4H        ; D
+           .DB     0C7H        ; E
+           .DB     047H        ; F
+
+; Decimal point bit (OR with digit pattern)
+SEG_DP          .EQU    10H     ; Bit 4 = decimal point
+
+; Text patterns for special displays
+SEG_A_CHAR      .EQU    06FH    ; A
+SEG_L_CHAR      .EQU    0C2H    ; L (segments d,e,f)
+SEG_T_CHAR      .EQU    0C6H    ; t (segments d,e,f,g)
+SEG_Z_CHAR      .EQU    095H    ; Z (same as 2)
+SEG_P_CHAR      .EQU    04FH    ; P (segments a,b,e,f,g)
+SEG_U_CHAR      .EQU    0E2H    ; U (segments b,c,d,e,f)
+SEG_S_CHAR      .EQU    0A7H    ; S (same as 5)
+SEG_N_CHAR      .EQU    0E4H    ; n (segments c,e,g)
+SEG_G_CHAR      .EQU    0E7H    ; g (same as 6)
+SEG_E_CHAR      .EQU    0C7H    ; E
+SEG_BLANK       .EQU    000H    ; All segments off
+
+; ============================================================================
+; INITIALIZATION
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; INIT_INPUT_SYSTEM - Initialize keypad input system
+; ----------------------------------------------------------------------------
+INIT_INPUT_SYSTEM:
+           ; Clear all input state
+           XOR     A
+           LD      (INPUT_AXIS), A
+           LD      (INPUT_SIGN), A
+           LD      (INPUT_STATE), A
+           LD      (INPUT_DECIMAL_FLAG), A
+           LD      (INPUT_FRAC_COUNT), A
+           LD      (LAST_KEY), A
+
+           ; Clear input buffers
+           LD      HL, 0
+           LD      (INPUT_INTEGER_PART), HL
+           LD      (INPUT_FRAC_PART), HL
+
+           ; Clear display
+           CALL    CLEAR_DISPLAY
+
+           RET
+
+; ============================================================================
+; NMI INTERRUPT HANDLER
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; NMI_HANDLER - Handle keyboard interrupt from 74C923
+; This should be at address 0066H (NMI vector)
+; ----------------------------------------------------------------------------
+           .ORG    0066H
+NMI_HANDLER:
+           PUSH    AF
+           PUSH    BC
+           PUSH    DE
+           PUSH    HL
+
+           ; Read key from port 00H
+           IN      A, (KEYPAD_PORT)
+           AND     1FH             ; Mask to 5 bits
+           LD      (LAST_KEY), A
+
+           ; Process the key
+           CALL    PROCESS_KEY
+
+           POP     HL
+           POP     DE
+           POP     BC
+           POP     AF
+           RETN
+
+; ============================================================================
+; KEY PROCESSING STATE MACHINE
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; PROCESS_KEY - Main key processing dispatcher
+; ----------------------------------------------------------------------------
+PROCESS_KEY:
+           LD      A, (LAST_KEY)
+
+           ; Check for RS (RESET) - using key E as RS
+           CP      KEY_E
+           JP      Z, HANDLE_RESET
+
+           ; Get current state
+           LD      A, (INPUT_STATE)
+           CP      STATE_IDLE
+           JP      Z, HANDLE_IDLE_KEYS
+
+           CP      STATE_WAIT_SIGN
+           JP      Z, HANDLE_WAIT_SIGN_KEYS
+
+           CP      STATE_ENTER_DECIMAL
+           JP      Z, HANDLE_DECIMAL_KEYS
+
+           RET
+
+; ----------------------------------------------------------------------------
+; HANDLE_IDLE_KEYS - Process keys when in idle state
+; ----------------------------------------------------------------------------
+HANDLE_IDLE_KEYS:
+           LD      A, (LAST_KEY)
+
+           ; Only accept AD key in idle
+           CP      KEY_AD
+           JP      Z, HANDLE_AD_TOGGLE
+
+           RET
+
+; ----------------------------------------------------------------------------
+; HANDLE_AD_TOGGLE - Toggle between ALT and AZZ display
+; ----------------------------------------------------------------------------
+HANDLE_AD_TOGGLE:
+           ; Toggle axis
+           LD      A, (INPUT_AXIS)
+           XOR     1
+           LD      (INPUT_AXIS), A
+
+           ; Display ALT or AZZ
+           CP      0
+           JP      Z, DISPLAY_ALT
+           JP      DISPLAY_AZZ
+
+; ----------------------------------------------------------------------------
+; HANDLE_WAIT_SIGN_KEYS - Process keys when waiting for +/-
+; ----------------------------------------------------------------------------
+HANDLE_WAIT_SIGN_KEYS:
+           LD      A, (LAST_KEY)
+
+           CP      KEY_PLUS
+           JP      Z, HANDLE_PLUS
+
+           CP      KEY_MINUS
+           JP      Z, HANDLE_MINUS
+
+           ; Allow AD key to change axis before +/-
+           CP      KEY_AD
+           JP      Z, HANDLE_AD_TOGGLE
+
+           RET
+
+; ----------------------------------------------------------------------------
+; HANDLE_PLUS - Handle + key (positive direction)
+; ----------------------------------------------------------------------------
+HANDLE_PLUS:
+           ; Set sign positive
+           XOR     A
+           LD      (INPUT_SIGN), A
+
+           ; Move to decimal entry state
+           LD      A, STATE_ENTER_DECIMAL
+           LD      (INPUT_STATE), A
+
+           ; Clear input buffers
+           LD      HL, 0
+           LD      (INPUT_INTEGER_PART), HL
+           LD      (INPUT_FRAC_PART), HL
+           XOR     A
+           LD      (INPUT_DECIMAL_FLAG), A
+           LD      (INPUT_FRAC_COUNT), A
+
+           ; Clear display for digit entry
+           CALL    CLEAR_DISPLAY
+
+           RET
+
+; ----------------------------------------------------------------------------
+; HANDLE_MINUS - Handle - key (negative direction)
+; ----------------------------------------------------------------------------
+HANDLE_MINUS:
+           ; Set sign negative
+           LD      A, 1
+           LD      (INPUT_SIGN), A
+
+           ; Move to decimal entry state
+           LD      A, STATE_ENTER_DECIMAL
+           LD      (INPUT_STATE), A
+
+           ; Clear input buffers
+           LD      HL, 0
+           LD      (INPUT_INTEGER_PART), HL
+           LD      (INPUT_FRAC_PART), HL
+           XOR     A
+           LD      (INPUT_DECIMAL_FLAG), A
+           LD      (INPUT_FRAC_COUNT), A
+
+           ; Clear display for digit entry
+           CALL    CLEAR_DISPLAY
+
+           RET
+
+; ----------------------------------------------------------------------------
+; HANDLE_DECIMAL_KEYS - Handle keys during decimal degree entry
+; ----------------------------------------------------------------------------
+HANDLE_DECIMAL_KEYS:
+           LD      A, (LAST_KEY)
+
+           ; Check for GO key
+           CP      KEY_GO
+           JP      Z, HANDLE_GO_KEY
+
+           ; Check for D key (decimal point)
+           CP      KEY_D
+           JP      Z, HANDLE_D_KEY
+
+           ; Check if digit (0-9)
+           CP      10
+           JP      NC, HANDLE_DECIMAL_DONE
+
+           ; It's a digit - add to appropriate buffer
+           CALL    ADD_DIGIT_TO_DECIMAL
+
+           ; Display current value
+           CALL    DISPLAY_DECIMAL_VALUE
+
+HANDLE_DECIMAL_DONE:
+           RET
+
+; ----------------------------------------------------------------------------
+; HANDLE_D_KEY - Handle D key (decimal point)
+; ----------------------------------------------------------------------------
+HANDLE_D_KEY:
+           ; Check if already entered
+           LD      A, (INPUT_DECIMAL_FLAG)
+           CP      1
+           RET     Z               ; Already pressed, ignore
+
+           ; Mark decimal point entered
+           LD      A, 1
+           LD      (INPUT_DECIMAL_FLAG), A
+
+           ; Display current value (will show decimal point)
+           CALL    DISPLAY_DECIMAL_VALUE
+
+           RET
+
+; ----------------------------------------------------------------------------
+; HANDLE_GO_KEY - Handle GO key press
+; ----------------------------------------------------------------------------
+HANDLE_GO_KEY:
+           ; Execute movement immediately
+           JP      EXECUTE_MOVEMENT
+
+; ----------------------------------------------------------------------------
+; HANDLE_RESET - Handle RS/E key (reset/abort)
+; ----------------------------------------------------------------------------
+HANDLE_RESET:
+           ; Halt motors immediately
+           XOR     A
+           OUT     (ALT_PORT), A
+           OUT     (AZ_PORT), A
+
+           ; Clear motor state
+           LD      (MOTOR_STATE), A
+
+           ; Reset input system
+           CALL    INIT_INPUT_SYSTEM
+
+           ; Back to idle
+           RET
+
+; ============================================================================
+; INPUT DIGIT MANAGEMENT
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; ADD_DIGIT_TO_DECIMAL - Add digit to integer or fractional part
+; Input: A = digit (0-9)
+; ----------------------------------------------------------------------------
+ADD_DIGIT_TO_DECIMAL:
+           PUSH    BC
+           PUSH    DE
+           PUSH    HL
+
+           ; Check if before or after decimal point
+           LD      B, A            ; Save digit
+           LD      A, (INPUT_DECIMAL_FLAG)
+           CP      0
+           JP      Z, ADD_TO_INTEGER
+
+           ; After decimal - add to fractional part
+ADD_TO_FRACTIONAL:
+           ; Check if already have 3 fractional digits
+           LD      A, (INPUT_FRAC_COUNT)
+           CP      3
+           JP      NC, ADD_DIGIT_DONE  ; Already have 3, ignore
+
+           ; Get current fractional part
+           LD      HL, (INPUT_FRAC_PART)
+
+           ; Multiply by 10
+           LD      D, H
+           LD      E, L
+           ADD     HL, HL          ; * 2
+           ADD     HL, HL          ; * 4
+           ADD     HL, DE          ; * 5
+           ADD     HL, HL          ; * 10
+
+           ; Add new digit
+           LD      A, B            ; Restore digit
+           LD      D, 0
+           LD      E, A
+           ADD     HL, DE
+
+           ; Store back
+           LD      (INPUT_FRAC_PART), HL
+
+           ; Increment fractional count
+           LD      A, (INPUT_FRAC_COUNT)
+           INC     A
+           LD      (INPUT_FRAC_COUNT), A
+
+           JP      ADD_DIGIT_DONE
+
+ADD_TO_INTEGER:
+           ; Before decimal - add to integer part
+           LD      HL, (INPUT_INTEGER_PART)
+
+           ; Multiply by 10
+           LD      D, H
+           LD      E, L
+           ADD     HL, HL          ; * 2
+           ADD     HL, HL          ; * 4
+           ADD     HL, DE          ; * 5
+           ADD     HL, HL          ; * 10
+
+           ; Add new digit
+           LD      A, B            ; Restore digit
+           LD      D, 0
+           LD      E, A
+           ADD     HL, DE
+
+           ; Check for reasonable range (max 360 degrees)
+           ; If > 360, cap it
+           LD      DE, 360
+           PUSH    HL
+           SBC     HL, DE
+           POP     HL
+           JP      C, INTEGER_OK   ; If result < 0, it's OK
+           LD      HL, 360         ; Cap at 360
+
+INTEGER_OK:
+           ; Store back
+           LD      (INPUT_INTEGER_PART), HL
+
+ADD_DIGIT_DONE:
+           POP     HL
+           POP     DE
+           POP     BC
+           RET
+
+; ============================================================================
+; MOVEMENT EXECUTION
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; EXECUTE_MOVEMENT - Execute the requested movement
+; ----------------------------------------------------------------------------
+EXECUTE_MOVEMENT:
+           ; Convert decimal degrees to steps
+           CALL    CONVERT_DECIMAL_TO_STEPS    ; Returns HL = steps
+
+           ; Check sign
+           LD      A, (INPUT_SIGN)
+           CP      0
+           JP      Z, EXECUTE_POSITIVE
+
+           ; Negative - negate HL (two's complement)
+           LD      A, L
+           CPL
+           LD      L, A
+           LD      A, H
+           CPL
+           LD      H, A
+           INC     HL
+
+EXECUTE_POSITIVE:
+           ; Move to BC for motor function
+           LD      B, H
+           LD      C, L
+
+           ; Check axis
+           LD      A, (INPUT_AXIS)
+           CP      0
+           JP      Z, EXECUTE_ALT
+
+           ; Azimuth movement
+           CALL    MOVE_AZ
+           JP      EXECUTE_DONE
+
+EXECUTE_ALT:
+           ; Altitude movement
+           CALL    MOVE_ALT
+           JP      EXECUTE_DONE
+
+EXECUTE_DONE:
+           ; Reset to idle
+           CALL    INIT_INPUT_SYSTEM
+           RET
+
+; ============================================================================
+; CONVERSION ROUTINES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; CONVERT_DECIMAL_TO_STEPS - Convert decimal degrees to steps
+; Input: INPUT_INTEGER_PART, INPUT_FRAC_PART, INPUT_FRAC_COUNT
+; Output: HL = total steps
+; ----------------------------------------------------------------------------
+CONVERT_DECIMAL_TO_STEPS:
+           ; Formula: millidegrees = integer × 1000 + fractional × 10^(3-frac_count)
+           ; Then: steps = millidegrees × 2000 / 360000
+           ;     = millidegrees / 180
+
+           PUSH    BC
+           PUSH    DE
+
+           ; Calculate millidegrees from integer part
+           LD      HL, (INPUT_INTEGER_PART)
+           LD      BC, 1000
+           CALL    MULT16              ; HL = integer × 1000
+
+           PUSH    HL                  ; Save integer millidegrees
+
+           ; Calculate fractional millidegrees
+           LD      HL, (INPUT_FRAC_PART)
+           LD      A, (INPUT_FRAC_COUNT)
+           CP      0
+           JP      Z, FRAC_ZERO        ; No fractional part
+
+           ; Multiply fractional part by appropriate power of 10
+           ; frac_count=1: multiply by 100
+           ; frac_count=2: multiply by 10
+           ; frac_count=3: multiply by 1
+
+           CP      1
+           JP      Z, FRAC_MULT_100
+           CP      2
+           JP      Z, FRAC_MULT_10
+           JP      FRAC_DONE           ; frac_count=3, already in millidegrees
+
+FRAC_MULT_100:
+           LD      BC, 100
+           CALL    MULT16
+           JP      FRAC_DONE
+
+FRAC_MULT_10:
+           LD      BC, 10
+           CALL    MULT16
+           JP      FRAC_DONE
+
+FRAC_ZERO:
+           LD      HL, 0
+
+FRAC_DONE:
+           ; HL = fractional millidegrees
+           LD      D, H
+           LD      E, L
+           POP     HL                  ; Restore integer millidegrees
+           ADD     HL, DE              ; HL = total millidegrees
+
+           ; Convert millidegrees to steps
+           ; steps = millidegrees / 180
+           LD      BC, 180
+           CALL    DIV16               ; HL = quotient (steps)
+
+           POP     DE
+           POP     BC
+           RET
+
+; ----------------------------------------------------------------------------
+; MULT16 - 16-bit multiplication (repeated addition)
+; Input: HL = multiplicand, BC = multiplier
+; Output: HL = result (lower 16 bits)
+; Destroys: DE
+; ----------------------------------------------------------------------------
+MULT16:
+           PUSH    BC
+
+           LD      D, H
+           LD      E, L                ; DE = multiplicand (save)
+           LD      HL, 0               ; HL = result (start at 0)
+
+MULT16_LOOP:
+           LD      A, B
+           OR      C
+           JR      Z, MULT16_DONE
+
+           ADD     HL, DE              ; Add multiplicand to result
+           DEC     BC                  ; Decrement counter
+           JR      MULT16_LOOP
+
+MULT16_DONE:
+           POP     BC
+           RET
+
+; ----------------------------------------------------------------------------
+; DIV16 - 16-bit division
+; Input: HL = dividend, BC = divisor
+; Output: HL = quotient, DE = remainder
+; ----------------------------------------------------------------------------
+DIV16:
+           PUSH    BC
+
+           LD      DE, 0               ; Remainder = 0
+           LD      A, 16               ; 16 bits to process
+
+DIV16_LOOP:
+           ; Shift left HL into DE
+           ADD     HL, HL              ; Shift HL left
+           RL      E                   ; Rotate into E
+           RL      D                   ; Rotate into D
+
+           ; Subtract divisor from remainder
+           PUSH    HL
+           LD      H, D
+           LD      L, E
+           SBC     HL, BC              ; Try to subtract
+           JP      C, DIV16_NO_SUB     ; If carry, can't subtract
+
+           ; Subtraction successful
+           LD      D, H
+           LD      E, L
+           POP     HL
+           INC     L                   ; Set bit in quotient
+           JP      DIV16_CONTINUE
+
+DIV16_NO_SUB:
+           POP     HL
+
+DIV16_CONTINUE:
+           DEC     A
+           JP      NZ, DIV16_LOOP
+
+           POP     BC
+           RET
+
+; ============================================================================
+; DISPLAY ROUTINES FOR TEC-1 7-SEGMENT
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; CLEAR_DISPLAY - Clear all display digits
+; ----------------------------------------------------------------------------
+CLEAR_DISPLAY:
+           PUSH    AF
+           PUSH    BC
+
+           LD      B, 6            ; 6 digits
+
+CLEAR_LOOP:
+           LD      A, SEG_BLANK
+           OUT     (DISP_SEG_PORT), A
+
+           ; Select digit
+           LD      A, 6
+           SUB     B
+           CALL    SELECT_DIGIT
+
+           ; Small delay
+           LD      A, 10
+           CALL    STEP_DELAY
+
+           DJNZ    CLEAR_LOOP
+
+           POP     BC
+           POP     AF
+           RET
+
+; ----------------------------------------------------------------------------
+; DISPLAY_ALT - Display "ALT   " on 7-segment
+; ----------------------------------------------------------------------------
+DISPLAY_ALT:
+           PUSH    AF
+           PUSH    BC
+
+           ; Digit positions: 0 1 2 3 4 5 (left to right)
+           ; Display: A L T _ _ _
+
+           ; Digit 0: A
+           LD      A, 0
+           CALL    SELECT_DIGIT
+           LD      A, SEG_A_CHAR
+           OUT     (DISP_SEG_PORT), A
+
+           ; Digit 1: L
+           LD      A, 1
+           CALL    SELECT_DIGIT
+           LD      A, SEG_L_CHAR
+           OUT     (DISP_SEG_PORT), A
+
+           ; Digit 2: T
+           LD      A, 2
+           CALL    SELECT_DIGIT
+           LD      A, SEG_T_CHAR
+           OUT     (DISP_SEG_PORT), A
+
+           ; Clear remaining digits
+           LD      B, 3
+DISPLAY_ALT_CLEAR:
+           LD      A, 6
+           SUB     B
+           CALL    SELECT_DIGIT
+           LD      A, SEG_BLANK
+           OUT     (DISP_SEG_PORT), A
+           DJNZ    DISPLAY_ALT_CLEAR
+
+           ; Set state to wait for +/-
+           LD      A, STATE_WAIT_SIGN
+           LD      (INPUT_STATE), A
+
+           POP     BC
+           POP     AF
+           RET
+
+; ----------------------------------------------------------------------------
+; DISPLAY_AZZ - Display "AZZ   " on 7-segment
+; ----------------------------------------------------------------------------
+DISPLAY_AZZ:
+           PUSH    AF
+           PUSH    BC
+
+           ; Digit 0: A
+           LD      A, 0
+           CALL    SELECT_DIGIT
+           LD      A, SEG_A_CHAR
+           OUT     (DISP_SEG_PORT), A
+
+           ; Digit 1: Z
+           LD      A, 1
+           CALL    SELECT_DIGIT
+           LD      A, SEG_Z_CHAR
+           OUT     (DISP_SEG_PORT), A
+
+           ; Digit 2: Z
+           LD      A, 2
+           CALL    SELECT_DIGIT
+           LD      A, SEG_Z_CHAR
+           OUT     (DISP_SEG_PORT), A
+
+           ; Clear remaining
+           LD      B, 3
+DISPLAY_AZZ_CLEAR:
+           LD      A, 6
+           SUB     B
+           CALL    SELECT_DIGIT
+           LD      A, SEG_BLANK
+           OUT     (DISP_SEG_PORT), A
+           DJNZ    DISPLAY_AZZ_CLEAR
+
+           ; Set state to wait for +/-
+           LD      A, STATE_WAIT_SIGN
+           LD      (INPUT_STATE), A
+
+           POP     BC
+           POP     AF
+           RET
+
+; ----------------------------------------------------------------------------
+; DISPLAY_DECIMAL_VALUE - Display current decimal degree value
+; Shows integer part and fractional part with decimal point
+; Format: "  45.5 " or " 180.25"
+; ----------------------------------------------------------------------------
+DISPLAY_DECIMAL_VALUE:
+           PUSH    AF
+           PUSH    BC
+           PUSH    DE
+           PUSH    HL
+
+           ; Build complete value for display
+           ; First, we need to extract individual digits with decimal point
+
+           ; Get integer part
+           LD      HL, (INPUT_INTEGER_PART)
+
+           ; Convert integer to digits (max 3 digits)
+           CALL    EXTRACT_DIGITS_TO_BUFFER    ; Fills DIGIT_BUFFER
+
+           ; Check if decimal point entered
+           LD      A, (INPUT_DECIMAL_FLAG)
+           CP      1
+           JP      Z, DISPLAY_WITH_DECIMAL
+
+           ; No decimal yet - just display integer
+           CALL    DISPLAY_DIGIT_BUFFER
+           JP      DISPLAY_DECIMAL_DONE
+
+DISPLAY_WITH_DECIMAL:
+           ; Display with decimal point
+           ; Find the position of the last integer digit
+           CALL    DISPLAY_DIGIT_BUFFER_WITH_DP
+
+DISPLAY_DECIMAL_DONE:
+           POP     HL
+           POP     DE
+           POP     BC
+           POP     AF
+           RET
+
+; ----------------------------------------------------------------------------
+; EXTRACT_DIGITS_TO_BUFFER - Extract digits from integer and fractional parts
+; Input: HL = integer part
+; Output: DIGIT_BUFFER filled with digits (right-justified)
+; ----------------------------------------------------------------------------
+EXTRACT_DIGITS_TO_BUFFER:
+           PUSH    AF
+           PUSH    BC
+           PUSH    DE
+           PUSH    HL
+           PUSH    IX
+
+           ; Clear buffer
+           LD      IX, DIGIT_BUFFER
+           LD      B, 6
+CLEAR_BUFFER:
+           LD      (IX+0), 0
+           INC     IX
+           DJNZ    CLEAR_BUFFER
+
+           ; Extract integer part digits (reverse order)
+           LD      HL, (INPUT_INTEGER_PART)
+           LD      IX, DIGIT_BUFFER    ; Start from right (digit 5)
+           LD      B, 0                ; Count digits
+
+EXTRACT_INT_LOOP:
+           ; Check if done
+           LD      A, H
+           OR      L
+           JP      Z, EXTRACT_INT_DONE
+
+           ; Divide by 10
+           LD      BC, 10
+           CALL    DIV16               ; HL = quotient, DE = remainder
+
+           ; Store remainder (digit)
+           LD      A, E
+           LD      (IX+0), A
+           INC     IX
+           INC     B                   ; Count
+
+           ; Check if we have room for more
+           LD      A, B
+           CP      3
+           JP      C, EXTRACT_INT_LOOP ; Continue if < 3 digits
+
+EXTRACT_INT_DONE:
+           ; Store integer digit count
+           LD      A, B
+           LD      (INTEGER_DIGIT_COUNT), A
+
+           ; If decimal entered, add fractional digits
+           LD      A, (INPUT_DECIMAL_FLAG)
+           CP      1
+           JP      NZ, EXTRACT_FRAC_DONE
+
+           ; Extract fractional part
+           LD      HL, (INPUT_FRAC_PART)
+           LD      A, (INPUT_FRAC_COUNT)
+           CP      0
+           JP      Z, EXTRACT_FRAC_DONE
+
+           ; Store fractional digits at IX (continues from integer)
+           LD      C, A                ; C = frac count
+EXTRACT_FRAC_LOOP:
+           ; Divide by 10
+           PUSH    BC
+           LD      BC, 10
+           CALL    DIV16               ; HL = quotient, DE = remainder
+           POP     BC
+
+           ; Store remainder
+           LD      A, E
+           LD      (IX+0), A
+           INC     IX
+
+           DEC     C
+           JP      NZ, EXTRACT_FRAC_LOOP
+
+EXTRACT_FRAC_DONE:
+           POP     IX
+           POP     HL
+           POP     DE
+           POP     BC
+           POP     AF
+           RET
+
+; ----------------------------------------------------------------------------
+; DISPLAY_DIGIT_BUFFER - Display digits from buffer (no decimal point)
+; ----------------------------------------------------------------------------
+DISPLAY_DIGIT_BUFFER:
+           PUSH    AF
+           PUSH    BC
+           PUSH    IX
+
+           ; Display 6 digits from buffer (already in reverse order)
+           LD      B, 6
+           LD      IX, DIGIT_BUFFER
+
+DISPLAY_BUF_LOOP:
+           ; Calculate display position (5, 4, 3, 2, 1, 0)
+           LD      A, 6
+           SUB     B
+           PUSH    AF
+           CALL    SELECT_DIGIT
+
+           ; Get digit value
+           LD      A, (IX+0)
+           LD      HL, SEG_PATTERNS
+           LD      D, 0
+           LD      E, A
+           ADD     HL, DE
+           LD      A, (HL)
+           OUT     (DISP_SEG_PORT), A
+
+           INC     IX
+           POP     AF
+           DJNZ    DISPLAY_BUF_LOOP
+
+           POP     IX
+           POP     BC
+           POP     AF
+           RET
+
+; ----------------------------------------------------------------------------
+; DISPLAY_DIGIT_BUFFER_WITH_DP - Display with decimal point
+; Decimal point goes after the integer part
+; ----------------------------------------------------------------------------
+DISPLAY_DIGIT_BUFFER_WITH_DP:
+           PUSH    AF
+           PUSH    BC
+           PUSH    IX
+
+           ; Get integer digit count
+           LD      A, (INTEGER_DIGIT_COUNT)
+           LD      C, A                ; C = position to place DP
+
+           ; Display 6 digits
+           LD      B, 6
+           LD      IX, DIGIT_BUFFER
+
+DISPLAY_DP_LOOP:
+           ; Calculate display position
+           LD      A, 6
+           SUB     B
+           PUSH    AF
+           CALL    SELECT_DIGIT
+
+           ; Get digit value
+           LD      A, (IX+0)
+           LD      HL, SEG_PATTERNS
+           LD      D, 0
+           LD      E, A
+           ADD     HL, DE
+           LD      A, (HL)
+
+           ; Check if this digit should have decimal point
+           LD      D, A                ; Save pattern
+           LD      A, 6
+           SUB     B                   ; Current position
+           CP      C                   ; Compare with DP position
+           LD      A, D                ; Restore pattern
+           JP      NZ, NO_DP_HERE
+
+           ; Add decimal point
+           OR      SEG_DP
+
+NO_DP_HERE:
+           OUT     (DISP_SEG_PORT), A
+
+           INC     IX
+           POP     AF
+           DJNZ    DISPLAY_DP_LOOP
+
+           POP     IX
+           POP     BC
+           POP     AF
+           RET
+
+; ----------------------------------------------------------------------------
+; DISPLAY_NUMBER - Display 16-bit number on 7-segment (for countdown)
+; Input: HL = number to display (0-65535)
+; Displays right-justified on 6 digits
+; ----------------------------------------------------------------------------
+DISPLAY_NUMBER:
+           PUSH    AF
+           PUSH    BC
+           PUSH    DE
+           PUSH    HL
+           PUSH    IX
+
+           ; Extract digits by repeated division by 10
+           LD      B, 6            ; 6 digits
+           LD      IX, DIGIT_BUFFER
+
+EXTRACT_DIGITS:
+           LD      BC, 10
+           CALL    DIV16           ; HL = quotient, DE = remainder
+           LD      A, E            ; Digit in A
+           LD      (IX+0), A
+           INC     IX
+           LD      A, H
+           OR      L
+           JR      NZ, EXTRACT_DIGITS
+
+           ; Display digits
+           LD      B, 6
+           LD      IX, DIGIT_BUFFER
+
+DISPLAY_DIGIT_LOOP:
+           LD      A, 6
+           SUB     B               ; Digit position
+           PUSH    AF
+           CALL    SELECT_DIGIT
+
+           ; Get digit value
+           LD      A, (IX+0)
+           LD      HL, SEG_PATTERNS
+           LD      D, 0
+           LD      E, A
+           ADD     HL, DE
+           LD      A, (HL)
+           OUT     (DISP_SEG_PORT), A
+
+           INC     IX
+           POP     AF
+           DJNZ    DISPLAY_DIGIT_LOOP
+
+           POP     IX
+           POP     HL
+           POP     DE
+           POP     BC
+           POP     AF
+           RET
+
+; ----------------------------------------------------------------------------
+; SELECT_DIGIT - Select display digit for output
+; Input: A = digit number (0-5, where 0 is leftmost)
+; ----------------------------------------------------------------------------
+SELECT_DIGIT:
+           PUSH    AF
+           PUSH    BC
+
+           ; Convert digit number to bit position
+           ; Digit 0 = bit 0, digit 1 = bit 1, etc.
+           LD      B, A
+           LD      A, 1
+
+SELECT_SHIFT:
+           CP      B
+           JR      Z, SELECT_DONE
+           SLA     A
+           INC     B
+           JR      SELECT_SHIFT
+
+SELECT_DONE:
+           OUT     (DISP_DIGIT_PORT), A
+
+           POP     BC
+           POP     AF
+           RET
+
+; ============================================================================
+; DATA STORAGE
+; ============================================================================
+
+DIGIT_BUFFER:           .DS     6           ; Buffer for extracted digits
+INTEGER_DIGIT_COUNT:    .DB     0           ; Number of integer digits
+
+; ============================================================================
+; END OF KEYPAD INPUT MODULE
+; ============================================================================

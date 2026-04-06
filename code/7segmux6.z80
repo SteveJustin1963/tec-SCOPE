@@ -1,0 +1,179 @@
+        ORG 0x0000         ; Set origin for the program
+
+; 7-segment display data for hexadecimal characters (0-9, A-F)
+HEX_DATA:          ; Lookup table for hex characters
+    DB 0x3F  ; 0
+    DB 0x06  ; 1
+    DB 0x5B  ; 2
+    DB 0x4F  ; 3
+    DB 0x66  ; 4
+    DB 0x6D  ; 5
+    DB 0x7D  ; 6
+    DB 0x07  ; 7
+    DB 0x7F  ; 8
+    DB 0x6F  ; 9
+    DB 0x77  ; A
+    DB 0x7C  ; B
+    DB 0x39  ; C
+    DB 0x5E  ; D
+    DB 0x79  ; E
+    DB 0x71  ; F
+
+; Port addresses
+DISPLAY_PORT       EQU 0x00  ; Port for sending data to the 74LS273 latch
+CONTROL_PORT       EQU 0x01  ; Port for selecting the active display
+INPUT_PORT         EQU 0x02  ; Port for receiving input characters (if used)
+CH_OUT             EQU 0x03  ; Memory-mapped location for character output
+
+; Reserve memory for variables
+        ORG 0x8000    ; Start variables at address 0x8000
+CH_OUT_VAR          DS 1          ; Variable for character output
+DISPLAY_BUFFER      DS 6          ; Buffer for the six displays
+
+; Main program start
+START:
+    ; Initialize the display buffer to blanks (or zeros)
+    LD HL, DISPLAY_BUFFER
+    LD B, 6
+CLEAR_DISPLAY_BUFFER:
+    LD (HL), $10      ; $10 represents a blank (out of range index)
+    INC HL
+    DJNZ CLEAR_DISPLAY_BUFFER
+
+    ; Initialize CH_OUT_VAR to zero
+    LD HL, CH_OUT_VAR
+    LD (HL), 0            ; Store 0 at address (HL)
+
+    ; Preload '2' into CH_OUT_VAR to display '2'
+    LD A, '2'              ; ASCII '2' = 0x32
+    LD (HL), A             ; Load '2' into CH_OUT_VAR
+    CALL PROCESS_NEW_CHARACTER
+
+    ; Preload '0' into CH_OUT_VAR to display '0'
+    LD A, '0'              ; ASCII '0' = 0x30
+    LD (HL), A             ; Load '0' into CH_OUT_VAR
+    CALL PROCESS_NEW_CHARACTER
+
+    ; Continue with MAIN_LOOP
+    JP MAIN_LOOP
+
+MAIN_LOOP:
+    ; Check if a new character is available in CH_OUT_VAR
+    LD HL, CH_OUT_VAR
+    LD A, (HL)            ; Load value from (HL) into A
+    CP 0
+    JP Z, DISPLAY_ROUTINE    ; If zero, no new character, proceed to display
+
+    ; New character detected, process it
+    CALL PROCESS_NEW_CHARACTER
+
+    JP MAIN_LOOP             ; Repeat the main loop
+
+DISPLAY_ROUTINE:
+    ; Display the contents of DISPLAY_BUFFER on the 7-segment displays
+    LD B, 6                 ; Number of displays
+    LD HL, DISPLAY_BUFFER   ; Point to the start of the display buffer
+    LD C, 0                 ; Initialize display index (0 to 5)
+
+DISPLAY_LOOP:
+    LD A, (HL)              ; Get the character code from the buffer
+    CALL MAP_CHAR_TO_SEGMENT ; Convert character code to 7-segment code
+
+    ; Output to the display
+    OUT (DISPLAY_PORT), A
+
+    ; Select the display to activate
+    LD A, C                 ; Display index (0 to 5)
+    OUT (CONTROL_PORT), A
+
+    CALL SMALL_DELAY        ; Short delay for multiplexing
+
+    INC HL                  ; Move to the next character in the buffer
+    INC C                   ; Increment display index
+    DJNZ DISPLAY_LOOP       ; Loop until all displays are updated
+
+    JP MAIN_LOOP            ; Repeat the main loop
+
+; Subroutine to process the new character in CH_OUT_VAR
+PROCESS_NEW_CHARACTER:
+    ; Shift the display buffer left by one position
+    ; Copy from DISPLAY_BUFFER+1 to DISPLAY_BUFFER
+    LD HL, DISPLAY_BUFFER
+    INC HL                  ; HL = DISPLAY_BUFFER + 1
+    LD DE, DISPLAY_BUFFER   ; Destination is the first character
+    LD BC, 5                ; Number of bytes to move
+    LDDR                    ; Use LDDR to copy 5 bytes backward
+
+    ; Map the ASCII character in CH_OUT_VAR to a hex index (0-15)
+    LD A, (CH_OUT_VAR)
+    CALL MAP_ASCII_TO_INDEX
+
+    ; Place the new character at the rightmost position of the buffer
+    LD HL, DISPLAY_BUFFER
+    LD DE, 5
+    ADD HL, DE              ; HL = DISPLAY_BUFFER + 5
+    LD (HL), A              ; Store A at (HL)
+
+    ; Clear CH_OUT_VAR to indicate the character has been processed
+    LD HL, CH_OUT_VAR
+    LD (HL), 0
+
+    RET
+
+; Subroutine to map an ASCII character to a hex index (0-15)
+; Accepts: A = ASCII character
+; Returns: A = Hex index (0-15) or $10 for invalid character
+MAP_ASCII_TO_INDEX:
+    CP '0'                  ; Compare with '0'
+    JP C, CHECK_LOWERCASE   ; If less, check for lowercase letters
+    CP '9'+1                ; Compare with '9' + 1
+    JP C, IS_DIGIT          ; If less, it's a digit
+    CP 'A'                  ; Compare with 'A'
+    JP C, CHECK_LOWERCASE   ; If less, check for lowercase letters
+    CP 'F'+1                ; Compare with 'F' + 1
+    JP C, IS_UPPER_HEX      ; If less, it's uppercase A-F
+CHECK_LOWERCASE:
+    CP 'a'                  ; Compare with 'a'
+    JP C, INVALID_CHAR      ; If less, invalid character
+    CP 'f'+1                ; Compare with 'f' + 1
+    JP C, IS_LOWER_HEX      ; If less, it's lowercase a-f
+INVALID_CHAR:
+    LD A, $10               ; Set to $10 to indicate invalid character (blank)
+    RET
+IS_DIGIT:
+    SUB '0'                 ; Convert ASCII '0'-'9' to 0-9
+    RET
+IS_UPPER_HEX:
+    SUB 'A'
+    ADD A, 10               ; Convert ASCII 'A'-'F' to 10-15
+    RET
+IS_LOWER_HEX:
+    SUB 'a'
+    ADD A, 10               ; Convert ASCII 'a'-'f' to 10-15
+    RET
+
+; Subroutine to map hex index (0-15) to 7-segment code
+; Accepts: A = Hex index (0-15) or $10 for blank
+; Returns: A = 7-segment code
+MAP_CHAR_TO_SEGMENT:
+    CP 16                   ; Check if index is valid (0-15)
+    JP NC, RETURN_BLANK     ; If not, return blank
+
+    LD E, A                 ; Load index into E
+    LD D, 0                 ; Clear D to form address in DE
+    LD HL, HEX_DATA
+    ADD HL, DE              ; HL = HEX_DATA + index
+    LD A, (HL)              ; Get the 7-segment code
+    RET
+
+RETURN_BLANK:
+    LD A, 0x00              ; Return blank 7-segment code
+    RET
+
+; Small delay routine for display multiplexing
+SMALL_DELAY:
+    LD C, 0x10              ; Adjust delay count as needed
+DELAY_LOOP:
+    DEC C
+    JR NZ, DELAY_LOOP       ; Use JR for short jumps
+    RET

@@ -1,0 +1,681 @@
+; ============================================================================
+; TELESCOPE STEPPER MOTOR CONTROL - MAIN PROGRAM
+; ============================================================================
+; Main program demonstrating telescope control using dual stepper motors
+; This program includes example slew commands and a simple command interpreter
+; ============================================================================
+
+            .ORG    0000H
+
+            .INCLUDE "config.z80"
+            .INCLUDE "stepper-lib.z80"
+            .INCLUDE "keypad-input.z80"
+
+; ============================================================================
+; PROGRAM START
+; ============================================================================
+
+START:
+            ; Initialize stack pointer (top of RAM at 0800h-0FFFh)
+            LD      SP, 1000H
+
+            ; Initialize motors
+            CALL    INIT_MOTORS
+
+            ; Initialize keypad input system
+            CALL    INIT_INPUT_SYSTEM
+
+            ; Enable interrupts (for NMI from 74C923)
+            EI
+
+            ; Jump to main menu
+            JP      MAIN_MENU
+
+; ============================================================================
+; MAIN MENU / COMMAND INTERPRETER
+; ============================================================================
+
+MAIN_MENU:
+            ; Main loop - wait for keypad input via NMI interrupts
+            ; The keypad handler processes all input and executes movements
+
+MAIN_LOOP:
+            ; Refresh display to prevent flicker
+            CALL    MULTIPLEX_DISPLAY
+
+            ; Small delay between refreshes
+            LD      A, 10
+            CALL    STEP_DELAY
+
+            ; Continue loop (HALT removed to allow display refresh)
+            ; NMI interrupts will still fire on keypress
+            JR      MAIN_LOOP
+
+; ============================================================================
+; DEMONSTRATION PROGRAMS (for testing without keypad)
+; ============================================================================
+; These can be called for initial testing
+
+DEMO_PROGRAM:
+            ; Example 1: Home the telescope
+            CALL    EXAMPLE_HOME
+
+            ; Example 2: Slew to a specific position
+            CALL    EXAMPLE_SLEW_1
+
+            ; Example 3: Slew to another position
+            CALL    EXAMPLE_SLEW_2
+
+            ; Example 4: Return home
+            CALL    EXAMPLE_HOME
+
+            ; Return to main loop
+            JP      MAIN_MENU
+
+; ============================================================================
+; EXAMPLE ROUTINES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; EXAMPLE_HOME - Move telescope to home position
+; ----------------------------------------------------------------------------
+EXAMPLE_HOME:
+            ; Home position is (0, 0)
+            CALL    HOME_TELESCOPE
+
+            ; Optional: Add delay to see result
+            LD      BC, 5000
+            CALL    DELAY
+
+            RET
+
+; ----------------------------------------------------------------------------
+; EXAMPLE_SLEW_1 - Slew to position: Alt=45°, Az=90°
+; ----------------------------------------------------------------------------
+EXAMPLE_SLEW_1:
+            ; Convert degrees to steps
+            ; Alt 45° = 45 * 5.555 ≈ 250 steps
+            ; Az 90° = 90 * 5.555 ≈ 500 steps
+
+            LD      DE, 250         ; Altitude target (45°)
+            LD      HL, 500         ; Azimuth target (90°)
+
+            CALL    SET_TARGET_POSITION
+            CALL    SLEW_TO_POSITION
+
+            ; Optional: Add delay
+            LD      BC, 5000
+            CALL    DELAY
+
+            RET
+
+; ----------------------------------------------------------------------------
+; EXAMPLE_SLEW_2 - Slew to position: Alt=60°, Az=180°
+; ----------------------------------------------------------------------------
+EXAMPLE_SLEW_2:
+            ; Convert degrees to steps
+            ; Alt 60° = 60 * 5.555 ≈ 333 steps
+            ; Az 180° = 180 * 5.555 ≈ 1000 steps
+
+            LD      DE, 333         ; Altitude target (60°)
+            LD      HL, 1000        ; Azimuth target (180°)
+
+            CALL    SET_TARGET_POSITION
+            CALL    SLEW_TO_POSITION
+
+            ; Optional: Add delay
+            LD      BC, 5000
+            CALL    DELAY
+
+            RET
+
+; ============================================================================
+; UTILITY ROUTINES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; DEGREES_TO_STEPS - Convert degrees to steps
+; Input: BC = degrees (0-360)
+; Output: HL = steps
+; Destroys: A, BC, DE
+; ----------------------------------------------------------------------------
+DEGREES_TO_STEPS:
+            ; Formula: steps = degrees * 5.555
+            ; We use: steps = (degrees * 56) / 10
+            ; To avoid overflow: steps = degrees * 56 / 10
+
+            PUSH    BC              ; Save original degrees
+
+            ; Multiply BC by 56
+            LD      H, B
+            LD      L, C            ; HL = degrees
+
+            ; Multiply HL by 56 using shift and add
+            ; 56 = 32 + 16 + 8
+            LD      D, H
+            LD      E, L            ; DE = degrees
+
+            ; HL = degrees * 8
+            ADD     HL, HL          ; * 2
+            ADD     HL, HL          ; * 4
+            ADD     HL, HL          ; * 8
+
+            PUSH    HL              ; Save degrees * 8
+
+            ; DE = degrees * 16
+            EX      DE, HL          ; HL = degrees, DE = degrees * 8
+            ADD     HL, HL          ; * 2
+            ADD     HL, HL          ; * 4
+            ADD     HL, HL          ; * 8
+            ADD     HL, HL          ; * 16
+
+            PUSH    HL              ; Save degrees * 16
+
+            ; degrees * 32
+            POP     DE              ; DE = degrees * 16
+            ADD     HL, HL          ; HL = degrees * 32
+
+            ; Add them together: 32 + 16 + 8
+            ADD     HL, DE          ; HL = degrees * 48
+            POP     DE              ; DE = degrees * 8
+            ADD     HL, DE          ; HL = degrees * 56
+
+            ; Now divide by 10
+            ; Simple division routine
+            LD      BC, 10
+            CALL    DIV16           ; HL = HL / BC
+
+            POP     BC              ; Restore original degrees
+            RET
+
+; ----------------------------------------------------------------------------
+; DIV16 - 16-bit division
+; Input: HL = dividend, BC = divisor
+; Output: HL = quotient, DE = remainder
+; Destroys: A, BC, DE
+; ----------------------------------------------------------------------------
+DIV16:
+            LD      DE, 0           ; Clear remainder
+            LD      A, 16           ; 16 bits
+
+DIV16_LOOP:
+            ADD     HL, HL          ; Shift dividend left
+            RL      E               ; Shift into remainder
+            RL      D
+
+            EX      DE, HL          ; HL = remainder, DE = dividend
+            OR      A               ; Clear carry
+            SBC     HL, BC          ; Subtract divisor
+            JR      C, DIV16_NO_SUB ; If negative, don't subtract
+
+            EX      DE, HL          ; Put back
+            INC     L               ; Set bit in quotient
+            JR      DIV16_CONT
+
+DIV16_NO_SUB:
+            ADD     HL, BC          ; Restore remainder
+            EX      DE, HL
+
+DIV16_CONT:
+            DEC     A
+            JR      NZ, DIV16_LOOP
+
+            ; HL = quotient (dividend), DE = remainder
+            RET
+
+; ============================================================================
+; COMMAND INTERPRETER (OPTIONAL - FOR EXPANSION)
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; CMD_INTERPRETER - Simple command interpreter
+; Commands:
+;   'H' - Home telescope
+;   'G' - Go to position (followed by alt, az)
+;   'S' - Stop motors
+;   'Q' - Query position
+; ----------------------------------------------------------------------------
+CMD_INTERPRETER:
+            ; Read command from input port or serial
+            ; IN    A, (CMD_PORT)
+
+            ; For now, this is a placeholder
+            ; You would implement serial I/O or keypad reading here
+
+            RET
+
+; ============================================================================
+; CALIBRATION ROUTINES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; CALIBRATE_HOME - Find home position using limit switches
+; Input: None
+; Output: None
+; Destroys: A, BC, DE, HL
+; Note: Requires limit switch inputs on STATUS_PORT
+; ----------------------------------------------------------------------------
+CALIBRATE_HOME:
+            ; Move altitude down until limit switch triggers
+CALIBRATE_ALT:
+            IN      A, (STATUS_PORT)
+            BIT     0, A            ; Check alt limit switch
+            JR      NZ, CALIBRATE_AZ ; If triggered, move to az
+
+            CALL    STEP_ALT_CCW
+            LD      A, SLOW_DELAY
+            CALL    STEP_DELAY
+            JR      CALIBRATE_ALT
+
+            ; Move azimuth to north until limit switch triggers
+CALIBRATE_AZ:
+            IN      A, (STATUS_PORT)
+            BIT     1, A            ; Check az limit switch
+            JR      NZ, CALIBRATE_DONE
+
+            CALL    STEP_AZ_CCW
+            LD      A, SLOW_DELAY
+            CALL    STEP_DELAY
+            JR      CALIBRATE_AZ
+
+CALIBRATE_DONE:
+            ; Zero position counters
+            LD      HL, 0
+            LD      (ALT_POS_LO), HL
+            LD      (AZ_POS_LO), HL
+
+            RET
+
+; ============================================================================
+; TEST ROUTINES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; TEST_ALT_MOTOR - Test altitude motor by stepping full range
+; ----------------------------------------------------------------------------
+TEST_ALT_MOTOR:
+            ; Move up to 90 degrees
+            LD      BC, ALT_MAX
+TEST_ALT_UP:
+            CALL    STEP_ALT_CW
+            LD      A, SLEW_DELAY
+            CALL    STEP_DELAY
+            DEC     BC
+            LD      A, B
+            OR      C
+            JR      NZ, TEST_ALT_UP
+
+            ; Delay at top
+            LD      BC, 10000
+            CALL    DELAY
+
+            ; Move back down
+            LD      BC, ALT_MAX
+TEST_ALT_DOWN:
+            CALL    STEP_ALT_CCW
+            LD      A, SLEW_DELAY
+            CALL    STEP_DELAY
+            DEC     BC
+            LD      A, B
+            OR      C
+            JR      NZ, TEST_ALT_DOWN
+
+            RET
+
+; ----------------------------------------------------------------------------
+; TEST_AZ_MOTOR - Test azimuth motor by full rotation
+; ----------------------------------------------------------------------------
+TEST_AZ_MOTOR:
+            ; Rotate 360 degrees
+            LD      BC, AZ_MAX
+TEST_AZ_ROTATE:
+            CALL    STEP_AZ_CW
+            LD      A, SLEW_DELAY
+            CALL    STEP_DELAY
+            DEC     BC
+            LD      A, B
+            OR      C
+            JR      NZ, TEST_AZ_ROTATE
+
+            RET
+
+; ----------------------------------------------------------------------------
+; TEST_BOTH_MOTORS - Test both motors simultaneously
+; ----------------------------------------------------------------------------
+TEST_BOTH_MOTORS:
+            ; Slew to 45°, 90°
+            LD      DE, 250
+            LD      HL, 500
+            CALL    SET_TARGET_POSITION
+            CALL    SLEW_TO_POSITION
+
+            ; Delay
+            LD      BC, 10000
+            CALL    DELAY
+
+            ; Return home
+            CALL    HOME_TELESCOPE
+
+            RET
+
+; ============================================================================
+; CALIBRATION ROUTINES - SYDNEY POLAR ALIGNMENT
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; CALIBRATE_POLAR_ALIGNMENT - Complete polar alignment procedure
+; This routine guides through the alignment process for Sydney location
+; ----------------------------------------------------------------------------
+CALIBRATE_POLAR_ALIGNMENT:
+            ; Step 1: Move to south horizon position
+            CALL    ALIGN_TO_SOUTH_HORIZON
+
+            ; Wait for user to verify compass alignment
+            LD      BC, 20000
+            CALL    DELAY
+
+            ; Step 2: Tilt to latitude angle (34° for Sydney)
+            CALL    ALIGN_TO_SCP
+
+            ; Step 3: Mark this as calibrated true south
+            CALL    STORE_TRUE_SOUTH
+
+            ; Set calibration status
+            LD      A, (CAL_STATUS)
+            OR      00000101B       ; Set bits 0,2 (south + polar aligned)
+            LD      (CAL_STATUS), A
+
+            RET
+
+; ----------------------------------------------------------------------------
+; ALIGN_TO_SOUTH_HORIZON - Point telescope south at horizon
+; Use compass to verify pointing at true south (168° magnetic for Sydney)
+; ----------------------------------------------------------------------------
+ALIGN_TO_SOUTH_HORIZON:
+            ; Move to south horizon position
+            ; Using TRUE_SOUTH_MAG (933 steps = 168° magnetic = true south)
+            LD      DE, ALIGN_STEP1_ALT     ; Alt = 0° (horizon)
+            LD      HL, TRUE_SOUTH_MAG      ; Az = 168° magnetic
+            CALL    SET_TARGET_POSITION
+            CALL    SLEW_TO_POSITION
+
+            ; User should verify compass points to 168° magnetic
+            ; (Display message if serial output available)
+
+            RET
+
+; ----------------------------------------------------------------------------
+; ALIGN_TO_SCP - Point to South Celestial Pole
+; Moves scope to altitude = latitude (34°), azimuth = south (180°)
+; This is where mount's polar axis should point for tracking
+; ----------------------------------------------------------------------------
+ALIGN_TO_SCP:
+            ; Move to SCP position
+            LD      DE, SCP_ALTITUDE        ; Alt = 34° (189 steps)
+            LD      HL, SCP_AZIMUTH         ; Az = 180° (1000 steps)
+            CALL    SET_TARGET_POSITION
+            CALL    SLEW_TO_POSITION
+
+            RET
+
+; ----------------------------------------------------------------------------
+; ALIGN_TO_CANOPUS - Use Canopus as bright reference star
+; Canopus is easy to find and excellent for southern alignment verification
+; NOTE: Position is approximate - varies with time of night and season
+; ----------------------------------------------------------------------------
+ALIGN_TO_CANOPUS:
+            ; Calculate Canopus position in steps
+            ; Alt ~78° at culmination, Az = 180° (south)
+            LD      BC, CANOPUS_ALT         ; 78 degrees
+            CALL    DEGREES_TO_STEPS        ; HL = steps
+            LD      D, H
+            LD      E, L                    ; DE = altitude steps
+
+            LD      BC, CANOPUS_AZ          ; 180 degrees
+            CALL    DEGREES_TO_STEPS        ; HL = azimuth steps
+
+            CALL    SET_TARGET_POSITION
+            CALL    SLEW_TO_POSITION
+
+            ; Mark reference star aligned
+            LD      A, (CAL_STATUS)
+            OR      00000010B               ; Set bit 1
+            LD      (CAL_STATUS), A
+
+            RET
+
+; ----------------------------------------------------------------------------
+; STORE_TRUE_SOUTH - Store current azimuth as true south reference
+; Call this when scope is accurately pointed south via compass
+; ----------------------------------------------------------------------------
+STORE_TRUE_SOUTH:
+            ; Get current azimuth position
+            LD      HL, (AZ_POS_LO)
+
+            ; Store as true south reference
+            LD      (CAL_TRUE_SOUTH), HL
+
+            ; Calculate offset from nominal south (1000 steps = 180°)
+            LD      DE, 1000
+            OR      A
+            SBC     HL, DE                  ; HL = actual - nominal
+
+            ; Store azimuth offset
+            LD      (CAL_OFFSET_AZ), HL
+
+            RET
+
+; ----------------------------------------------------------------------------
+; STORE_REFERENCE_STAR - Store current position as reference star
+; Call this when centered on a known star for later alignment checks
+; ----------------------------------------------------------------------------
+STORE_REFERENCE_STAR:
+            ; Get current position
+            LD      DE, (ALT_POS_LO)
+            LD      HL, (AZ_POS_LO)
+
+            ; Store reference star position
+            LD      (CAL_REF_STAR_ALT), DE
+            LD      (CAL_REF_STAR_AZ), HL
+
+            ; Mark as calibrated
+            LD      A, (CAL_STATUS)
+            OR      00000010B               ; Set bit 1
+            LD      (CAL_STATUS), A
+
+            RET
+
+; ----------------------------------------------------------------------------
+; APPLY_ALIGNMENT_OFFSET - Apply stored calibration offsets to target position
+; Call before slewing to correct for mount alignment errors
+; Input: DE = raw altitude target, HL = raw azimuth target
+; Output: DE = corrected altitude, HL = corrected azimuth
+; Destroys: BC
+; ----------------------------------------------------------------------------
+APPLY_ALIGNMENT_OFFSET:
+            PUSH    BC
+
+            ; Apply azimuth offset
+            LD      BC, (CAL_OFFSET_AZ)
+            ADD     HL, BC                  ; HL = target + offset
+
+            ; Apply altitude offset
+            PUSH    HL
+            LD      HL, DE                  ; HL = alt target
+            LD      BC, (CAL_OFFSET_ALT)
+            ADD     HL, BC                  ; HL = alt + offset
+            LD      D, H
+            LD      E, L                    ; DE = corrected alt
+            POP     HL                      ; HL = corrected az
+
+            POP     BC
+            RET
+
+; ----------------------------------------------------------------------------
+; START_SIDEREAL_TRACKING - Enable sidereal tracking mode
+; Moves azimuth westward at sidereal rate (15.041°/hour)
+; For southern hemisphere, this is CCW (decreasing azimuth)
+; NOTE: This is a simple version - requires timer interrupt for accuracy
+; WARNING: This function blocks! Run in background or use interrupt-driven version
+; ----------------------------------------------------------------------------
+START_SIDEREAL_TRACKING:
+            ; Set tracking active flag
+            LD      A, (MOTOR_STATE)
+            OR      00001000B               ; Set bit 3 (tracking mode)
+            LD      (MOTOR_STATE), A
+
+            ; Mark tracking calibrated
+            LD      A, (CAL_STATUS)
+            OR      00001000B               ; Set bit 3
+            LD      (CAL_STATUS), A
+
+SIDEREAL_TRACK_LOOP:
+            ; Check if still in tracking mode
+            LD      A, (MOTOR_STATE)
+            BIT     3, A
+            RET     Z                       ; Exit if tracking disabled
+
+            ; Step azimuth westward (CCW for southern hemisphere)
+            CALL    STEP_AZ_CCW
+
+            ; Long delay for sidereal rate (~44 seconds per step)
+            ; This is blocking - not ideal for interactive use
+            LD      B, SIDEREAL_DELAY_HI
+            LD      C, SIDEREAL_DELAY_LO
+            CALL    DELAY
+
+            ; Continue tracking
+            JR      SIDEREAL_TRACK_LOOP
+
+; ----------------------------------------------------------------------------
+; STOP_SIDEREAL_TRACKING - Disable sidereal tracking
+; ----------------------------------------------------------------------------
+STOP_SIDEREAL_TRACKING:
+            ; Clear tracking flag
+            LD      A, (MOTOR_STATE)
+            AND     11110111B               ; Clear bit 3
+            LD      (MOTOR_STATE), A
+            RET
+
+; ----------------------------------------------------------------------------
+; GET_CALIBRATION_STATUS - Check calibration status
+; Output: A = CAL_STATUS byte
+;         Zero flag set if not calibrated
+; ----------------------------------------------------------------------------
+GET_CALIBRATION_STATUS:
+            LD      A, (CAL_STATUS)
+            OR      A                       ; Set flags
+            RET
+
+; ----------------------------------------------------------------------------
+; RESET_CALIBRATION - Clear all calibration data
+; ----------------------------------------------------------------------------
+RESET_CALIBRATION:
+            XOR     A
+            LD      (CAL_STATUS), A
+            LD      HL, 0
+            LD      (CAL_OFFSET_ALT), HL
+            LD      (CAL_OFFSET_AZ), HL
+            LD      (CAL_TRUE_SOUTH), HL
+            LD      (CAL_REF_STAR_ALT), HL
+            LD      (CAL_REF_STAR_AZ), HL
+            RET
+
+; ============================================================================
+; CALIBRATION EXAMPLES
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; EXAMPLE_FULL_CALIBRATION - Complete calibration procedure
+; ----------------------------------------------------------------------------
+EXAMPLE_FULL_CALIBRATION:
+            ; Initialize motors
+            CALL    INIT_MOTORS
+
+            ; Reset any previous calibration
+            CALL    RESET_CALIBRATION
+
+            ; Perform polar alignment
+            CALL    CALIBRATE_POLAR_ALIGNMENT
+
+            ; Optional: Align to bright star for verification
+            ; CALL    ALIGN_TO_CANOPUS
+            ; CALL    STORE_REFERENCE_STAR
+
+            ; Note: Don't start tracking here - it blocks!
+            ; User can manually call START_SIDEREAL_TRACKING when ready
+
+            RET
+
+; ============================================================================
+; DISPLAY REFRESH ROUTINE
+; ============================================================================
+
+; ----------------------------------------------------------------------------
+; REFRESH_DISPLAY - Continuously refresh TEC-1 display (multiplexing)
+; Should be called periodically from main loop or timer interrupt
+; This prevents flicker on the 6-digit display
+; ----------------------------------------------------------------------------
+REFRESH_DISPLAY:
+            PUSH    AF
+            PUSH    BC
+            PUSH    DE
+            PUSH    HL
+
+            ; Get current display buffer (would need to store this)
+            ; For now, this is a placeholder
+            ; In full implementation, would cycle through all 6 digits
+            ; refreshing each one in turn
+
+            ; Digit 0
+            LD      A, 0
+            CALL    SELECT_DIGIT_REFRESH
+            ; Output segment data for digit 0
+            ; (would come from display buffer)
+
+            ; Digit 1
+            LD      A, 1
+            CALL    SELECT_DIGIT_REFRESH
+            ; Output segment data for digit 1
+
+            ; Continue for all 6 digits...
+
+            POP     HL
+            POP     DE
+            POP     BC
+            POP     AF
+            RET
+
+; Helper for display refresh
+SELECT_DIGIT_REFRESH:
+            ; Same as SELECT_DIGIT in keypad-input.z80
+            PUSH    AF
+            PUSH    BC
+
+            LD      B, A
+            LD      A, 1
+
+SELECT_DIGIT_SHIFT:
+            CP      0
+            JR      Z, SELECT_DIGIT_OUT
+            SLA     A
+            DJNZ    SELECT_DIGIT_SHIFT
+
+SELECT_DIGIT_OUT:
+            OUT     (DISP_DIGIT_PORT), A
+
+            POP     BC
+            POP     AF
+            RET
+
+; Note: For proper display multiplexing, you would need:
+; 1. Display buffer (6 bytes for segment patterns)
+; 2. Interrupt-driven refresh (every few ms)
+; 3. Current digit pointer
+; The keypad-input.z80 currently does static updates only
+
+; ============================================================================
+; END OF PROGRAM
+; ============================================================================
+
+            .END
